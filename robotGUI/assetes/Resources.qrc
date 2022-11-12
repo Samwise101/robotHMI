@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/resource">
+        <file>Alarmy/warning_red.png</file>
+        <file>Alarmy/warning_yellow.png</file>
+        <file>Alarmy/Alarm1.png</file>
+        <file>Alarmy/Alarm2.png</file>
+        <file>Alarmy/Alarm3.png</file>
+        <file>Alarmy/Alarm4.png</file>
+        <file>Baterka/battery0.png</file>
+        <file>Baterka/battery1.png</file>
+        <file>Baterka/battery2.png</file>
+        <file>Baterka/battery3.png</file>
+        <file>Baterka/battery4.png</file>
+        <file>Baterka/battery5.png</file>
+        <file>speed_indicator/speed0.png</file>
+        <file>speed_indicator/speed1.png</file>
+        <file>speed_indicator/speed2.png</file>
+        <file>speed_indicator/speed3.png</file>
+        <file>speed_indicator/speed4.png</file>
+        <file>speed_indicator/speed5.png</file>
+        <file>stop_start/start.png</file>
+        <file>stop_start/start_clicked.png</file>
+        <file>stop_start/stop.png</file>
+        <file>stop_start/stop_clicked.png</file>
+        <file>Alarmy/online.png</file>
+        <file>stop_start/play.png</file>
+        <file>stop_start/stop_play.png</file>
+    </qresource>
+</RCC>
