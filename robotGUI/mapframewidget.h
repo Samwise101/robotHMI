@@ -1,5 +1,5 @@
-#ifndef NEWFRAMEWIDGET_H
-#define NEWFRAMEWIDGET_H
+#ifndef MAPFRAMEWIDGET_H
+#define MAPFRAMEWIDGET_H
 
 #include <QWidget>
 #include <QFrame>
@@ -7,14 +7,12 @@
 class QFrame;
 class QPaintEvent;
 
-class NewFrameWidget : public QWidget
-
+class MapFrameWidget : public QWidget
 {
     Q_OBJECT
-
 public:
-    NewFrameWidget(QWidget *parent = 0);
-    ~NewFrameWidget();
+    MapFrameWidget(QWidget *parent = 0);
+    ~MapFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
 
 protected:
@@ -23,8 +21,6 @@ protected:
 private:
     double offset;
 
-public:
-
 };
 
-#endif // NEWFRAMEWIDGET_H
+#endif // MAPFRAMEWIDGET_H

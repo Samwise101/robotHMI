@@ -8,6 +8,9 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += ../robot
+LIBS += -L../bin -lrobot
+
 win32 {
     INCLUDEPATH += C:/opencv_vc16/include/
 
@@ -50,14 +53,16 @@ win32 {
 
 SOURCES += \
     alarmdialog.cpp \
+    cameraFrameWidget.cpp \
     main.cpp \
     mainwindow.cpp \
-    newframewidget.cpp
+    mapframewidget.cpp
 
 HEADERS += \
     alarmdialog.h \
+    cameraFrameWidget.h \
     mainwindow.h \
-    newframewidget.h
+    mapframewidget.h
 
 FORMS += \
     alarmdialog.ui \

@@ -8,8 +8,12 @@
 #include <QPushButton>
 
 #include "alarmdialog.h"
+#include "cameraFrameWidget.h"
+#include "mapframewidget.h"
 #include <iostream>
 #include <string.h>
+
+#include "robot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +29,8 @@ public:
 
     bool startCamera();
     bool cameraUse;
+    bool setBatteryLevelWidget();
+    bool getIpAddress();
 
 private slots:
 
@@ -45,9 +51,13 @@ private slots:
 
     void on_startButton_pressed();
 
+    void on_checkBox_stateChanged(int arg1);
+
 private:
     std::string ipAdress;
     QTimer* timer;
+
+    Robot* robot;
 
     bool missionLoaded;
     bool missionRunning;
@@ -55,8 +65,14 @@ private:
 
     double robotCenterSpeed;
     double robotRotationalSpeed;
+    double batteryLevel;
+
+    string ipAddress;
 
     Ui::MainWindow *ui;
     AlarmDialog *alarmHelpWindow;
+
+    CameraFrameWidget* cameraFrame;
+    MapFrameWidget* mapFrame;
 };
 #endif // MAINWINDOW_H

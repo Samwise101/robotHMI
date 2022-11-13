@@ -1,21 +1,20 @@
-#include "newframewidget.h"
+#include "mapframewidget.h"
 #include "mainwindow.h"
 #include <iostream>
-#include <QWidget>
 #include <QtGui>
-#include <QFrame>
+#include <QWidget>
 
-
-NewFrameWidget::NewFrameWidget(QWidget *parent): QWidget(parent)
+MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 {
     offset = 10;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
-NewFrameWidget::~NewFrameWidget(){
+MapFrameWidget::~MapFrameWidget(){
+
 }
 
-void NewFrameWidget::paintEvent(QPaintEvent* event){
+void MapFrameWidget::paintEvent(QPaintEvent* event){
     QPainter painter(this);
     painter.setBrush(Qt::lightGray);
     QPen pen;
@@ -26,4 +25,3 @@ void NewFrameWidget::paintEvent(QPaintEvent* event){
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
     painter.drawRoundRect(rectangle, 5.0, 5.0);
 }
-

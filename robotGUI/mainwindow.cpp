@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 #include <qgridlayout.h>
 #include <iostream>
-#include "newframewidget.h"
+#include "cameraFrameWidget.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
 
@@ -11,34 +11,47 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     cameraUse = false;
     missionLoaded = missionRunning = false;
-    robotRunning = false;
+    robotRunning = true;
+
+    batteryLevel = 81.0;
+
+    robot = new Robot();
 
     ui->setupUi(this);
 
-    NewFrameWidget* frame = new NewFrameWidget();
-    ui->cameraMapLayout->addWidget(frame, 0, 1);
+    if(setBatteryLevelWidget()){
+        std::cout  << "Success!" << std::endl;
+    }
 
-    NewFrameWidget* frame2 = new NewFrameWidget();
-    ui->cameraMapLayout->addWidget(frame2, 0, 2);
+    cameraFrame = new CameraFrameWidget();
+    ui->cameraMapLayout->addWidget(cameraFrame, 0, 1);
+
+    mapFrame = new MapFrameWidget();
+    ui->cameraMapLayout->addWidget(mapFrame, 0, 2);
 }
 
 MainWindow::~MainWindow()
 {
+    delete robot;
+    delete cameraFrame;
+    delete mapFrame;
     delete ui;
 }
 
 bool MainWindow::startCamera(){
+    std::cout << "Camera before: " << cameraUse << std::endl;
     if(cameraUse == false){
         cameraUse = true;
+        std::cout << "Camera after: " << cameraUse << std::endl;
         return true;
     }
     else{
         cameraUse = false;
+        std::cout << "Camera before: " << cameraUse << std::endl;
         return true;
     }
     return false;
 }
-
 
 void MainWindow::on_actionGo_Offline_triggered()
 {
@@ -73,22 +86,54 @@ void MainWindow::on_startButton_clicked()
     std::cout << "Hello from start button!" << std::endl;
     if(robotRunning){
          robotRunning = false;
-         ui->startButton->setStyleSheet("#startButton{background-color: silver;border-style:outset;border-radius: 10px;border-color:black;border-width:4px;padding: 5px;image: url(:/resource/stop_start/start.png);}");
+         ui->startButton->setStyleSheet("#startButton{"
+                                        "background-color: silver;"
+                                        "border-style:outset;"
+                                        "border-radius: 10px;"
+                                        "border-color:black;"
+                                        "border-width:4px;"
+                                        "padding: 5px;"
+                                        "image: url(:/resource/stop_start/start.png);}"
+                                        );
     }
     else{
          robotRunning = true;
-         ui->startButton->setStyleSheet("#startButton{background-color: silver;border-style:outset;border-radius: 10px;border-color:black;border-width:4px;padding: 5px;image: url(:/resource/stop_start/stop.png);}");
+         ui->startButton->setStyleSheet("#startButton{"
+                                        "background-color: silver"
+                                        ";border-style:outset;"
+                                        "border-radius: 10px;"
+                                        "border-color:black;"
+                                        "border-width:4px;"
+                                        "padding: 5px;"
+                                        "image: url(:/resource/stop_start/stop.png);}"
+                                        );
     }
 }
 
 void MainWindow::on_startButton_pressed()
 {
     if(robotRunning){
-        ui->startButton->setStyleSheet("#startButton{background-color: silver;border-style:outset;border-radius: 10px;border-color:black;border-width:4px;padding: 5px;image: url(:/resource/stop_start/start_clicked.png);}");
+        ui->startButton->setStyleSheet("#startButton{"
+                                       "background-color: silver;"
+                                       "border-style:outset;"
+                                       "border-radius: 10px;"
+                                       "border-color:black;"
+                                       "border-width:4px;"
+                                       "padding: 5px;"
+                                       "image: url(:/resource/stop_start/start_clicked.png);}"
+                                       );
     }
 
     else{
-        ui->startButton->setStyleSheet("#startButton{background-color: silver;border-style:outset;border-radius: 10px;border-color:black;border-width:4px;padding: 5px;image: url(:/resource/stop_start/stop_clicked.png);}");
+        ui->startButton->setStyleSheet("#startButton{"
+                                       "background-color: silver;"
+                                       "border-style:outset;"
+                                       "border-radius: 10px;"
+                                       "border-color:black;"
+                                       "border-width:4px;"
+                                       "padding: 5px;"
+                                       "image: url(:/resource/stop_start/stop_clicked.png);}"
+                                       );
     }
 }
 
@@ -119,7 +164,8 @@ void MainWindow::on_replayMissionButton_clicked()
             ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
                                                    "silver;border-style:outset;border-radius: "
                                                    "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/stop_play.png)}");
+                                                    "5px;image:url(:/resource/stop_start/stop_play.png)}"
+                                                   );
 
            }
         else{
@@ -128,8 +174,87 @@ void MainWindow::on_replayMissionButton_clicked()
             ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
                                                    "silver;border-style:outset;border-radius: "
                                                    "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/play.png)}");
+                                                    "5px;image:url(:/resource/stop_start/play.png)}"
+                                                   );
 
            }
         }
 }
+
+bool MainWindow::setBatteryLevelWidget(){
+    if(robotRunning){
+        if(batteryLevel > 80.0){
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/Baterka/battery5.png)"
+                                             );
+        }
+        else if(batteryLevel > 60.0){
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/Baterka/battery4.png)"
+                                             );
+        }
+        else if(batteryLevel > 40.0){
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/Baterka/battery3.png)"
+                                             );
+        }
+        else if(batteryLevel > 20.0){
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/Baterka/battery2.png)");
+        }
+        else if(batteryLevel > 0.0){
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/Baterka/battery1.png)"
+                                             );
+        }
+        else{
+            ui->batteryWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                              "image:url(:/resource/Baterka/battery0.png)"
+                                             );
+        }
+        return 1;
+    }
+    return 0;
+}
+
+void MainWindow::on_checkBox_stateChanged(int arg1)
+{
+
+}
+
