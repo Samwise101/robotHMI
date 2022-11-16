@@ -4,6 +4,7 @@
 #include <qgridlayout.h>
 #include <iostream>
 #include "cameraFrameWidget.h"
+#include <string>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
 
@@ -11,13 +12,18 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     cameraUse = false;
     missionLoaded = missionRunning = false;
-    robotRunning = true;
+    robotConnected = false;
+    robotRunning = false;
+    recordMission = false;
 
-    batteryLevel = 81.0;
+    batteryLevel = 0.0;
 
     robot = new Robot();
 
+
     ui->setupUi(this);
+
+    ui->addressField->setMaxLength(20);
 
     if(setBatteryLevelWidget()){
         std::cout  << "Success!" << std::endl;
@@ -61,7 +67,12 @@ void MainWindow::on_actionGo_Offline_triggered()
 
 void MainWindow::on_actionGo_Online_triggered()
 {
-
+    if(getIpAddress()){
+        std::cout << "Ip address loaded" << std::endl;
+    }
+    else{
+        std::cout << "No ip address loaded!" << std::endl;
+    }
 }
 
 
@@ -84,20 +95,20 @@ void MainWindow::on_actionAlarms_triggered()
 void MainWindow::on_startButton_clicked()
 {
     std::cout << "Hello from start button!" << std::endl;
-    if(robotRunning){
-         robotRunning = false;
-         ui->startButton->setStyleSheet("#startButton{"
+    if(robotConnected && !robotRunning){
+        ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
                                         "border-style:outset;"
                                         "border-radius: 10px;"
                                         "border-color:black;"
                                         "border-width:4px;"
                                         "padding: 5px;"
-                                        "image: url(:/resource/stop_start/start.png);}"
+                                        "image: url(:/resource/stop_start/stop.png);}"
                                         );
+        robotRunning = true;
+        std::cout << "Robot running: " << robotRunning << std::endl;
     }
-    else{
-         robotRunning = true;
+    else if(robotConnected && robotRunning){
          ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver"
                                         ";border-style:outset;"
@@ -105,13 +116,17 @@ void MainWindow::on_startButton_clicked()
                                         "border-color:black;"
                                         "border-width:4px;"
                                         "padding: 5px;"
-                                        "image: url(:/resource/stop_start/stop.png);}"
+                                        "image: url(:/resource/stop_start/start.png);}"
                                         );
+        robotRunning = false;
+        std::cout << "Robot running: " << robotRunning << std::endl;
     }
 }
 
+
 void MainWindow::on_startButton_pressed()
 {
+    /*
     if(robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
@@ -135,19 +150,29 @@ void MainWindow::on_startButton_pressed()
                                        "image: url(:/resource/stop_start/stop_clicked.png);}"
                                        );
     }
+    */
 }
 
 
 void MainWindow::on_connectToRobotButton_clicked()
 {
     std::cout << "Hello from connect button!" << std::endl;
-    if(!cameraUse){
-        if(startCamera()){
-            std::cout << "Camera connected!" << std::endl;
+
+    if(getIpAddress()){
+        std::cout << "Ip address loaded" << std::endl;
+
+        if(!cameraUse){
+            if(startCamera()){
+                std::cout << "Camera connected!" << std::endl;
+            }
+            else{
+                std::cout << "Camera NOT connected" << std::endl;
+            }
         }
-        else{
-            std::cout << "Camera NOT connected" << std::endl;
-        }
+        robotConnected = true;
+    }
+    else{
+        std::cout << "No ip address loaded!" << std::endl;
     }
 }
 
@@ -245,7 +270,7 @@ bool MainWindow::setBatteryLevelWidget(){
                                              "border-width:4px;"
                                              "min-width: 10em;"
                                              "padding: 5px;"
-                                              "image:url(:/resource/Baterka/battery0.png)"
+                                             "image:url(:/resource/Baterka/battery0.png)"
                                              );
         }
         return 1;
@@ -253,8 +278,24 @@ bool MainWindow::setBatteryLevelWidget(){
     return 0;
 }
 
+bool MainWindow::getIpAddress()
+{
+    if(!ui->addressField->text().isEmpty() && ipAddress.compare(ui->addressField->text().toStdString())){
+        ipAddress = ui->addressField->text().toStdString();
+        return 1;
+    }
+
+    return 0;
+}
+
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-
+    std::cout << "Hello from checkbox" << std::endl;
+    if(!recordMission){
+        recordMission = true;
+    }
+    else{
+        recordMission = false;
+    }
 }
 

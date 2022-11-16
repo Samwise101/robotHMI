@@ -54,25 +54,31 @@ private slots:
     void on_checkBox_stateChanged(int arg1);
 
 private:
-    std::string ipAdress;
+    std::string ipAddress;
     QTimer* timer;
 
     Robot* robot;
 
     bool missionLoaded;
     bool missionRunning;
+    bool recordMission;
+    bool robotConnected;
     bool robotRunning;
 
     double robotCenterSpeed;
     double robotRotationalSpeed;
-    double batteryLevel;
 
-    string ipAddress;
+    double batteryLevel;
 
     Ui::MainWindow *ui;
     AlarmDialog *alarmHelpWindow;
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
+/*
+public slots:
+    void setUiValues(double robotX,double robotY,double robotFi);
+signals:
+    void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);*/
 };
 #endif // MAINWINDOW_H

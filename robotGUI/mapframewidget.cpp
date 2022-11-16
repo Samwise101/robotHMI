@@ -1,5 +1,4 @@
 #include "mapframewidget.h"
-#include "mainwindow.h"
 #include <iostream>
 #include <QtGui>
 #include <QWidget>

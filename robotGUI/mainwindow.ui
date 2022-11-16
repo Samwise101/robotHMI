@@ -106,7 +106,7 @@ color:black</string>
          </spacer>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="addressField">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -143,6 +143,17 @@ font: 12pt &quot;Segoe UI&quot;;</string>
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
 	color:black
+}
+
+#connectToRobotButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
 }</string>
           </property>
           <property name="text">
@@ -195,7 +206,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QFrame" name="frame">
+             <widget class="QFrame" name="alarm1">
               <property name="styleSheet">
                <string notr="true">image:url(:/resource/Alarmy/warning_red.png)</string>
               </property>
@@ -208,7 +219,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_2">
+             <widget class="QFrame" name="alarm2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -228,7 +239,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QFrame" name="frame_3">
+             <widget class="QFrame" name="alarm3">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -392,7 +403,7 @@ color:black;</string>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_2">
+         <widget class="QLineEdit" name="yValue">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -429,7 +440,7 @@ color:black;
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="lineEdit_3">
+         <widget class="QLineEdit" name="rotValue">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -471,7 +482,7 @@ color:black;</string>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_4">
+         <widget class="QLineEdit" name="xValue">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
