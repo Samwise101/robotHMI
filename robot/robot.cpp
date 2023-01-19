@@ -28,7 +28,7 @@ WSACleanup();
 #endif;
 }
 
-Robot::Robot(std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,std::string ipaddressRobot,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
+Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
 
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
@@ -217,6 +217,7 @@ void Robot::laserprocess()
 
 void Robot::robotStart()
 {
+    std::cout << "Robot ip adress: " << robot_ipaddress << std::endl;
     if(wasRobotSet==1)
     {
         std::function<void(void)> f =std::bind(&Robot::robotprocess,this);
@@ -246,9 +247,6 @@ void Robot::imageViewer()
         if(readyFuture.wait_for(std::chrono::seconds(0))==std::future_status::ready)
             break;
         cap >> frameBuf;
-
-
-
 
 
 

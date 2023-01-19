@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "alarmdialog.h"
+#include "qtimer.h"
 #include "ui_mainwindow.h"
 #include <qgridlayout.h>
 #include <iostream>
@@ -10,24 +11,25 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     std::cout << "Main window opened" << std::endl;
 
-    cameraUse = false;
-    missionLoaded = missionRunning = false;
+    missionLoaded = false;
+    missionRunning = false;
+
     robotConnected = false;
     robotRunning = false;
+
     recordMission = false;
 
-    batteryLevel = 0.0;
+    ipAddress = "127.0.0.1";
+    dataCounter = 0;
+    index = 0;
 
-    robot = new Robot();
-
+    interval = 100;
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(callbackTest()));
 
     ui->setupUi(this);
 
     ui->addressField->setMaxLength(20);
-
-    if(setBatteryLevelWidget()){
-        std::cout  << "Success!" << std::endl;
-    }
 
     cameraFrame = new CameraFrameWidget();
     ui->cameraMapLayout->addWidget(cameraFrame, 0, 1);
@@ -38,25 +40,64 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
 MainWindow::~MainWindow()
 {
-    delete robot;
     delete cameraFrame;
     delete mapFrame;
+    delete robot;
+    delete timer;
     delete ui;
 }
 
-bool MainWindow::startCamera(){
-    std::cout << "Camera before: " << cameraUse << std::endl;
-    if(cameraUse == false){
-        cameraUse = true;
-        std::cout << "Camera after: " << cameraUse << std::endl;
-        return true;
+
+
+void MainWindow::callbackTest(){
+    std::cout << "timer running " << std::endl;
+    if(mapFrame->points[index].y() < mapFrame->middle.y()){
+        robot->setTranslationSpeed(500);
+    }
+    else if(mapFrame->points[index].y() > mapFrame->middle.y()){
+        robot->setTranslationSpeed(-250);
     }
     else{
-        cameraUse = false;
-        std::cout << "Camera before: " << cameraUse << std::endl;
-        return true;
+        robot->setTranslationSpeed(0);
     }
-    return false;
+}
+
+
+
+int MainWindow::processLidar(LaserMeasurement laserData){
+    std::memcpy(&(mapFrame->copyOfLaserData), &laserData, sizeof(LaserMeasurement));
+    mapFrame->updateLaserPicture = 1;
+    mapFrame->update();
+
+    return 0;
+}
+
+int MainWindow::processRobot(TKobukiData robotData){
+    if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
+        robot->setRotationSpeed(robotRotationalSpeed);
+    else if(robotForwardSpeed!=0 && robotRotationalSpeed==0)
+        robot->setTranslationSpeed(robotForwardSpeed);
+    else if((robotForwardSpeed!=0 && robotRotationalSpeed!=0))
+        robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
+    else
+        robot->setTranslationSpeed(0);
+
+    if(dataCounter%5)
+    {
+        emit uiValuesChanged(robotdata.EncoderLeft,11,12);
+    }
+    dataCounter++;
+
+    return 0;
+}
+
+int MainWindow::processCamera(cv::Mat cameraData){
+    cameraData.copyTo(cameraFrame->frame[(cameraFrame->actIndex+1)%3]);
+    cameraFrame->actIndex=(cameraFrame->actIndex+1)%3;
+    cameraFrame->updateCameraPicture=1;
+    cameraFrame->update();
+
+    return 0;
 }
 
 void MainWindow::on_actionGo_Offline_triggered()
@@ -67,12 +108,8 @@ void MainWindow::on_actionGo_Offline_triggered()
 
 void MainWindow::on_actionGo_Online_triggered()
 {
-    if(getIpAddress()){
-        std::cout << "Ip address loaded" << std::endl;
-    }
-    else{
-        std::cout << "No ip address loaded!" << std::endl;
-    }
+    std::cout << "Hello from go online action!" << std::endl;
+    connectRobotUiSetup();
 }
 
 
@@ -81,6 +118,9 @@ void MainWindow::on_actionExit_triggered()
     std::cout << "Hello from exit!" << std::endl;
     QApplication::quit();
 }
+
+
+
 
 
 void MainWindow::on_actionAlarms_triggered()
@@ -92,9 +132,12 @@ void MainWindow::on_actionAlarms_triggered()
     alarmHelpWindow->show();
 }
 
+
+
+
+
 void MainWindow::on_startButton_clicked()
 {
-    std::cout << "Hello from start button!" << std::endl;
     if(robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
@@ -106,7 +149,9 @@ void MainWindow::on_startButton_clicked()
                                         "image: url(:/resource/stop_start/stop.png);}"
                                         );
         robotRunning = true;
-        std::cout << "Robot running: " << robotRunning << std::endl;
+        if(!mapFrame->points.empty()){
+            timer->start(interval);
+        }
     }
     else if(robotConnected && robotRunning){
          ui->startButton->setStyleSheet("#startButton{"
@@ -119,15 +164,17 @@ void MainWindow::on_startButton_clicked()
                                         "image: url(:/resource/stop_start/start.png);}"
                                         );
         robotRunning = false;
-        std::cout << "Robot running: " << robotRunning << std::endl;
+        timer->stop();
     }
 }
 
 
+
+
+
 void MainWindow::on_startButton_pressed()
 {
-    /*
-    if(robotRunning){
+    if(robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -139,7 +186,7 @@ void MainWindow::on_startButton_pressed()
                                        );
     }
 
-    else{
+    else if(robotConnected && robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -150,27 +197,54 @@ void MainWindow::on_startButton_pressed()
                                        "image: url(:/resource/stop_start/stop_clicked.png);}"
                                        );
     }
-    */
+    else{
+        std::cout << "Robot is not connected!" << std::endl;
+    }
 }
+
+
+void MainWindow::setUiValues(double robotX, double robotY, double robotFi){
+    ui->xValue->setText(QString::number(robotX));
+    ui->yValue->setText(QString::number(robotY));
+    ui->rotValue->setText(QString::number(robotFi));
+}
+
+
 
 
 void MainWindow::on_connectToRobotButton_clicked()
 {
-    std::cout << "Hello from connect button!" << std::endl;
+    connectRobotUiSetup();
+    if(!ipAddress.empty()){
+        robotForwardSpeed = 0;
+        robotRotationalSpeed = 0;
 
+        robot = new Robot(ipAddress);
+        robotConnected = true;
+
+        mapFrame->setCanTriggerEvent(true);
+
+        robot->setLaserParameters("127.0.0.1",52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
+        robot->setRobotParameters("127.0.0.1",53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
+        robot->setCameraParameters("http://127.0.0.1:8889/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
+        connect(this,SIGNAL(uiValuesChanged(double,double,double)),this,SLOT(setUiValues(double,double,double)));
+        robot->robotStart();
+    }
+}
+
+
+
+
+
+void MainWindow::connectRobotUiSetup(){
     if(getIpAddress()){
         std::cout << "Ip address loaded" << std::endl;
 
-        if(!cameraUse){
-            if(startCamera()){
-                std::cout << "Camera connected!" << std::endl;
-            }
-            else{
-                std::cout << "Camera NOT connected" << std::endl;
-            }
+        if(setBatteryLevelWidget()){
+            std::cout  << "Success!" << std::endl;
         }
-        robotConnected = true;
     }
+
     else{
         std::cout << "No ip address loaded!" << std::endl;
     }
@@ -178,36 +252,43 @@ void MainWindow::on_connectToRobotButton_clicked()
 
 
 
+
+
 void MainWindow::on_replayMissionButton_clicked()
 {
     std::cout << "Mission before:  " << missionRunning << std::endl;
 
-    if(!missionLoaded){
-        if(!missionRunning){
-            missionRunning = true;
-            std::cout << "Mission: " << missionRunning << std::endl;
-            ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                                   "silver;border-style:outset;border-radius: "
-                                                   "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/stop_play.png)}"
-                                                   );
+    if(robotConnected){
+        if(!missionLoaded){
+            if(!missionRunning){
+                missionRunning = true;
+                std::cout << "Mission: " << missionRunning << std::endl;
+                ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;image:url(:/resource/stop_start/stop_play.png)}"
+                                                       );
 
-           }
-        else{
-            missionRunning = false;
-            std::cout << "Mission: " << missionRunning << std::endl;
-            ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                                   "silver;border-style:outset;border-radius: "
-                                                   "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/play.png)}"
-                                                   );
+               }
+            else{
+                missionRunning = false;
+                std::cout << "Mission: " << missionRunning << std::endl;
+                ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;image:url(:/resource/stop_start/play.png)}"
+                                                       );
 
-           }
-        }
+               }
+            }
+    }
 }
 
+
+
+
 bool MainWindow::setBatteryLevelWidget(){
-    if(robotRunning){
+    if(robotConnected){
         if(batteryLevel > 80.0){
             ui->batteryWidget->setStyleSheet("background-color: silver; "
                                              "border-style:outset; "
@@ -278,15 +359,22 @@ bool MainWindow::setBatteryLevelWidget(){
     return 0;
 }
 
+
+
+
 bool MainWindow::getIpAddress()
 {
     if(!ui->addressField->text().isEmpty() && ipAddress.compare(ui->addressField->text().toStdString())){
         ipAddress = ui->addressField->text().toStdString();
+        std::cout << ipAddress << std::endl;
         return 1;
     }
 
     return 0;
 }
+
+
+
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {

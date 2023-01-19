@@ -4,6 +4,15 @@
 #include <QWidget>
 #include <QFrame>
 
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/imgcodecs.hpp"
+
 class QFrame;
 class QPaintEvent;
 
@@ -16,6 +25,11 @@ public:
     CameraFrameWidget(QWidget *parent = 0);
     ~CameraFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
+    int updateCameraPicture;
+    int actIndex;
+    //    cv::Mat frame[3];
+
+    cv::Mat frame[3];
 
 protected:
     void paintEvent(QPaintEvent* event);

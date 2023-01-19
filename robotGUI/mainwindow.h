@@ -7,6 +7,14 @@
 #include <QLabel>
 #include <QPushButton>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/imgcodecs.hpp"
+
 #include "alarmdialog.h"
 #include "cameraFrameWidget.h"
 #include "mapframewidget.h"
@@ -27,10 +35,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    bool startCamera();
-    bool cameraUse;
     bool setBatteryLevelWidget();
     bool getIpAddress();
+    void connectRobotUiSetup();
+    int processLidar(LaserMeasurement laserData);
+    int processCamera(cv::Mat cameraData);
+    int processRobot(TKobukiData robotData);
 
 private slots:
 
@@ -46,7 +56,6 @@ private slots:
 
     void on_connectToRobotButton_clicked();
 
-
     void on_replayMissionButton_clicked();
 
     void on_startButton_pressed();
@@ -56,8 +65,11 @@ private slots:
 private:
     std::string ipAddress;
     QTimer* timer;
+    int interval; //in miliseconds
 
     Robot* robot;
+
+    int dataCounter;
 
     bool missionLoaded;
     bool missionRunning;
@@ -65,7 +77,11 @@ private:
     bool robotConnected;
     bool robotRunning;
 
-    double robotCenterSpeed;
+    int index;
+
+    TKobukiData robotdata;
+
+    double robotForwardSpeed;
     double robotRotationalSpeed;
 
     double batteryLevel;
@@ -75,10 +91,11 @@ private:
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
-/*
+
 public slots:
     void setUiValues(double robotX,double robotY,double robotFi);
+    void callbackTest();
 signals:
-    void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);*/
+    void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);
 };
 #endif // MAINWINDOW_H
