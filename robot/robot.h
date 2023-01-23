@@ -41,6 +41,7 @@ public:
 
 
     void robotStart();
+    int getWasRobotSet();
     void setLaserParameters(std::string ipaddress,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> callback )
     {
         laser_ip_portOut=laserportRobot;
@@ -102,6 +103,7 @@ private:
     std::thread camerathreadhandle;
     std::function<int(cv::Mat)> camera_callback=nullptr;
     void Robot::imageViewer();
+
 
     ///
     ///

@@ -26,6 +26,10 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
     middle.setX(rectangle.width()/2);
     middle.setY(rectangle.height()/2);
 
+    if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
+        canTriggerEvents = 1;
+    };
+
     if(updateLaserPicture == 1){
 
         updateLaserPicture = 0;

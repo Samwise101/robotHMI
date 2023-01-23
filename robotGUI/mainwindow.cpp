@@ -222,11 +222,11 @@ void MainWindow::on_connectToRobotButton_clicked()
         robot = new Robot(ipAddress);
         robotConnected = true;
 
-        mapFrame->setCanTriggerEvent(true);
+        //mapFrame->setCanTriggerEvent(true);
 
-        robot->setLaserParameters("127.0.0.1",52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
-        robot->setRobotParameters("127.0.0.1",53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
-        robot->setCameraParameters("http://127.0.0.1:8889/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
+        robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
+        robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
+        robot->setCameraParameters("http://" + ipAddress + ":8889/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         connect(this,SIGNAL(uiValuesChanged(double,double,double)),this,SLOT(setUiValues(double,double,double)));
         robot->robotStart();
     }

@@ -236,6 +236,10 @@ void Robot::robotStart()
 
 }
 
+int Robot::getWasRobotSet(){
+    return wasRobotSet;
+}
+
 
 void Robot::imageViewer()
 {
