@@ -19,13 +19,16 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     recordMission = false;
 
-    ipAddress = "127.0.0.1";
-    dataCounter = 0;
-    index = 0;
+    dataCounter = index = multiplicator = 0;
+    tempSpeed = 500;
 
-    interval = 100;
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(callbackTest()));
+    accInterval = 1000;
+    accTimer = new QTimer(this);
+    connect(accTimer, SIGNAL(timeout()), this, SLOT(callbackAcc()));
+
+    breakInterval = 300;
+    breakTimer = new QTimer(this);
+    connect(breakTimer, SIGNAL(timeout()), this, SLOT(callbackBreak()));
 
     ui->setupUi(this);
 
@@ -43,26 +46,56 @@ MainWindow::~MainWindow()
     delete cameraFrame;
     delete mapFrame;
     delete robot;
-    delete timer;
+    delete accTimer;
+    delete breakTimer;
     delete ui;
 }
 
 
 
-void MainWindow::callbackTest(){
-    std::cout << "timer running " << std::endl;
-    if(mapFrame->points[index].y() < mapFrame->middle.y()){
-        robot->setTranslationSpeed(500);
+void MainWindow::callbackAcc(){
+    robot->setMultiBreak(5);
+    if(dir > dirOld){
+        if(robotForwardSpeed < tempSpeed){
+           double temp = robot->rampPosFunction(1,tempSpeed,5);
+           std::cout << temp << std::endl;
+           robotForwardSpeed = temp;
+           //robotRotationalSpeed = temp;
+        }
+        else{
+           robot->setMultiAcc(0);
+        }
     }
-    else if(mapFrame->points[index].y() > mapFrame->middle.y()){
-        robot->setTranslationSpeed(-250);
+    else if(dir < dirOld){
+        if((std::abs(robotForwardSpeed)) < tempSpeed){
+           robotForwardSpeed = robot->rampPosFunction(-1,tempSpeed,5);;
+        }
+        else{
+           robot->setMultiAcc(0);
+        }
     }
     else{
         robot->setTranslationSpeed(0);
     }
 }
 
-
+void MainWindow::callbackBreak(){
+    std::cout << "Hello form breaking calback!" << std::endl;
+    robot->setMultiAcc(0);
+    if(std::abs(robotForwardSpeed) > 0){
+        double temp = robot->rampNegFunction(robotForwardSpeed,5);
+        robotForwardSpeed = temp;
+    }
+    else if(std::abs(robotRotationalSpeed) > 0){
+        double temp = robot->rampNegFunction(robotForwardSpeed,5);
+        robotRotationalSpeed = temp;
+    }
+    else{
+        robotRunning = false;
+        robot->setMultiBreak(5);
+        std::cout << "Robot is not moving" << std::endl;
+    }
+}
 
 int MainWindow::processLidar(LaserMeasurement laserData){
     std::memcpy(&(mapFrame->copyOfLaserData), &laserData, sizeof(LaserMeasurement));
@@ -73,10 +106,13 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 }
 
 int MainWindow::processRobot(TKobukiData robotData){
+    //printf("Battery: %lf", robotData.Battery);
+    //std::cout << "Gyro angle: " << robotData.GyroAngle << std::endl;
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
-    else if(robotForwardSpeed!=0 && robotRotationalSpeed==0)
+    else if(robotForwardSpeed!=0 && robotRotationalSpeed==0){
         robot->setTranslationSpeed(robotForwardSpeed);
+    }
     else if((robotForwardSpeed!=0 && robotRotationalSpeed!=0))
         robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
     else
@@ -149,8 +185,17 @@ void MainWindow::on_startButton_clicked()
                                         "image: url(:/resource/stop_start/stop.png);}"
                                         );
         robotRunning = true;
+        if(breakTimer->isActive()){
+           breakTimer->stop();
+        }
         if(!mapFrame->points.empty()){
-            timer->start(interval);
+            if(mapFrame->points[index].y() <= mapFrame->middle.y()){
+                dir = 1;
+            }
+            else if(mapFrame->points[index].y() > mapFrame->middle.y()){
+                dir = -1;
+            }
+            accTimer->start(accInterval);
         }
     }
     else if(robotConnected && robotRunning){
@@ -163,8 +208,10 @@ void MainWindow::on_startButton_clicked()
                                         "padding: 5px;"
                                         "image: url(:/resource/stop_start/start.png);}"
                                         );
-        robotRunning = false;
-        timer->stop();
+        if(accTimer->isActive()){
+           accTimer->stop();
+        }
+        breakTimer->start(breakInterval);
     }
 }
 
@@ -226,7 +273,7 @@ void MainWindow::on_connectToRobotButton_clicked()
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
-        robot->setCameraParameters("http://" + ipAddress + ":8889/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
+        robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         connect(this,SIGNAL(uiValuesChanged(double,double,double)),this,SLOT(setUiValues(double,double,double)));
         robot->robotStart();
     }
@@ -385,5 +432,11 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
     else{
         recordMission = false;
     }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+
 }
 

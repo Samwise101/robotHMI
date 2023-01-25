@@ -71,8 +71,19 @@ public:
         camera_callback=callback;
         wasCameraSet=1;
     }
+
+    double rampPosFunction(int dir, double speed, int interval);
+    double rampNegFunction(double speed, int interval);
+
+    void setMultiBreak(int state);
+    void setMultiAcc(int state);
+
 private:
-     std::promise<void> ready_promise;
+    int multiBreak = 5;
+    int multiAcc = 0;
+    double tempVelocity;
+
+    std::promise<void> ready_promise;
     std::shared_future<void> readyFuture;
     int wasLaserSet;
     int wasRobotSet;

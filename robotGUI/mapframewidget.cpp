@@ -8,6 +8,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
+    distance = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
@@ -47,8 +48,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         for(int k=0;k<copyOfLaserData.numberOfScans;k++)
         {
             int dist=copyOfLaserData.Data[k].scanDistance/20;
-            int xp=rectangle.width()-(middle.x()+dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle)*3.14159/180.0))+rectangle.topLeft().x();
-            int yp=rectangle.height()-(middle.y()+dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle)*3.14159/180.0))+rectangle.topLeft().y();
+            int xp=(rectangle.width()/2 + dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().x();
+            int yp=(rectangle.height()/2 + dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().y();
             if(rectangle.contains(xp,yp))
                 painter.drawEllipse(QPoint(xp, yp),2,2);
                 //std::cout << "middle = [" << middle.x() << "," << middle.y()
@@ -61,7 +62,14 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             painter.setBrush(Qt::yellow);
 
             for(int i = 0; i < points.size(); i++){
+                disX = points[i].x() - middle.x();
+                int xt = oldDisX - disX;
+                oldDisX = disX;
+                disY = points[i].y() - middle.y();
+                int yt = oldDisY - disY;
+                oldDisY = disY;
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
+                //points[i].setY(points[i].y() - yt);
             }
         }
     }
@@ -70,10 +78,20 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
-        points.push_back(QPoint(event->x(), event->y()));
+        if(points.size() < 10){
+           points.push_back(QPoint(event->x(), event->y()));
+        }
     }
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){
     canTriggerEvents = state;
+}
+
+void MapFrameWidget::setDistance(int s){
+    distance = s;
+}
+
+std::vector<QPoint> MapFrameWidget::getPoints(){
+    return points;
 }

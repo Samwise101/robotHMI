@@ -1,10 +1,11 @@
 #include "velocityregulator.h"
 
-VelocityRegulator::VelocityRegulator():currentVelocity(0),e(0),u(0)
+VelocityRegulator::VelocityRegulator()
 {
     setPoint = 15;
     propGain = 10;
     integGain = 5;
+    P = I = D = 0;
 }
 
 VelocityRegulator::~VelocityRegulator()
@@ -12,8 +13,12 @@ VelocityRegulator::~VelocityRegulator()
 
 }
 
-void VelocityRegulator::regulateVelocity()
+double VelocityRegulator::regulateVelocity(double procesValue)
 {
-    e = setPoint - currentVelocity;
-    u = propGain * e;
+    e = setPoint - procesValue;
+    P = propGain * e;
+    I = integGain * e;
+    u = P + I + D;
+
+    return u;
 }

@@ -34,10 +34,17 @@ public:
     std::vector<QPoint> points;
     QPoint middle;
 
+    int distance;
+    int disY = 0;
+    int oldDisY = 0;
+    int disX = 0;
+    int oldDisX = 0;
+
     void mousePressEvent(QMouseEvent *event);
 
     void setCanTriggerEvent(bool state);
-
+    void setDistance(int s);
+    vector<QPoint> getPoints();
 
 protected:
     void paintEvent(QPaintEvent* event);

@@ -62,10 +62,18 @@ private slots:
 
     void on_checkBox_stateChanged(int arg1);
 
+    void on_pushButton_clicked();
+
 private:
-    std::string ipAddress;
-    QTimer* timer;
-    int interval; //in miliseconds
+    std::string ipAddress = "127.0.0.1";
+    //std::string ipAddress = "192.168.1.11-15"
+    std::string cameraPort = "8889"; //pre realneho robota 8000
+    //std::string cameraPort = "8000";
+    QTimer* accTimer;
+    int accInterval; //in miliseconds
+
+    QTimer* breakTimer;
+    int breakInterval;
 
     Robot* robot;
 
@@ -78,6 +86,10 @@ private:
     bool robotRunning;
 
     int index;
+    int multiplicator;
+    double tempSpeed;
+    int dir = 0;
+    int dirOld = 0;
 
     TKobukiData robotdata;
 
@@ -86,15 +98,16 @@ private:
 
     double batteryLevel;
 
-    Ui::MainWindow *ui;
-    AlarmDialog *alarmHelpWindow;
+    Ui::MainWindow* ui;
+    AlarmDialog* alarmHelpWindow;
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
 
 public slots:
     void setUiValues(double robotX,double robotY,double robotFi);
-    void callbackTest();
+    void callbackAcc();
+    void callbackBreak();
 signals:
     void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);
 };

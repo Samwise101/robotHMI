@@ -30,7 +30,6 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
-
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -144,8 +143,11 @@ void Robot::setRotationSpeed(double radpersec) //left
     }
 }
 
- void Robot::setArcSpeed(int mmpersec,int radius)
- {
+void Robot::setArcSpeed(int mmpersec,int radius)
+{
+     radius = 5;
+     std::cout << "Arc radius: " << radius << std::endl;
+     std::cout << "Arc speed: " << mmpersec << std::endl;
      std::vector<unsigned char> mess=robot.setArcSpeed(mmpersec,radius);
      if (::sendto(rob_s, (char*)mess.data(), sizeof(char)*mess.size(), 0, (struct sockaddr*) &rob_si_posli, rob_slen) == -1)
      {
@@ -240,7 +242,6 @@ int Robot::getWasRobotSet(){
     return wasRobotSet;
 }
 
-
 void Robot::imageViewer()
 {
     cv::VideoCapture cap;
@@ -260,4 +261,40 @@ void Robot::imageViewer()
 
     }
     cap.release();
+}
+
+double Robot::rampPosFunction(int dir, double speed, int interval)
+{
+    while(multiAcc <= interval){
+        std::cout << dir*((speed/interval)*multiAcc) << std::endl;
+        tempVelocity = dir*((speed/interval)*multiAcc);
+        std::cout << "Acc multi: " << multiAcc << std::endl;
+        multiAcc++;
+        return tempVelocity;
+    }
+    std::cout << dir*speed << std::endl;
+    return dir*speed;
+}
+
+double Robot::rampNegFunction(double speed, int interval)
+{
+    while(multiBreak >= 0){
+        std::cout << ((speed*multiBreak)/interval) << std::endl;
+        tempVelocity = ((speed*multiBreak)/interval);
+        std::cout << "Break multi: " << multiBreak << std::endl;
+        multiBreak--;
+        return tempVelocity;
+    }
+    std::cout << speed << std::endl;
+    return 0;
+}
+
+void Robot::setMultiBreak(int state)
+{
+    multiBreak = state;
+}
+
+void Robot::setMultiAcc(int state)
+{
+    multiAcc = state;
 }
