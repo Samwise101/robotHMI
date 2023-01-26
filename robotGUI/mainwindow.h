@@ -65,10 +65,12 @@ private slots:
     void on_pushButton_clicked();
 
 private:
-    std::string ipAddress = "127.0.0.1";
-    //std::string ipAddress = "192.168.1.11-15"
-    std::string cameraPort = "8889"; //pre realneho robota 8000
-    //std::string cameraPort = "8000";
+    std::string ipAddress = "127.0.0.1"; // pre simulaciu
+    std::string cameraPort = "8889"; //pre simulaciu
+
+    //std::string ipAddress = "192.168.1.14";//pre realneho robota 8000
+    //std::string cameraPort = "8000";//pre realneho robota 8000
+
     QTimer* accTimer;
     int accInterval; //in miliseconds
 
@@ -86,8 +88,7 @@ private:
     bool robotRunning;
 
     int index;
-    int multiplicator;
-    double tempSpeed;
+
     int dir = 0;
     int dirOld = 0;
 
@@ -106,8 +107,6 @@ private:
 
 public slots:
     void setUiValues(double robotX,double robotY,double robotFi);
-    void callbackAcc();
-    void callbackBreak();
 signals:
     void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);
 };

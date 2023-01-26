@@ -2,7 +2,7 @@
 
 VelocityRegulator::VelocityRegulator()
 {
-    setPoint = 15;
+    setPoint = 150;
     propGain = 10;
     integGain = 5;
     P = I = D = 0;

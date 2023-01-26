@@ -28,6 +28,7 @@ public:
     MapFrameWidget(QWidget *parent = 0);
     ~MapFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
+    double getDistanceToFirstPoint();
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
@@ -35,16 +36,17 @@ public:
     QPoint middle;
 
     int distance;
-    int disY = 0;
-    int oldDisY = 0;
-    int disX = 0;
-    int oldDisX = 0;
+    int angle = 30;
+    double stepY = 0;
+    double stepX = 0;
+
+    std::vector<QPoint> samples;
 
     void mousePressEvent(QMouseEvent *event);
 
     void setCanTriggerEvent(bool state);
     void setDistance(int s);
-    vector<QPoint> getPoints();
+    std::vector<QPoint> getPoints();
 
 protected:
     void paintEvent(QPaintEvent* event);

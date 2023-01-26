@@ -150,6 +150,9 @@ public:
         return parseKobukiMessage(output,message);
     }
 
+    double getLeftWheelTraveledDistance(TKobukiData &output);
+    double getRightWheelTraveledDistance(TKobukiData &output);
+
 
 private:
 

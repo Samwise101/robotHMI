@@ -152,12 +152,18 @@ std::vector<unsigned char> CKobuki::setDefaultPID()
 
     uint32_t pocet;
     std::vector<unsigned char> vystup(message,message+sizeof(message)/sizeof(message[0]));
-        return vystup;
+    return vystup;
 }
 
+double CKobuki::getLeftWheelTraveledDistance(TKobukiData &output)
+{
+    return output.EncoderLeft*tickToMeter; //[m]
+}
 
-
-
+double CKobuki::getRightWheelTraveledDistance(TKobukiData &output)
+{
+    return output.EncoderRight*tickToMeter; //[m]
+}
 
 int CKobuki::parseKobukiMessage(TKobukiData &output, unsigned char * data)
 {

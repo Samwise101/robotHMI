@@ -30,6 +30,7 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
+    tempSpeed = 450;
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -145,7 +146,6 @@ void Robot::setRotationSpeed(double radpersec) //left
 
 void Robot::setArcSpeed(int mmpersec,int radius)
 {
-     radius = 5;
      std::cout << "Arc radius: " << radius << std::endl;
      std::cout << "Arc speed: " << mmpersec << std::endl;
      std::vector<unsigned char> mess=robot.setArcSpeed(mmpersec,radius);
@@ -263,38 +263,84 @@ void Robot::imageViewer()
     cap.release();
 }
 
-double Robot::rampPosFunction(int dir, double speed, int interval)
+double Robot::rampPosFunction(double speed)
 {
-    while(multiAcc <= interval){
-        std::cout << dir*((speed/interval)*multiAcc) << std::endl;
-        tempVelocity = dir*((speed/interval)*multiAcc);
-        std::cout << "Acc multi: " << multiAcc << std::endl;
-        multiAcc++;
-        return tempVelocity;
+    if(speed < tempSpeed){
+        return speed+30;
     }
-    std::cout << dir*speed << std::endl;
-    return dir*speed;
+    return tempSpeed;
 }
 
-double Robot::rampNegFunction(double speed, int interval)
+void Robot::callbackAcc(int dir, double& mmpersec, double& radpersec){
+    if(std::abs(mmpersec) < tempSpeed){
+        std::cout << mmpersec << std::endl;
+        mmpersec = dir*rampPosFunction(std::abs(mmpersec));
+    }
+    else{
+        std::cout << mmpersec << std::endl;
+        mmpersec = dir*tempSpeed;
+    }
+}
+
+double Robot::rampNegFunction(double speed)
 {
-    while(multiBreak >= 0){
-        std::cout << ((speed*multiBreak)/interval) << std::endl;
-        tempVelocity = ((speed*multiBreak)/interval);
-        std::cout << "Break multi: " << multiBreak << std::endl;
-        multiBreak--;
-        return tempVelocity;
+    if(speed > 0){
+        return speed-30;
+    }
+    else if(speed < 0){
+        return speed+30;
     }
     std::cout << speed << std::endl;
-    return 0;
+    return 0.0;
 }
 
-void Robot::setMultiBreak(int state)
-{
-    multiBreak = state;
+void Robot::callbackBreak(double& mmpersec, double& radpersec){
+    if(std::abs(mmpersec) > 0){
+        mmpersec = rampNegFunction(mmpersec);
+        std::cout << mmpersec << std::endl;;
+    }
+    else if(std::abs(radpersec) > 0){
+        radpersec = rampNegFunction(radpersec);
+        std::cout << mmpersec << std::endl;;
+    }
+    else{
+        //std::cout << "Robot is not moving" << std::endl;
+    }
 }
 
-void Robot::setMultiAcc(int state)
+double Robot::getTraveledDistanceSInMeters(TKobukiData &output)
 {
-    multiAcc = state;
+    return (sl + sr)/2;
 }
+
+void Robot::calculateDeltaSl(TKobukiData &output)
+{
+    slOld = sl;
+    sl = robot.getLeftWheelTraveledDistance(output);
+    deltaSl =  std::abs(sl - slOld);
+}
+
+double Robot::getDeltaSl()
+{
+    return deltaSl;
+}
+
+double Robot::getDeltaSr()
+{
+    return deltaSr;
+}
+
+void Robot::calculateDeltaSr(TKobukiData &output)
+{
+    srOld = sr;
+    sr = robot.getRightWheelTraveledDistance(output);
+    deltaSr = std::abs(sr - srOld);
+}
+
+double Robot::getDeltaS(TKobukiData &output)
+{
+    calculateDeltaSl(output);
+    calculateDeltaSr(output);
+    return (getDeltaSl() + getDeltaSr())/2;
+}
+

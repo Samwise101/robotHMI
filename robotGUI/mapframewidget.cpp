@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QtGui>
 #include <QWidget>
+#include <math.h>
 
 MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 {
@@ -14,6 +15,14 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 
 MapFrameWidget::~MapFrameWidget(){
 
+}
+
+double MapFrameWidget::getDistanceToFirstPoint()
+{
+    if(!points.empty()){
+        return std::sqrt((points[0].x() - middle.x())^2 + (points[0].y() - middle.y())^2);
+    }
+    return -1.0;
 }
 
 void MapFrameWidget::paintEvent(QPaintEvent* event){
@@ -38,8 +47,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         pen.setWidth(2);
         pen.setColor(Qt::red);
         painter.setPen(pen);
-        painter.drawEllipse(middle.x(), middle.y(), 30, 30);
-        painter.drawLine(middle.x()+15, middle.y(), middle.x()+15, middle.y()+15);
+        painter.drawEllipse(middle.x()-15, middle.y()-15, 30, 30);
+        painter.drawLine(middle.x(), middle.y()-15, middle.x(), middle.y());
 
         pen.setWidth(3);
         pen.setColor(Qt::green);
@@ -50,26 +59,24 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             int dist=copyOfLaserData.Data[k].scanDistance/20;
             int xp=(rectangle.width()/2 + dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().x();
             int yp=(rectangle.height()/2 + dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().y();
+
             if(rectangle.contains(xp,yp))
                 painter.drawEllipse(QPoint(xp, yp),2,2);
                 //std::cout << "middle = [" << middle.x() << "," << middle.y()
                          // << "]; LIDAR_point = [" << xp << "," << yp << "]" << std::endl;
         }
 
+
         if(!points.empty()){
             pen.setColor(Qt::yellow);
             painter.setPen(pen);
             painter.setBrush(Qt::yellow);
+            //painter.drawLine(middle.x(), middle.y(),points[0].x(), points[0].y());
 
             for(int i = 0; i < points.size(); i++){
-                disX = points[i].x() - middle.x();
-                int xt = oldDisX - disX;
-                oldDisX = disX;
-                disY = points[i].y() - middle.y();
-                int yt = oldDisY - disY;
-                oldDisY = disY;
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
-                //points[i].setY(points[i].y() - yt);
+                //points[i].setY(points[i].y() - stepY);
+                //points[i].setY(points[i].x() - stepX);
             }
         }
     }

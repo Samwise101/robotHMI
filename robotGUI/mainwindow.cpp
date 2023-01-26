@@ -19,16 +19,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     recordMission = false;
 
-    dataCounter = index = multiplicator = 0;
-    tempSpeed = 500;
-
-    accInterval = 1000;
-    accTimer = new QTimer(this);
-    connect(accTimer, SIGNAL(timeout()), this, SLOT(callbackAcc()));
-
-    breakInterval = 300;
-    breakTimer = new QTimer(this);
-    connect(breakTimer, SIGNAL(timeout()), this, SLOT(callbackBreak()));
+    dataCounter = index = 0;
 
     ui->setupUi(this);
 
@@ -51,63 +42,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
-void MainWindow::callbackAcc(){
-    robot->setMultiBreak(5);
-    if(dir > dirOld){
-        if(robotForwardSpeed < tempSpeed){
-           double temp = robot->rampPosFunction(1,tempSpeed,5);
-           std::cout << temp << std::endl;
-           robotForwardSpeed = temp;
-           //robotRotationalSpeed = temp;
-        }
-        else{
-           robot->setMultiAcc(0);
-        }
-    }
-    else if(dir < dirOld){
-        if((std::abs(robotForwardSpeed)) < tempSpeed){
-           robotForwardSpeed = robot->rampPosFunction(-1,tempSpeed,5);;
-        }
-        else{
-           robot->setMultiAcc(0);
-        }
-    }
-    else{
-        robot->setTranslationSpeed(0);
-    }
-}
-
-void MainWindow::callbackBreak(){
-    std::cout << "Hello form breaking calback!" << std::endl;
-    robot->setMultiAcc(0);
-    if(std::abs(robotForwardSpeed) > 0){
-        double temp = robot->rampNegFunction(robotForwardSpeed,5);
-        robotForwardSpeed = temp;
-    }
-    else if(std::abs(robotRotationalSpeed) > 0){
-        double temp = robot->rampNegFunction(robotForwardSpeed,5);
-        robotRotationalSpeed = temp;
-    }
-    else{
-        robotRunning = false;
-        robot->setMultiBreak(5);
-        std::cout << "Robot is not moving" << std::endl;
-    }
-}
-
 int MainWindow::processLidar(LaserMeasurement laserData){
     std::memcpy(&(mapFrame->copyOfLaserData), &laserData, sizeof(LaserMeasurement));
     mapFrame->updateLaserPicture = 1;
     mapFrame->update();
-
     return 0;
 }
 
 int MainWindow::processRobot(TKobukiData robotData){
     //printf("Battery: %lf", robotData.Battery);
     //std::cout << "Gyro angle: " << robotData.GyroAngle << std::endl;
+    //std::cout << "Encoder left: " << robotData.EncoderLeft << std::endl;
+    //std::cout << "Encoder right: " << robotData.EncoderRight << std::endl;
+    //std::cout << "Distance traveled in meters: " << robot->getTraveledDistanceInMeters(robotData) << std::endl;
+
+    std::cout << "Change in S: " << robot->getDeltaS(robotData)*1000 << " [mm], Change in S_left: " << robot->getDeltaSl()*1000
+              << " [mm], Change in S_right: " << robot->getDeltaSr()*1000 << " [mm]" << std::endl;
+
+    if(robotRunning){
+        if(!mapFrame->points.empty()){
+            if(mapFrame->points[index].y() <= mapFrame->middle.y()){
+                dir = 1;
+            }
+            else if(mapFrame->points[index].y() > mapFrame->middle.y()){
+                dir = -1;
+            }
+        }
+       robot->callbackAcc(dir, robotForwardSpeed, robotRotationalSpeed);
+    }
+    else{
+       robot->callbackBreak(robotForwardSpeed, robotRotationalSpeed);
+    }
+
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
     else if(robotForwardSpeed!=0 && robotRotationalSpeed==0){
@@ -185,18 +151,6 @@ void MainWindow::on_startButton_clicked()
                                         "image: url(:/resource/stop_start/stop.png);}"
                                         );
         robotRunning = true;
-        if(breakTimer->isActive()){
-           breakTimer->stop();
-        }
-        if(!mapFrame->points.empty()){
-            if(mapFrame->points[index].y() <= mapFrame->middle.y()){
-                dir = 1;
-            }
-            else if(mapFrame->points[index].y() > mapFrame->middle.y()){
-                dir = -1;
-            }
-            accTimer->start(accInterval);
-        }
     }
     else if(robotConnected && robotRunning){
          ui->startButton->setStyleSheet("#startButton{"
@@ -208,10 +162,7 @@ void MainWindow::on_startButton_clicked()
                                         "padding: 5px;"
                                         "image: url(:/resource/stop_start/start.png);}"
                                         );
-        if(accTimer->isActive()){
-           accTimer->stop();
-        }
-        breakTimer->start(breakInterval);
+        robotRunning = false;
     }
 }
 
