@@ -66,7 +66,6 @@ public:
 
     void setCameraParameters(std::string link,std::function<int(cv::Mat)> callback )
     {
-
         camera_link=link;
         camera_callback=callback;
         wasCameraSet=1;
@@ -77,12 +76,21 @@ public:
 
     void callbackAcc(int dir, double& mmpersec, double& radpersec);
     void callbackBreak(double& mmpersec, double& radpersec);
-    double getTraveledDistanceSInMeters(TKobukiData &output);
+
+    double getTraveledDistanceSInMeters();
+
     void calculateDeltaSl(TKobukiData &output);
     void calculateDeltaSr(TKobukiData &output);
+    void calculateDeltaS(TKobukiData &output);
+
     double getDeltaSl();
     double getDeltaSr();
-    double getDeltaS(TKobukiData &output);
+    double getDeltaS();
+
+    void calculateDeltaTheta();
+
+    float getTheta();
+    float getDeltaTheta();
 
     bool emergencyStop(int dist);
 
@@ -91,17 +99,20 @@ private:
     double tempVelocity;
 
     float theta = 0;
+    float deltaTheta = 0;
+
+    // [m]
     double sl = 0;
     double slOld = 0;
     double sr = 0;
     double srOld = 0;
     double s = 0;
     double sOld = 0;
-
-    float deltaTheta = 0;
     double deltaS = 0;
     double deltaSl = 0;
     double deltaSr = 0;
+    //
+
     double radiusR = 0;
 
     unsigned short lastCheckTicks = 0;

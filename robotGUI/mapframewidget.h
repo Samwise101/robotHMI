@@ -29,6 +29,7 @@ public:
     ~MapFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
     double getDistanceToFirstPoint();
+    int getShortestDistanceLidar();
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
@@ -36,6 +37,7 @@ public:
     QPoint middle;
 
     int distance;
+    int shortestLidarDistance = 30;
     int angle = 30;
     double stepY = 0;
     double stepX = 0;

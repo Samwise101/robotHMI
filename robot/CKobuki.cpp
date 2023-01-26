@@ -155,15 +155,16 @@ std::vector<unsigned char> CKobuki::setDefaultPID()
     return vystup;
 }
 
-double CKobuki::getLeftWheelTraveledDistance(TKobukiData &output)
+long double &CKobuki::getReferenceToTickToMeter()
 {
-    return output.EncoderLeft*tickToMeter; //[m]
+    return tickToMeter;
 }
 
-double CKobuki::getRightWheelTraveledDistance(TKobukiData &output)
+long double &CKobuki::getReferenceToB()
 {
-    return output.EncoderRight*tickToMeter; //[m]
+    return b;
 }
+
 
 int CKobuki::parseKobukiMessage(TKobukiData &output, unsigned char * data)
 {

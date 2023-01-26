@@ -150,8 +150,8 @@ public:
         return parseKobukiMessage(output,message);
     }
 
-    double getLeftWheelTraveledDistance(TKobukiData &output);
-    double getRightWheelTraveledDistance(TKobukiData &output);
+    long double& getReferenceToTickToMeter();
+    long double& getReferenceToB();
 
 
 private:
@@ -164,7 +164,8 @@ private:
 
 
 	long double tickToMeter = 0.000085292090497737556558; // [m/tick]
-	long double b = 0.23; // wheelbase distance in meters, from kobuki manual https://yujinrobot.github.io/kobuki/doxygen/enAppendixProtocolSpecification.html
+    long double b = 0.23; // [m] - wheelbase distance in meters, from kobuki manual https://yujinrobot.github.io/kobuki/doxygen/enAppendixProtocolSpecification.html
+    double wheelRadius = 0.035; // [m]
 //
 
 

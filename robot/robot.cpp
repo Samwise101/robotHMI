@@ -308,7 +308,7 @@ void Robot::callbackBreak(double& mmpersec, double& radpersec){
     }
 }
 
-double Robot::getTraveledDistanceSInMeters(TKobukiData &output)
+double Robot::getTraveledDistanceSInMeters()
 {
     return (sl + sr)/2;
 }
@@ -316,7 +316,7 @@ double Robot::getTraveledDistanceSInMeters(TKobukiData &output)
 void Robot::calculateDeltaSl(TKobukiData &output)
 {
     slOld = sl;
-    sl = robot.getLeftWheelTraveledDistance(output);
+    sl = output.EncoderLeft*robot.getReferenceToTickToMeter();
     deltaSl =  std::abs(sl - slOld);
 }
 
@@ -333,14 +333,42 @@ double Robot::getDeltaSr()
 void Robot::calculateDeltaSr(TKobukiData &output)
 {
     srOld = sr;
-    sr = robot.getRightWheelTraveledDistance(output);
+    sr = output.EncoderRight*robot.getReferenceToTickToMeter();
     deltaSr = std::abs(sr - srOld);
 }
 
-double Robot::getDeltaS(TKobukiData &output)
+void Robot::calculateDeltaS(TKobukiData &output)
 {
     calculateDeltaSl(output);
     calculateDeltaSr(output);
-    return (getDeltaSl() + getDeltaSr())/2;
+    deltaS = (deltaSr + deltaSl)/2;
+}
+
+double Robot::getDeltaS()
+{
+    return deltaS;
+}
+
+void Robot::calculateDeltaTheta()
+{
+    deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
+}
+
+float Robot::getTheta()
+{
+    return theta;
+}
+
+float Robot::getDeltaTheta()
+{
+    return deltaTheta;
+}
+
+bool Robot::emergencyStop(int dist)
+{
+    if(dist >= 0 && dist < 15){  // [m]
+        return true;
+    }
+    return false;
 }
 

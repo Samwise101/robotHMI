@@ -25,6 +25,11 @@ double MapFrameWidget::getDistanceToFirstPoint()
     return -1.0;
 }
 
+int MapFrameWidget::getShortestDistanceLidar()
+{
+    return shortestLidarDistance;
+}
+
 void MapFrameWidget::paintEvent(QPaintEvent* event){
     QPainter painter(this);
     painter.setBrush(Qt::black);
@@ -57,8 +62,12 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         for(int k=0;k<copyOfLaserData.numberOfScans;k++)
         {
             int dist=copyOfLaserData.Data[k].scanDistance/20;
-            int xp=(rectangle.width()/2 + dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().x();
-            int yp=(rectangle.height()/2 + dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().y();
+            //std::cout << "Dist: " << dist << std::endl;
+            if(dist < shortestLidarDistance){
+                shortestLidarDistance = dist;
+            }
+            int xp=(middle.x() + dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().x();
+            int yp=(middle.y() + dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().y();
 
             if(rectangle.contains(xp,yp))
                 painter.drawEllipse(QPoint(xp, yp),2,2);
