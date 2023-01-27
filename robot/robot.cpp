@@ -310,7 +310,7 @@ void Robot::callbackBreak(double& mmpersec, double& radpersec){
 
 double Robot::getTraveledDistanceSInMeters()
 {
-    return (sl + sr)/2;
+    return s;
 }
 
 void Robot::robotOdometry(TKobukiData &output)
