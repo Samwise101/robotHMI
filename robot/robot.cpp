@@ -313,12 +313,57 @@ double Robot::getTraveledDistanceSInMeters()
     return (sl + sr)/2;
 }
 
-void Robot::calculateDeltaSl(TKobukiData &output)
+void Robot::robotOdometry(TKobukiData &output)
 {
     slOld = sl;
     sl = output.EncoderLeft*robot.getReferenceToTickToMeter();
+
+    srOld = sr;
+    sr = output.EncoderRight*robot.getReferenceToTickToMeter();
+
+    s = (sr + sl)/2;
+
     deltaSl =  std::abs(sl - slOld);
+    deltaSr = std::abs(sr - srOld);
+    deltaS = (deltaSr + deltaSl)/2;
+
+    xdt = deltaS * std::sin(theta);
+    ydt = deltaS * std::cos(theta);
+
+    std::cout << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
+
+    deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
+
+    x = x + xdt;
+    y = y + ydt;
+    theta = theta + deltaTheta;
+    std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
+
+void Robot::setRobotPose(int xPos, int yPos, float orientation)
+{
+    x = xPos;
+    y = yPos;
+    theta = orientation;
+    std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
+}
+
+void Robot::resetRobotPose()
+{
+    x = 0;
+    y = 0;
+    theta = 0.0;
+}
+
+bool Robot::emergencyStop(int dist)
+{
+    if(dist >= 0 && dist < 15){  // [m]
+        return true;
+    }
+    return false;
+}
+
+//---------------------------------gettre----------------------------------------//
 
 double Robot::getDeltaSl()
 {
@@ -330,28 +375,10 @@ double Robot::getDeltaSr()
     return deltaSr;
 }
 
-void Robot::calculateDeltaSr(TKobukiData &output)
-{
-    srOld = sr;
-    sr = output.EncoderRight*robot.getReferenceToTickToMeter();
-    deltaSr = std::abs(sr - srOld);
-}
-
-void Robot::calculateDeltaS(TKobukiData &output)
-{
-    calculateDeltaSl(output);
-    calculateDeltaSr(output);
-    deltaS = (deltaSr + deltaSl)/2;
-}
 
 double Robot::getDeltaS()
 {
     return deltaS;
-}
-
-void Robot::calculateDeltaTheta()
-{
-    deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
 }
 
 float Robot::getTheta()
@@ -364,11 +391,23 @@ float Robot::getDeltaTheta()
     return deltaTheta;
 }
 
-bool Robot::emergencyStop(int dist)
+float Robot::getYdt() const
 {
-    if(dist >= 0 && dist < 15){  // [m]
-        return true;
-    }
-    return false;
+    return ydt;
+}
+
+float Robot::getXdt() const
+{
+    return xdt;
+}
+
+float Robot::getX() const
+{
+    return x;
+}
+
+float Robot::getY() const
+{
+    return y;
 }
 

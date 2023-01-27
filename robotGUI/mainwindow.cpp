@@ -56,9 +56,13 @@ int MainWindow::processRobot(TKobukiData robotData){
     //std::cout << "Encoder right: " << robotData.EncoderRight << std::endl;
     //std::cout << "Distance traveled in meters: " << robot->getTraveledDistanceInMeters(robotData) << std::endl;
 
-    robot->calculateDeltaS(robotData);
-    std::cout << "S: " << robot->getTraveledDistanceSInMeters() << "[m], Change in S: " << robot->getDeltaS()*1000 << "[mm], Change in S_left: " << robot->getDeltaSl()*1000
-              << "[mm], Change in S_right: " << robot->getDeltaSr()*1000 << "[mm], Orientation: " << robot->getDeltaTheta() << "[deg]" << std::endl;
+    if(robot->getX() < 0){
+        robot->setRobotPose(mapFrame->middle.x(), mapFrame->middle.y(), 0);
+    }
+
+    robot->robotOdometry(robotData);
+    //std::cout << "S: " << robot->getTraveledDistanceSInMeters() << "[m], Change in S: " << robot->getDeltaS()*1000 << "[mm], Change in S_left: " << robot->getDeltaSl()*1000
+              //<< "[mm], Change in S_right: " << robot->getDeltaSr()*1000 << "[mm], Orientation: " << robot->getDeltaTheta() << "[deg]" << std::endl;
 
     if(robotRunning /*&& !robot->emergencyStop(mapFrame->getShortestDistanceLidar())*/){
         if(!mapFrame->points.empty()){

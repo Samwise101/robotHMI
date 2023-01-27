@@ -79,25 +79,32 @@ public:
 
     double getTraveledDistanceSInMeters();
 
-    void calculateDeltaSl(TKobukiData &output);
-    void calculateDeltaSr(TKobukiData &output);
-    void calculateDeltaS(TKobukiData &output);
+    void robotOdometry(TKobukiData &output);
+    void setRobotPose(int xPos, int yPos, float orientation);
+    void resetRobotPose();
 
     double getDeltaSl();
     double getDeltaSr();
     double getDeltaS();
-
-    void calculateDeltaTheta();
 
     float getTheta();
     float getDeltaTheta();
 
     bool emergencyStop(int dist);
 
+    float getYdt() const;
+
+    float getXdt() const;
+
+    float getX() const;
+
+    float getY() const;
+
 private:
     double tempSpeed;
     double tempVelocity;
 
+    // [rad]
     float theta = 0;
     float deltaTheta = 0;
 
@@ -112,6 +119,11 @@ private:
     double deltaSl = 0;
     double deltaSr = 0;
     //
+
+    float x = -1;
+    float y = -1;
+    float xdt;
+    float ydt;
 
     double radiusR = 0;
 
