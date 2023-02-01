@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -10,6 +10,8 @@ CONFIG += c++17
 
 INCLUDEPATH += ../robot
 LIBS += -L../bin -lrobot
+
+include(../robot/robot.pri)
 
 win32 {
     INCLUDEPATH += C:/opencv_vc16/include/

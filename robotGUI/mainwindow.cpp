@@ -7,6 +7,8 @@
 #include "cameraFrameWidget.h"
 #include <string>
 
+#define PI 3.14159
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
 
     std::cout << "Main window opened" << std::endl;
@@ -56,24 +58,31 @@ int MainWindow::processRobot(TKobukiData robotData){
     //std::cout << "Encoder right: " << robotData.EncoderRight << std::endl;
     //std::cout << "Distance traveled in meters: " << robot->getTraveledDistanceInMeters(robotData) << std::endl;
 
-    if(robot->getX() < 0){
-        robot->setRobotPose(mapFrame->middle.x(), mapFrame->middle.y(), 0);
+    if(!robot->getInitilize()){
+        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), robotData.GyroAngle + PI/2);
+        robot->setInitilize(true);
     }
 
-    robot->robotOdometry(robotData);
-    //std::cout << "S: " << robot->getTraveledDistanceSInMeters() << "[m], Change in S: " << robot->getDeltaS()*1000 << "[mm], Change in S_left: " << robot->getDeltaSl()*1000
-              //<< "[mm], Change in S_right: " << robot->getDeltaSr()*1000 << "[mm], Orientation: " << robot->getDeltaTheta() << "[deg]" << std::endl;
+    if(robotRunning){
+        robot->robotOdometry(robotData);
+        if(!mapFrame->isGoalVectorEmpty()){
+            robot->getToGoalRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
+        }
+        mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta(), robot->getXdt(), robot->getYdt(), robot->getDeltaTheta());
+    }
 
-    if(robotRunning /*&& !robot->emergencyStop(mapFrame->getShortestDistanceLidar())*/){
+    if(robotRunning && !robot->emergencyStop(mapFrame->getShortestDistanceLidar())){
         if(!mapFrame->points.empty()){
-            if(mapFrame->points[index].y() <= mapFrame->middle.y()){
+            if(mapFrame->points[index].y() <= mapFrame->robotPosition.y()){
                 dir = 1;
             }
-            else if(mapFrame->points[index].y() > mapFrame->middle.y()){
+            else if(mapFrame->points[index].y() > mapFrame->robotPosition.y()){
                 dir = -1;
             }
         }
-       robot->callbackAcc(dir, robotForwardSpeed, robotRotationalSpeed);
+        //robotRotationalSpeed = 1;
+        //robotForwardSpeed = 5000;
+        robot->callbackAcc(dir, robotForwardSpeed, robotRotationalSpeed);
     }
     else{
        robot->callbackBreak(robotForwardSpeed, robotRotationalSpeed);

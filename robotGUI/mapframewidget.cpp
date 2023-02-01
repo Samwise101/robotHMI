@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QWidget>
 #include <math.h>
+#include <cmath>
 
 MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 {
@@ -11,6 +12,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     canTriggerEvents = false;
     distance = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
 }
 
 MapFrameWidget::~MapFrameWidget(){
@@ -20,7 +22,7 @@ MapFrameWidget::~MapFrameWidget(){
 double MapFrameWidget::getDistanceToFirstPoint()
 {
     if(!points.empty()){
-        return std::sqrt((points[0].x() - middle.x())^2 + (points[0].y() - middle.y())^2);
+        return std::sqrt((points[0].x() - robotPosition.x())^2 + (points[0].y() - robotPosition.y())^2);
     }
     return -1.0;
 }
@@ -38,8 +40,14 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
     painter.drawRect(rectangle);
-    middle.setX(rectangle.width()/2);
-    middle.setY(rectangle.height()/2);
+
+    std::cout << "Rect [x,y]=[" << (float)rectangle.width()/100.0 << "," << (float)rectangle.height()/100.0 << "][m]" << std::endl;
+
+    if(!robotInitialized){
+        robotPosition.setX(rectangle.width()/2);
+        robotPosition.setY(rectangle.height()/2);
+        robotInitialized = true;
+    }
 
     if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
         canTriggerEvents = 1;
@@ -52,27 +60,33 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         pen.setWidth(2);
         pen.setColor(Qt::red);
         painter.setPen(pen);
-        painter.drawEllipse(middle.x()-15, middle.y()-15, 30, 30);
-        painter.drawLine(middle.x(), middle.y()-15, middle.x(), middle.y());
+
+        // kolesa = vzdialenost 230mm + 10mm = 24
+        painter.drawEllipse(robotPosition.x()-12, robotPosition.y()-12, 24, 24);
+        painter.drawLine(robotPosition.x(), robotPosition.y()-12, robotPosition.x(), robotPosition.y());
 
         pen.setWidth(3);
         pen.setColor(Qt::green);
         painter.setPen(pen);
 
+        //std::cout << "Robot position X= " << robotPosition.x() << ", Robot position Y=" << robotPosition.y() << std::endl;
+
         for(int k=0;k<copyOfLaserData.numberOfScans;k++)
         {
-            int dist=copyOfLaserData.Data[k].scanDistance/20;
-            //std::cout << "Dist: " << dist << std::endl;
-            if(dist < shortestLidarDistance){
-                shortestLidarDistance = dist;
-            }
-            int xp=(middle.x() + dist*2*sin((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().x();
-            int yp=(middle.y() + dist*2*cos((360.0-copyOfLaserData.Data[k].scanAngle +180)*3.14159/180.0))+rectangle.topLeft().y();
+            lidarDist=copyOfLaserData.Data[k].scanDistance;
 
-            if(rectangle.contains(xp,yp))
+            if(lidarDist < shortestLidarDistance){
+                shortestLidarDistance = lidarDist;
+            }
+
+            // 1000 mm = 100 bodov
+            lidarDist = lidarDist/10;
+            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+180)*PI/180));
+            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+180)*PI/180));
+
+            if(rectangle.contains(xp,yp)){
                 painter.drawEllipse(QPoint(xp, yp),2,2);
-                //std::cout << "middle = [" << middle.x() << "," << middle.y()
-                         // << "]; LIDAR_point = [" << xp << "," << yp << "]" << std::endl;
+            }
         }
 
 
@@ -80,12 +94,10 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             pen.setColor(Qt::yellow);
             painter.setPen(pen);
             painter.setBrush(Qt::yellow);
-            //painter.drawLine(middle.x(), middle.y(),points[0].x(), points[0].y());
 
             for(int i = 0; i < points.size(); i++){
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
-                //points[i].setY(points[i].y() - stepY);
-                //points[i].setY(points[i].x() - stepX);
+
             }
         }
     }
@@ -95,9 +107,23 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10){
-           points.push_back(QPoint(event->x(), event->y()));
+           points.insert(points.begin(), QPoint(event->x(), event->y()));
+           pointsDistance.push_back(std::sqrt((event->x())^2 + (event->y()^2)));
         }
     }
+}
+
+void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, float& theta, float& xd, float& yd, float& thetaD)
+{
+    robotPosition.setX(x);
+    robotPosition.setY(y);
+    //robotRealX = x;
+    //robotRealY = y;
+    realTheta = theta;
+    realXd = xd;
+    realYd = yd;
+    //std::cout << "RealXd: " << realXd << ", RealYd: " << realYd << ", RealTheta: " << realTheta << std::endl;
+
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){
@@ -106,6 +132,24 @@ void MapFrameWidget::setCanTriggerEvent(bool state){
 
 void MapFrameWidget::setDistance(int s){
     distance = s;
+}
+
+bool MapFrameWidget::isGoalVectorEmpty()
+{
+    if(points.empty()){
+        return true;
+    }
+    return false;
+}
+
+int MapFrameWidget::getGoalYPosition()
+{
+    return points[points.size()-1].y();
+}
+
+int MapFrameWidget::getGoalXPosition()
+{
+    return points[points.size()-1].x();
 }
 
 std::vector<QPoint> MapFrameWidget::getPoints(){

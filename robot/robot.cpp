@@ -18,7 +18,6 @@ std::function<int(LaserMeasurement)> Robot::do_nothing_laser=[](LaserMeasurement
 
 Robot::~Robot()
 {
-
     ready_promise.set_value();
     robotthreadHandle.join();
     laserthreadHandle.join();
@@ -30,7 +29,7 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
-    tempSpeed = 450;
+    tempSpeed = 200;  //[mm]
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -284,12 +283,17 @@ void Robot::callbackAcc(int dir, double& mmpersec, double& radpersec){
 
 double Robot::rampNegFunction(double speed)
 {
-    if(speed > 0){
+    if(speed > 0 && (speed-30) > 0){
         return speed-30;
     }
-    else if(speed < 0){
+    else
+        speed = 0;
+    if(speed < 0 && (speed+30) < 0){
         return speed+30;
     }
+    else
+        speed = 0;
+
     std::cout << speed << std::endl;
     return 0.0;
 }
@@ -308,43 +312,101 @@ void Robot::callbackBreak(double& mmpersec, double& radpersec){
     }
 }
 
-double Robot::getTraveledDistanceSInMeters()
-{
-    return s;
-}
-
 void Robot::robotOdometry(TKobukiData &output)
 {
-    slOld = sl;
-    sl = output.EncoderLeft*robot.getReferenceToTickToMeter();
+    nlOld = nlCurr;
+    nrOld = nrCurr;
 
-    srOld = sr;
-    sr = output.EncoderRight*robot.getReferenceToTickToMeter();
+    // max encoder = 65 536 => 2^16
 
-    s = (sr + sl)/2;
+    nlCurr = output.EncoderLeft;
+    nrCurr = output.EncoderRight;
 
-    deltaSl =  std::abs(sl - slOld);
-    deltaSr = std::abs(sr - srOld);
+    std::cout << "nlOld=" << nlOld << "; nrOld=" << nrOld << std::endl;
+    std::cout << "nlCurr=" << nlCurr << "; nrCurr=" << nrCurr << std::endl;
+
+    if((nlOld - nlCurr) < -(UINT16_MAX/2)){
+        nlDiff = (nlCurr - nlOld) - UINT16_MAX;
+    }
+    else if((nlOld - nlCurr) > (UINT16_MAX/2)){
+        nlDiff = UINT16_MAX - nlOld + nlCurr;
+    }
+    else{
+        nlDiff = nlCurr - nlOld;
+    }
+
+    if((nrOld - nrCurr) < -(UINT16_MAX/2)){
+        nrDiff = (nrCurr - nrOld) - UINT16_MAX;
+    }
+    else if((nrOld - nrCurr) > (UINT16_MAX/2)){
+        nrDiff = UINT16_MAX - nrOld + nrCurr;
+    }
+    else{
+        nrDiff = nrCurr - nrOld;
+    }
+
+    deltaSl = nlDiff*robot.getReferenceToTickToMeter()*1000;
+    deltaSr = nrDiff*robot.getReferenceToTickToMeter()*1000;
     deltaS = (deltaSr + deltaSl)/2;
 
-    xdt = deltaS * std::sin(theta);
-    ydt = deltaS * std::cos(theta);
-
-    std::cout << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
-
     deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
-
-    x = x + xdt;
-    y = y + ydt;
     theta = theta + deltaTheta;
-    std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
+
+
+    xdt += deltaS * std::cos(theta);
+    ydt += deltaS * std::sin(theta);
+
+    std::cout << "deltaS=" << deltaS << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
+
+    x = x + xdt/10;
+    y = y - ydt/10;
+
+    xReal = xReal + xdt;
+    yReal = yReal - ydt;
+
+    if(xdt / 10 != 0.0)
+        xdt = 0.0;
+    if(ydt / 10 != 0.0)
+        ydt = 0.0;
+
+    std::cout << "[nlDiff,nrDiff]=[" << nlDiff << "," << nrDiff << "]" << std::endl;
+    std::cout << "[dSr,dSl,dTheta]=[" << deltaSr << "," << deltaSl << "," << deltaTheta << "]" << std::endl;
+    std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
+    std::cout << "New pose: xReal=" << xReal << ", yReal=" << yReal << ", theta=" << theta <<std::endl;
 }
+
+float Robot::getToGoalRegulator(int xGoal, int yGoal)
+{
+    //vzdialenost na osi x medzi robotom a cielom
+    xDistToGoal = xGoal - x;
+
+    //vzdialenost na osi y medzi robotom a cielom
+    yDistToGoal = yGoal - y;
+
+    //uhol medzi stredom robota a cielom
+    thetaToGoal = std::atan2(yDistToGoal, xDistToGoal);
+
+    //rozdiel medzi uhlom robota a uhlom stredu robota a cielu
+    eThetaToGoal = thetaToGoal - theta;
+
+    // rozdiel v rozmedzi od -pi/2 do pi/2
+    eThetaToGoal = std::atan2(std::sin(eThetaToGoal), std::cos(eThetaToGoal));
+
+    w = Kp*eThetaToGoal;
+
+    std::cout << "xDistToGoal=" << xDistToGoal << ", yDistToGoal=" << yDistToGoal << ", eThetaToGoal=" << eThetaToGoal << std::endl;
+
+    return w;
+}
+
 
 void Robot::setRobotPose(int xPos, int yPos, float orientation)
 {
     x = xPos;
     y = yPos;
     theta = orientation;
+    xReal = 0;
+    yReal = 0;
     std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
 
@@ -381,33 +443,43 @@ double Robot::getDeltaS()
     return deltaS;
 }
 
-float Robot::getTheta()
+float& Robot::getTheta()
 {
     return theta;
 }
 
-float Robot::getDeltaTheta()
+float& Robot::getDeltaTheta()
 {
     return deltaTheta;
 }
 
-float Robot::getYdt() const
+float& Robot::getYdt()
 {
     return ydt;
 }
 
-float Robot::getXdt() const
+float& Robot::getXdt()
 {
     return xdt;
 }
 
-float Robot::getX() const
+double& Robot::getX()
 {
     return x;
 }
 
-float Robot::getY() const
+double& Robot::getY()
 {
     return y;
+}
+
+bool Robot::getInitilize() const
+{
+    return initilize;
+}
+
+void Robot::setInitilize(bool newInitilize)
+{
+    initilize = newInitilize;
 }
 

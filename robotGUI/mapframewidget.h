@@ -34,7 +34,13 @@ public:
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
     std::vector<QPoint> points;
-    QPoint middle;
+    std::vector<int> pointsDistance;
+
+    QPoint robotPosition;
+
+    QRect* rectangle;
+
+    bool robotInitialized = false;
 
     int distance;
     int shortestLidarDistance = 30;
@@ -42,12 +48,28 @@ public:
     double stepY = 0;
     double stepX = 0;
 
+    int lidarDist = 0;
+    int xp = 0;
+    int yp = 0;
+    float realTheta;
+
+    float realXd;
+    float realYd;
+    float realThetaD;
+
+    float test = 0.0;
+
     std::vector<QPoint> samples;
 
     void mousePressEvent(QMouseEvent *event);
 
+    void updateRobotValuesForGUI(double& x, double& y, float& theta, float& xd, float& yd, float& thetaD);
+
     void setCanTriggerEvent(bool state);
     void setDistance(int s);
+    bool isGoalVectorEmpty();
+    int getGoalYPosition();
+    int getGoalXPosition();
     std::vector<QPoint> getPoints();
 
 protected:

@@ -54,19 +54,19 @@ win32 {
 SOURCES += \
     CKobuki.cpp \
     robot.cpp \
-    rplidar.cpp \
-    velocityregulator.cpp
+    rplidar.cpp
 
 HEADERS += \
     CKobuki.h \
-    robot_global.h \
     robot.h \
+    robot_global.h \
     rplidar.h \
-    szevent.h \
-    velocityregulator.h
+    szevent.h
 
 # Default rules for deployment.
 unix {
     target.path = /usr/lib
 }
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=

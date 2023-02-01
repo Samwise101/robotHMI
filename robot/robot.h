@@ -27,6 +27,8 @@
 #include <random>
 #include <iostream>
 #include <memory>
+#include <limits.h>
+
 
 class ROBOT_EXPORT Robot
 {
@@ -77,9 +79,9 @@ public:
     void callbackAcc(int dir, double& mmpersec, double& radpersec);
     void callbackBreak(double& mmpersec, double& radpersec);
 
-    double getTraveledDistanceSInMeters();
-
     void robotOdometry(TKobukiData &output);
+    float getToGoalRegulator(int xGoal, int yGoal);
+
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
 
@@ -87,46 +89,63 @@ public:
     double getDeltaSr();
     double getDeltaS();
 
-    float getTheta();
-    float getDeltaTheta();
+    float& getTheta();
+    float& getDeltaTheta();
 
     bool emergencyStop(int dist);
 
-    float getYdt() const;
+    float& getYdt();
 
-    float getXdt() const;
+    float& getXdt();
 
-    float getX() const;
+    double& getX();
 
-    float getY() const;
+    double& getY();
+
+    double xReal;
+    double yReal;
+
+    int nlOld = 0;
+    int nrOld = 0;
+    int nlDiff = 0;
+    int nrDiff = 0;
+    int nlCurr = 0;
+    int nrCurr = 0;
+
+    bool getInitilize() const;
+    void setInitilize(bool newInitilize);
 
 private:
-    double tempSpeed;
+    double tempSpeed;  //[mm/s]
     double tempVelocity;
 
     // [rad]
-    float theta = 0;
+    float theta = PI/2;
     float deltaTheta = 0;
 
-    // [m]
+    //[mm]
     double sl = 0;
-    double slOld = 0;
     double sr = 0;
-    double srOld = 0;
     double s = 0;
-    double sOld = 0;
     double deltaS = 0;
     double deltaSl = 0;
     double deltaSr = 0;
-    //
-
-    float x = -1;
-    float y = -1;
+    double x;
+    double y;
     float xdt;
     float ydt;
 
-    double radiusR = 0;
+    // GoToGoal regulator
+    int Kp = 10;
+    int xDistToGoal;
+    int yDistToGoal;
+    float thetaToGoal;
+    float eThetaToGoal;
+    float w;
 
+
+    double radiusR = 0;
+    bool initilize = false;
     unsigned short lastCheckTicks = 0;
 
     std::promise<void> ready_promise;
@@ -145,6 +164,7 @@ private:
 
     //veci pre podvozok
     CKobuki robot;
+
     TKobukiData sens;
     std::string robot_ipaddress;
     int robot_ip_portOut;

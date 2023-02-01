@@ -31,8 +31,6 @@
 //#include <chrono>
 #include <sstream>
 
-
-
 using namespace std;
 
 typedef struct
@@ -133,10 +131,6 @@ public:
 
 	};
 	
-
-
-
-
     std::vector<unsigned char> setLed(int led1 = 0, int led2 = 0); //led1 zelena/cervena 2/1, //led2 zelena/cervena 2/1
     std::vector<unsigned char> setTranslationSpeed(int mmpersec);
     std::vector<unsigned char> setRotationSpeed(double radpersec);
