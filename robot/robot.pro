@@ -54,14 +54,16 @@ win32 {
 SOURCES += \
     CKobuki.cpp \
     robot.cpp \
-    rplidar.cpp
+    rplidar.cpp \
+    velocity.cpp
 
 HEADERS += \
     CKobuki.h \
     robot.h \
     robot_global.h \
     rplidar.h \
-    szevent.h
+    szevent.h \
+    velocity.h
 
 # Default rules for deployment.
 unix {

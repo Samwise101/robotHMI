@@ -64,6 +64,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_zmazGoal_clicked();
+
 private:
     std::string ipAddress = "127.0.0.1"; // pre simulaciu
     std::string cameraPort = "8889"; //pre simulaciu

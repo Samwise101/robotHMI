@@ -59,34 +59,30 @@ int MainWindow::processRobot(TKobukiData robotData){
     //std::cout << "Distance traveled in meters: " << robot->getTraveledDistanceInMeters(robotData) << std::endl;
 
     if(!robot->getInitilize()){
-        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), robotData.GyroAngle + PI/2);
+        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0);
         robot->setInitilize(true);
     }
 
     if(robotRunning){
         robot->robotOdometry(robotData);
         if(!mapFrame->isGoalVectorEmpty()){
-            robot->getToGoalRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
+
+            float omega = robot->getToGoalRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());;
+            if((omega >= 0.0 && omega <= 0.05) || (omega <= 0.0 && omega >= -0.05)){
+                robotRotationalSpeed = 0;
+            }
+            else{
+                robotRotationalSpeed = omega;
+            }
         }
         mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta(), robot->getXdt(), robot->getYdt(), robot->getDeltaTheta());
-    }
-
-    if(robotRunning && !robot->emergencyStop(mapFrame->getShortestDistanceLidar())){
-        if(!mapFrame->points.empty()){
-            if(mapFrame->points[index].y() <= mapFrame->robotPosition.y()){
-                dir = 1;
-            }
-            else if(mapFrame->points[index].y() > mapFrame->robotPosition.y()){
-                dir = -1;
-            }
-        }
-        //robotRotationalSpeed = 1;
-        //robotForwardSpeed = 5000;
         robot->callbackAcc(dir, robotForwardSpeed, robotRotationalSpeed);
     }
     else{
        robot->callbackBreak(robotForwardSpeed, robotRotationalSpeed);
     }
+
+    //robot->setRotationSpeed(robotRotationalSpeed);
 
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
@@ -401,6 +397,12 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 
 
 void MainWindow::on_pushButton_clicked()
+{
+
+}
+
+
+void MainWindow::on_zmazGoal_clicked()
 {
 
 }

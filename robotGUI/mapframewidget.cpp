@@ -41,7 +41,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
     painter.drawRect(rectangle);
 
-    std::cout << "Rect [x,y]=[" << (float)rectangle.width()/100.0 << "," << (float)rectangle.height()/100.0 << "][m]" << std::endl;
+    //std::cout << "Rect [x,y]=[" << (float)rectangle.width()/100.0 << "," << (float)rectangle.height()/100.0 << "][m]" << std::endl;
 
     if(!robotInitialized){
         robotPosition.setX(rectangle.width()/2);
@@ -63,7 +63,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
         // kolesa = vzdialenost 230mm + 10mm = 24
         painter.drawEllipse(robotPosition.x()-12, robotPosition.y()-12, 24, 24);
-        painter.drawLine(robotPosition.x(), robotPosition.y()-12, robotPosition.x(), robotPosition.y());
+        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+12, robotPosition.y());
 
         pen.setWidth(3);
         pen.setColor(Qt::green);
@@ -81,14 +81,13 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
             // 1000 mm = 100 bodov
             lidarDist = lidarDist/10;
-            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+180)*PI/180));
-            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+180)*PI/180));
+            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180));
+            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180));
 
             if(rectangle.contains(xp,yp)){
                 painter.drawEllipse(QPoint(xp, yp),2,2);
             }
         }
-
 
         if(!points.empty()){
             pen.setColor(Qt::yellow);
@@ -113,7 +112,7 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     }
 }
 
-void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, float& theta, float& xd, float& yd, float& thetaD)
+void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta, float& xd, float& yd, float& thetaD)
 {
     robotPosition.setX(x);
     robotPosition.setY(y);

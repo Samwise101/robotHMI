@@ -43,7 +43,7 @@ public:
     bool robotInitialized = false;
 
     int distance;
-    int shortestLidarDistance = 30;
+    int shortestLidarDistance = 300;
     int angle = 30;
     double stepY = 0;
     double stepX = 0;
@@ -63,7 +63,7 @@ public:
 
     void mousePressEvent(QMouseEvent *event);
 
-    void updateRobotValuesForGUI(double& x, double& y, float& theta, float& xd, float& yd, float& thetaD);
+    void updateRobotValuesForGUI(float& x, float& y, float& theta, float& xd, float& yd, float& thetaD);
 
     void setCanTriggerEvent(bool state);
     void setDistance(int s);

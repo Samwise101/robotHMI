@@ -28,6 +28,7 @@
 #include <iostream>
 #include <memory>
 #include <limits.h>
+#include <velocity.h>
 
 
 class ROBOT_EXPORT Robot
@@ -98,12 +99,12 @@ public:
 
     float& getXdt();
 
-    double& getX();
+    float& getX();
 
-    double& getY();
+    float& getY();
 
-    double xReal;
-    double yReal;
+    float xReal;
+    float yReal;
 
     int nlOld = 0;
     int nrOld = 0;
@@ -111,6 +112,8 @@ public:
     int nrDiff = 0;
     int nlCurr = 0;
     int nrCurr = 0;
+
+    velocity vel;
 
     bool getInitilize() const;
     void setInitilize(bool newInitilize);
@@ -120,7 +123,7 @@ private:
     double tempVelocity;
 
     // [rad]
-    float theta = PI/2;
+    float theta = 0;
     float deltaTheta = 0;
 
     //[mm]
@@ -130,15 +133,15 @@ private:
     double deltaS = 0;
     double deltaSl = 0;
     double deltaSr = 0;
-    double x;
-    double y;
+    float x;
+    float y;
     float xdt;
     float ydt;
 
     // GoToGoal regulator
-    int Kp = 10;
-    int xDistToGoal;
-    int yDistToGoal;
+    float Kp = 1.5;
+    float eXDist;
+    float eYDist;
     float thetaToGoal;
     float eThetaToGoal;
     float w;

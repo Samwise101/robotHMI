@@ -10,6 +10,7 @@
 
 CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 {
+    actIndex=-1;
     offset = 10;
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);

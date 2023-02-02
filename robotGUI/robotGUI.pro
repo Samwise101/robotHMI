@@ -11,8 +11,6 @@ CONFIG += c++17
 INCLUDEPATH += ../robot
 LIBS += -L../bin -lrobot
 
-include(../robot/robot.pri)
-
 win32 {
     INCLUDEPATH += C:/opencv_vc16/include/
 

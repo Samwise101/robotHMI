@@ -145,8 +145,8 @@ void Robot::setRotationSpeed(double radpersec) //left
 
 void Robot::setArcSpeed(int mmpersec,int radius)
 {
-     std::cout << "Arc radius: " << radius << std::endl;
-     std::cout << "Arc speed: " << mmpersec << std::endl;
+     //std::cout << "Arc radius: " << radius << std::endl;
+     //std::cout << "Arc speed: " << mmpersec << std::endl;
      std::vector<unsigned char> mess=robot.setArcSpeed(mmpersec,radius);
      if (::sendto(rob_s, (char*)mess.data(), sizeof(char)*mess.size(), 0, (struct sockaddr*) &rob_si_posli, rob_slen) == -1)
      {
@@ -272,12 +272,10 @@ double Robot::rampPosFunction(double speed)
 
 void Robot::callbackAcc(int dir, double& mmpersec, double& radpersec){
     if(std::abs(mmpersec) < tempSpeed){
-        std::cout << mmpersec << std::endl;
-        mmpersec = dir*rampPosFunction(std::abs(mmpersec));
+        mmpersec = rampPosFunction(std::abs(mmpersec));
     }
     else{
-        std::cout << mmpersec << std::endl;
-        mmpersec = dir*tempSpeed;
+        mmpersec = tempSpeed;
     }
 }
 
@@ -293,8 +291,6 @@ double Robot::rampNegFunction(double speed)
     }
     else
         speed = 0;
-
-    std::cout << speed << std::endl;
     return 0.0;
 }
 
@@ -322,8 +318,8 @@ void Robot::robotOdometry(TKobukiData &output)
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
 
-    std::cout << "nlOld=" << nlOld << "; nrOld=" << nrOld << std::endl;
-    std::cout << "nlCurr=" << nlCurr << "; nrCurr=" << nrCurr << std::endl;
+//    std::cout << "nlOld=" << nlOld << "; nrOld=" << nrOld << std::endl;
+//    std::cout << "nlCurr=" << nlCurr << "; nrCurr=" << nrCurr << std::endl;
 
     if((nlOld - nlCurr) < -(UINT16_MAX/2)){
         nlDiff = (nlCurr - nlOld) - UINT16_MAX;
@@ -345,46 +341,54 @@ void Robot::robotOdometry(TKobukiData &output)
         nrDiff = nrCurr - nrOld;
     }
 
-    deltaSl = nlDiff*robot.getReferenceToTickToMeter()*1000;
-    deltaSr = nrDiff*robot.getReferenceToTickToMeter()*1000;
+    deltaSl = nlDiff*robot.getReferenceToTickToMeter();
+    deltaSr = nrDiff*robot.getReferenceToTickToMeter();
     deltaS = (deltaSr + deltaSl)/2;
 
     deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
     theta = theta + deltaTheta;
 
 
-    xdt += deltaS * std::cos(theta);
-    ydt += deltaS * std::sin(theta);
+    if(deltaS * std::cos(theta) < -1000)
+        xdt += 0;
+    else
+        xdt += deltaS * std::cos(theta);
+    if(deltaS * std::sin(theta) < -1000)
+        ydt += 0;
+    else
+        ydt += deltaS * std::sin(theta);
 
-    std::cout << "deltaS=" << deltaS << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
+    //std::cout  << "deltaS=" << deltaS << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
 
-    x = x + xdt/10;
-    y = y - ydt/10;
+    x = x + xdt*100;
+    y = y - ydt*100;
 
     xReal = xReal + xdt;
     yReal = yReal - ydt;
 
-    if(xdt / 10 != 0.0)
+    if(xdt / 1000 != 0.0)
         xdt = 0.0;
-    if(ydt / 10 != 0.0)
+    if(ydt / 1000 != 0.0)
         ydt = 0.0;
 
-    std::cout << "[nlDiff,nrDiff]=[" << nlDiff << "," << nrDiff << "]" << std::endl;
-    std::cout << "[dSr,dSl,dTheta]=[" << deltaSr << "," << deltaSl << "," << deltaTheta << "]" << std::endl;
     std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
-    std::cout << "New pose: xReal=" << xReal << ", yReal=" << yReal << ", theta=" << theta <<std::endl;
 }
 
 float Robot::getToGoalRegulator(int xGoal, int yGoal)
 {
-    //vzdialenost na osi x medzi robotom a cielom
-    xDistToGoal = xGoal - x;
+    //vzdialenost na osi x medzi robotom a cielom v m
+    eXDist = (xGoal - x)/100;
 
-    //vzdialenost na osi y medzi robotom a cielom
-    yDistToGoal = yGoal - y;
+    //vzdialenost na osi y medzi robotom a cielom v m
+    eYDist = -1*(yGoal - y)/100;
+
+    if(std::abs(eYDist) <= 0.05 && std::abs(eXDist) <= 0.05){
+        std::cout << "Goal reached!" << std::endl;
+        return 0.0;
+    }
 
     //uhol medzi stredom robota a cielom
-    thetaToGoal = std::atan2(yDistToGoal, xDistToGoal);
+    thetaToGoal = std::atan2(eYDist, eXDist);
 
     //rozdiel medzi uhlom robota a uhlom stredu robota a cielu
     eThetaToGoal = thetaToGoal - theta;
@@ -394,10 +398,19 @@ float Robot::getToGoalRegulator(int xGoal, int yGoal)
 
     w = Kp*eThetaToGoal;
 
-    std::cout << "xDistToGoal=" << xDistToGoal << ", yDistToGoal=" << yDistToGoal << ", eThetaToGoal=" << eThetaToGoal << std::endl;
+    if(w >= 2.0){
+        w = 2.0;
+    }
+    if(w <= -2.0){
+        w = -2.0;
+    }
 
+    std::cout << "xDistToGoal=" << eXDist << ", yDistToGoal=" << eYDist << ", thetaToGoal=" << thetaToGoal << ", theta=" << theta;
+    std::cout << ", eThetaToGoal=" << eThetaToGoal << ", w=" << w << std::endl;
     return w;
 }
+
+
 
 
 void Robot::setRobotPose(int xPos, int yPos, float orientation)
@@ -405,8 +418,8 @@ void Robot::setRobotPose(int xPos, int yPos, float orientation)
     x = xPos;
     y = yPos;
     theta = orientation;
-    xReal = 0;
-    yReal = 0;
+    xReal = 0.0;
+    yReal = 0.0;
     std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
 
@@ -415,11 +428,15 @@ void Robot::resetRobotPose()
     x = 0;
     y = 0;
     theta = 0.0;
+    xReal = 0.0;
+    yReal = 0.0;
 }
 
 bool Robot::emergencyStop(int dist)
 {
-    if(dist >= 0 && dist < 15){  // [m]
+
+    if(dist >= 0 && dist < 35){  // [m]
+        std::cout << "Robot emergency stop called" << std::endl;
         return true;
     }
     return false;
@@ -463,12 +480,12 @@ float& Robot::getXdt()
     return xdt;
 }
 
-double& Robot::getX()
+float& Robot::getX()
 {
     return x;
 }
 
-double& Robot::getY()
+float& Robot::getY()
 {
     return y;
 }

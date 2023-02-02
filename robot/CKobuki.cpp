@@ -120,7 +120,6 @@ std::vector<unsigned char> CKobuki::setArcSpeed(int mmpersec, int radius)
     }
 
     int speedvalue = mmpersec * ((radius + (radius>0? b*1000:-b*1000) )/ 2 ) / radius;
-    std::cout << "Speed value: " << speedvalue << std::endl;
     unsigned char message[14] = { 0xaa,0x55,0x0A,0x0c,0x02,0xf0,0x00,0x01,0x04,static_cast<unsigned char>(speedvalue % 256),static_cast<unsigned char>(speedvalue >>8),static_cast<unsigned char>(radius % 256),static_cast<unsigned char>(radius >>8),  0x00 };
     message[13] = message[2] ^ message[3] ^ message[4] ^ message[5] ^ message[6] ^ message[7] ^ message[8] ^ message[9] ^ message[10] ^ message[11] ^ message[12];
     uint32_t pocet;
