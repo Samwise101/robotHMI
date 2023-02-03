@@ -81,8 +81,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
             // 1000 mm = 100 bodov
             lidarDist = lidarDist/10;
-            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180));
-            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180));
+            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta));
+            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta));
 
             if(rectangle.contains(xp,yp)){
                 painter.drawEllipse(QPoint(xp, yp),2,2);

@@ -81,8 +81,8 @@ public:
     void callbackBreak(double& mmpersec, double& radpersec);
 
     void robotOdometry(TKobukiData &output);
-    float orientationRegulator(int xGoal, int yGoal);
-    float regulateForwardSpeed(int xGoal, int yGoal);
+    float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
+    float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning);
 
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
@@ -116,6 +116,10 @@ public:
 
     bool getInitilize() const;
     void setInitilize(bool newInitilize);
+
+    float getW() const;
+
+    float getV() const;
 
 private:
     double tempSpeed = 200.0;  //[mm/s]

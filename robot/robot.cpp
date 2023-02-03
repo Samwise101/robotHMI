@@ -373,7 +373,7 @@ void Robot::robotOdometry(TKobukiData &output)
     std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
 }
 
-float Robot::orientationRegulator(int xGoal, int yGoal)
+float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 {
     //vzdialenost na osi x medzi robotom a cielom v m
     eXDist = (xGoal - x)/100;
@@ -384,6 +384,16 @@ float Robot::orientationRegulator(int xGoal, int yGoal)
     if(std::abs(eYDist) <= 0.05 && std::abs(eXDist) <= 0.05){
         std::cout << "Goal reached -w !" << std::endl;
         w = 0.0;
+        return w;
+    }
+
+    if(!robotRunning){
+        if(w >= 0.5 || w <= -0.5){
+           w = 0.5 * w;
+        }
+        else{
+            w = 0;
+        }
         return w;
     }
 
@@ -410,7 +420,7 @@ float Robot::orientationRegulator(int xGoal, int yGoal)
     return w;
 }
 
-float Robot::regulateForwardSpeed(int xGoal, int yGoal)
+float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
 {
     //vzdialenost na osi x medzi robotom a cielom v mm
     eXDist2 = (xGoal - x)*10;
@@ -426,7 +436,15 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal)
         return v;
     }
 
-    if(Kp2*eDist > 200){
+    if(!robotRunning){
+        if(v > 5){
+           v = Kp2*v;
+        }
+        else{
+            v = 0;
+        }
+    }
+    else if(Kp2*eDist > 200){
         v = rampPosFunction(v);
     }
     else{
@@ -523,5 +541,15 @@ bool Robot::getInitilize() const
 void Robot::setInitilize(bool newInitilize)
 {
     initilize = newInitilize;
+}
+
+float Robot::getW() const
+{
+    return w;
+}
+
+float Robot::getV() const
+{
+    return v;
 }
 
