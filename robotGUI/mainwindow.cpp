@@ -67,22 +67,21 @@ int MainWindow::processRobot(TKobukiData robotData){
         robot->robotOdometry(robotData);
         if(!mapFrame->isGoalVectorEmpty()){
 
-            float omega = robot->getToGoalRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());;
+            omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
+            v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
             if((omega >= 0.0 && omega <= 0.05) || (omega <= 0.0 && omega >= -0.05)){
                 robotRotationalSpeed = 0;
             }
             else{
                 robotRotationalSpeed = omega;
             }
+            robotForwardSpeed = v;
         }
         mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta(), robot->getXdt(), robot->getYdt(), robot->getDeltaTheta());
-        robot->callbackAcc(dir, robotForwardSpeed, robotRotationalSpeed);
     }
     else{
        robot->callbackBreak(robotForwardSpeed, robotRotationalSpeed);
     }
-
-    //robot->setRotationSpeed(robotRotationalSpeed);
 
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);

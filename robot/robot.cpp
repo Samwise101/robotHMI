@@ -29,7 +29,6 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
-    tempSpeed = 200;  //[mm]
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -145,8 +144,8 @@ void Robot::setRotationSpeed(double radpersec) //left
 
 void Robot::setArcSpeed(int mmpersec,int radius)
 {
-     //std::cout << "Arc radius: " << radius << std::endl;
-     //std::cout << "Arc speed: " << mmpersec << std::endl;
+     std::cout << "Arc radius: " << radius << std::endl;
+     std::cout << "Arc speed: " << mmpersec << std::endl;
      std::vector<unsigned char> mess=robot.setArcSpeed(mmpersec,radius);
      if (::sendto(rob_s, (char*)mess.data(), sizeof(char)*mess.size(), 0, (struct sockaddr*) &rob_si_posli, rob_slen) == -1)
      {
@@ -262,7 +261,7 @@ void Robot::imageViewer()
     cap.release();
 }
 
-double Robot::rampPosFunction(double speed)
+float Robot::rampPosFunction(float speed)
 {
     if(speed < tempSpeed){
         return speed+30;
@@ -374,7 +373,7 @@ void Robot::robotOdometry(TKobukiData &output)
     std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
 }
 
-float Robot::getToGoalRegulator(int xGoal, int yGoal)
+float Robot::orientationRegulator(int xGoal, int yGoal)
 {
     //vzdialenost na osi x medzi robotom a cielom v m
     eXDist = (xGoal - x)/100;
@@ -383,8 +382,9 @@ float Robot::getToGoalRegulator(int xGoal, int yGoal)
     eYDist = -1*(yGoal - y)/100;
 
     if(std::abs(eYDist) <= 0.05 && std::abs(eXDist) <= 0.05){
-        std::cout << "Goal reached!" << std::endl;
-        return 0.0;
+        std::cout << "Goal reached -w !" << std::endl;
+        w = 0.0;
+        return w;
     }
 
     //uhol medzi stredom robota a cielom
@@ -410,7 +410,32 @@ float Robot::getToGoalRegulator(int xGoal, int yGoal)
     return w;
 }
 
+float Robot::regulateForwardSpeed(int xGoal, int yGoal)
+{
+    //vzdialenost na osi x medzi robotom a cielom v mm
+    eXDist2 = (xGoal - x)*10;
 
+    //vzdialenost na osi y medzi robotom a cielom v mm
+    eYDist2 = -1*(yGoal - y)*10;
+
+    eDist = std::sqrt(std::pow(eXDist2,2)+std::pow(eYDist2,2));
+
+    if(eDist >= 0 && eDist <= 30){
+        std::cout << "Goal reached -v !" << std::endl;
+        v = 0.0;
+        return v;
+    }
+
+    if(Kp2*eDist > 200){
+        v = rampPosFunction(v);
+    }
+    else{
+        v = Kp2*eDist;
+    }
+    std::cout << "xDist2ToGoal=" << eXDist2 << ", yDist2ToGoal=" << eYDist2 << ", eDistToGoal=" << eDist;
+    std::cout << "v=" << v << std::endl;
+    return v;
+}
 
 
 void Robot::setRobotPose(int xPos, int yPos, float orientation)

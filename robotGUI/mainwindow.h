@@ -91,8 +91,8 @@ private:
 
     int index;
 
-    int dir = 0;
-    int dirOld = 0;
+    float omega;
+    float v;
 
     TKobukiData robotdata;
 

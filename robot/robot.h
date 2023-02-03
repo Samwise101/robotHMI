@@ -28,7 +28,7 @@
 #include <iostream>
 #include <memory>
 #include <limits.h>
-#include <velocity.h>
+#include "forwardspeedregulator.h"
 
 
 class ROBOT_EXPORT Robot
@@ -74,14 +74,15 @@ public:
         wasCameraSet=1;
     }
 
-    double rampPosFunction(double speed);
+    float rampPosFunction(float speed);
     double rampNegFunction(double speed);
 
     void callbackAcc(int dir, double& mmpersec, double& radpersec);
     void callbackBreak(double& mmpersec, double& radpersec);
 
     void robotOdometry(TKobukiData &output);
-    float getToGoalRegulator(int xGoal, int yGoal);
+    float orientationRegulator(int xGoal, int yGoal);
+    float regulateForwardSpeed(int xGoal, int yGoal);
 
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
@@ -113,13 +114,11 @@ public:
     int nlCurr = 0;
     int nrCurr = 0;
 
-    velocity vel;
-
     bool getInitilize() const;
     void setInitilize(bool newInitilize);
 
 private:
-    double tempSpeed;  //[mm/s]
+    double tempSpeed = 200.0;  //[mm/s]
     double tempVelocity;
 
     // [rad]
@@ -138,13 +137,20 @@ private:
     float xdt;
     float ydt;
 
-    // GoToGoal regulator
+    // Orientation regulator
     float Kp = 1.5;
     float eXDist;
     float eYDist;
     float thetaToGoal;
     float eThetaToGoal;
     float w;
+
+    // Forward speed regulator
+    float Kp2 = 0.5;
+    float eXDist2;
+    float eYDist2;
+    float eDist;
+    float v = 0;
 
 
     double radiusR = 0;

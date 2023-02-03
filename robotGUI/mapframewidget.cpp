@@ -95,6 +95,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             painter.setBrush(Qt::yellow);
 
             for(int i = 0; i < points.size(); i++){
+                int xd = (points[i].x() - robotPosition.x());
+                int yd = (points[i].y() - robotPosition.y());
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
 
             }
