@@ -16,7 +16,7 @@
 #include "opencv2/imgcodecs.hpp"
 
 #include "robot.h"
-
+#include <robotgoal.h>
 
 class QFrame;
 class QPaintEvent;
@@ -29,7 +29,8 @@ public:
     ~MapFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
     double getDistanceToFirstPoint();
-    int getShortestDistanceLidar();
+    double getShortestDistanceLidar();
+    double getShortestDistanceLidarAngle();
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
@@ -37,6 +38,7 @@ public:
     std::vector<int> pointsDistance;
 
     QPoint robotPosition;
+    //RobotGoal robotGoal;
 
     QRect* rectangle;
 
@@ -51,18 +53,20 @@ public:
     int getGoalYPosition();
     int getGoalXPosition();
     int getGoalVectorSize();
+    void removeAllPoints();
     bool removeLastPoint();
 
 protected:
     void paintEvent(QPaintEvent* event);
 
 private:
-    int lidarDist = 0;
+    double lidarDist = 0;
     int xp = 0;
     int yp = 0;
     float realTheta;
     std::vector<QPoint> samples;
-    int shortestLidarDistance = 300;
+    double shortestLidarDistance = 300;
+    int shortestLidarIndex = 0;
     double offset;
     bool canTriggerEvents;
 };

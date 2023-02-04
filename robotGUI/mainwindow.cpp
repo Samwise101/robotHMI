@@ -77,10 +77,18 @@ int MainWindow::processRobot(TKobukiData robotData){
         robotRotationalSpeed = omega;
         v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
         robotForwardSpeed = v;
+
+        if(v == 0.0 && omega == 0.0){
+            std::cout << "At goal: [v,w]=[" << v << "," << omega << "]" << std::endl;
+            if(!mapFrame->isGoalVectorEmpty()){
+                mapFrame->removeLastPoint();
+            }
+        }
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
+    // dorobit medze rychlosti pre realny robot
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
     else if(robotForwardSpeed!=0 && robotRotationalSpeed==0){
@@ -388,10 +396,12 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_zmazGoal_clicked()
 {
+    /*
   if(!mapFrame->isGoalVectorEmpty()){
      std::cout << "Hello:" << mapFrame->getGoalVectorSize()  << std::endl;
      if(mapFrame->removeLastPoint())
         std::cout << "Success:" << mapFrame->getGoalVectorSize()  << std::endl;
-  }
+  }*/
+  mapFrame->removeAllPoints();
 }
 

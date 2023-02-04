@@ -57,14 +57,16 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mapframewidget.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    robotgoal.cpp
 
 HEADERS += \
     alarmdialog.h \
     cameraFrameWidget.h \
     mainwindow.h \
     mapframewidget.h \
-    qcustomplot.h
+    qcustomplot.h \
+    robotgoal.h
 
 FORMS += \
     alarmdialog.ui \

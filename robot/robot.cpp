@@ -392,7 +392,6 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
     eYDist = -1*(yGoal - y)/100;
 
     if(std::abs(eYDist) <= 0.05 && std::abs(eXDist) <= 0.05){
-        std::cout << "Goal reached -w !" << std::endl;
         w = 0.0;
         return w;
     }
@@ -444,7 +443,6 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
     eDist = std::sqrt(std::pow(eXDist2,2)+std::pow(eYDist2,2));
 
     if(eDist >= 0 && eDist <= 30){
-        std::cout << "Goal reached -v !" << std::endl;
         v = 0.0;
         return v;
     }

@@ -11,7 +11,6 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     updateLaserPicture = 0;
     canTriggerEvents = false;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
 }
 
 MapFrameWidget::~MapFrameWidget(){
@@ -26,9 +25,14 @@ double MapFrameWidget::getDistanceToFirstPoint()
     return -1.0;
 }
 
-int MapFrameWidget::getShortestDistanceLidar()
+double MapFrameWidget::getShortestDistanceLidar()
 {
     return shortestLidarDistance;
+}
+
+double MapFrameWidget::getShortestDistanceLidarAngle()
+{
+    return copyOfLaserData.Data[shortestLidarIndex].scanAngle;
 }
 
 void MapFrameWidget::paintEvent(QPaintEvent* event){
@@ -62,7 +66,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
         // kolesa = vzdialenost 230mm + 10mm = 24
         painter.drawEllipse(robotPosition.x()-12, robotPosition.y()-12, 24, 24);
-        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+12, robotPosition.y());
+        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+12*std::cos(realTheta), robotPosition.y()-12*std::sin(realTheta));
 
         pen.setWidth(3);
         pen.setColor(Qt::green);
@@ -76,6 +80,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
             if(lidarDist < shortestLidarDistance){
                 shortestLidarDistance = lidarDist;
+                shortestLidarIndex = k;
             }
 
             // 1000 mm = 100 bodov
@@ -157,3 +162,11 @@ bool MapFrameWidget::removeLastPoint()
     }
     return false;
 }
+
+void MapFrameWidget::removeAllPoints()
+{
+    if(!points.empty()){
+        points.erase(points.begin(),points.end());
+    }
+}
+
