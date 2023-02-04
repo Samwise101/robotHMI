@@ -107,9 +107,5 @@ private:
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
 
-public slots:
-    void setUiValues(double robotX,double robotY,double robotFi);
-signals:
-    void uiValuesChanged(double newrobotX,double newrobotY,double newrobotFi);
 };
 #endif // MAINWINDOW_H

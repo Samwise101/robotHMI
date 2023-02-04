@@ -375,6 +375,16 @@ void Robot::robotOdometry(TKobukiData &output)
 
 float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 {
+    if(!robotRunning){
+        if(w >= 0.5 || w <= -0.5){
+           w = 0.5 * w;
+        }
+        else{
+            w = 0;
+        }
+        return w;
+    }
+
     //vzdialenost na osi x medzi robotom a cielom v m
     eXDist = (xGoal - x)/100;
 
@@ -384,16 +394,6 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
     if(std::abs(eYDist) <= 0.05 && std::abs(eXDist) <= 0.05){
         std::cout << "Goal reached -w !" << std::endl;
         w = 0.0;
-        return w;
-    }
-
-    if(!robotRunning){
-        if(w >= 0.5 || w <= -0.5){
-           w = 0.5 * w;
-        }
-        else{
-            w = 0;
-        }
         return w;
     }
 
@@ -411,8 +411,11 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
     if(w >= 2.0){
         w = 2.0;
     }
-    if(w <= -2.0){
+    else if(w <= -2.0){
         w = -2.0;
+    }
+    else if((w > 0.0 && w <= 0.05) || (w < 0.0 && w >= -0.05)){
+        w = 0.0;
     }
 
     std::cout << "xDistToGoal=" << eXDist << ", yDistToGoal=" << eYDist << ", thetaToGoal=" << thetaToGoal << ", theta=" << theta;
@@ -422,6 +425,16 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 
 float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
 {
+    if(!robotRunning){
+        if(v > 5){
+           v = Kp2*v;
+        }
+        else{
+            v = 0;
+        }
+        return v;
+    }
+
     //vzdialenost na osi x medzi robotom a cielom v mm
     eXDist2 = (xGoal - x)*10;
 
@@ -436,15 +449,7 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
         return v;
     }
 
-    if(!robotRunning){
-        if(v > 5){
-           v = Kp2*v;
-        }
-        else{
-            v = 0;
-        }
-    }
-    else if(Kp2*eDist > 200){
+    if(Kp2*eDist > 200){
         v = rampPosFunction(v);
     }
     else{

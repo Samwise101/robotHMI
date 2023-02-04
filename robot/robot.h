@@ -83,6 +83,7 @@ public:
     void robotOdometry(TKobukiData &output);
     float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
     float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning);
+    //float avoidObstacleRegulator(int xGoal, int )
 
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();

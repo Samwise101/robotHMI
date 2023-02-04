@@ -52,44 +52,34 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 }
 
 int MainWindow::processRobot(TKobukiData robotData){
-    //printf("Battery: %lf", robotData.Battery);
-    //std::cout << "Gyro angle: " << robotData.GyroAngle << std::endl;
-    //std::cout << "Encoder left: " << robotData.EncoderLeft << std::endl;
-    //std::cout << "Encoder right: " << robotData.EncoderRight << std::endl;
-    //std::cout << "Distance traveled in meters: " << robot->getTraveledDistanceInMeters(robotData) << std::endl;
 
     if(!robot->getInitilize()){
         robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0);
         robot->setInitilize(true);
     }
 
-    if(robotRunning){
-        robot->robotOdometry(robotData);
-        if(!mapFrame->isGoalVectorEmpty()){
+    robot->robotOdometry(robotData);
 
-            omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-            v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+    if(!robotRunning || mapFrame->isGoalVectorEmpty()){
 
-            if((omega >= 0.0 && omega <= 0.05) || (omega <= 0.0 && omega >= -0.05)){
-                robotRotationalSpeed = 0;
-            }
-            else{
-                robotRotationalSpeed = omega;
-            }
-            robotForwardSpeed = v;
-        }
-        mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta(), robot->getXdt(), robot->getYdt(), robot->getDeltaTheta());
-    }
-    else{
-        if(v > 0.0){
-            v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-            robotForwardSpeed = v;
-        }
         if(omega > 0.0 || omega < 0.0){
-            omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+            omega = robot->orientationRegulator(0, 0, false);
             robotRotationalSpeed = omega;
         }
+        if(v > 0.0){
+            v = robot->regulateForwardSpeed(0, 0, false);
+            robotForwardSpeed = v;
+        }
     }
+    else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
+
+        omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+        robotRotationalSpeed = omega;
+        v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+        robotForwardSpeed = v;
+    }
+
+    mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
     if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
@@ -101,10 +91,6 @@ int MainWindow::processRobot(TKobukiData robotData){
     else
         robot->setTranslationSpeed(0);
 
-    if(dataCounter%5)
-    {
-        emit uiValuesChanged(robotdata.EncoderLeft,11,12);
-    }
     dataCounter++;
 
     return 0;
@@ -150,7 +136,6 @@ void MainWindow::on_actionAlarms_triggered()
     alarmHelpWindow->setAttribute(Qt::WA_DeleteOnClose);
     alarmHelpWindow->show();
 }
-
 
 
 
@@ -218,13 +203,6 @@ void MainWindow::on_startButton_pressed()
 }
 
 
-void MainWindow::setUiValues(double robotX, double robotY, double robotFi){
-    ui->xValue->setText(QString::number(robotX));
-    ui->yValue->setText(QString::number(robotY));
-    ui->rotValue->setText(QString::number(robotFi));
-}
-
-
 
 
 void MainWindow::on_connectToRobotButton_clicked()
@@ -242,7 +220,6 @@ void MainWindow::on_connectToRobotButton_clicked()
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
-        connect(this,SIGNAL(uiValuesChanged(double,double,double)),this,SLOT(setUiValues(double,double,double)));
         robot->robotStart();
     }
 }
@@ -411,6 +388,10 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_zmazGoal_clicked()
 {
-
+  if(!mapFrame->isGoalVectorEmpty()){
+     std::cout << "Hello:" << mapFrame->getPoints().size()  << std::endl;
+     if(mapFrame->removeLastPoint())
+        std::cout << "Success:" << mapFrame->getPoints().size()  << std::endl;
+  }
 }
 

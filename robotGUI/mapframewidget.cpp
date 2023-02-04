@@ -10,7 +10,6 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
-    distance = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
 }
@@ -95,8 +94,6 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             painter.setBrush(Qt::yellow);
 
             for(int i = 0; i < points.size(); i++){
-                int xd = (points[i].x() - robotPosition.x());
-                int yd = (points[i].y() - robotPosition.y());
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
 
             }
@@ -114,16 +111,12 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     }
 }
 
-void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta, float& xd, float& yd, float& thetaD)
+void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
 {
     robotPosition.setX(x);
     robotPosition.setY(y);
     //robotRealX = x;
     //robotRealY = y;
-    realTheta = theta;
-    realXd = xd;
-    realYd = yd;
-    //std::cout << "RealXd: " << realXd << ", RealYd: " << realYd << ", RealTheta: " << realTheta << std::endl;
 
 }
 
@@ -131,9 +124,6 @@ void MapFrameWidget::setCanTriggerEvent(bool state){
     canTriggerEvents = state;
 }
 
-void MapFrameWidget::setDistance(int s){
-    distance = s;
-}
 
 bool MapFrameWidget::isGoalVectorEmpty()
 {
@@ -153,6 +143,12 @@ int MapFrameWidget::getGoalXPosition()
     return points[points.size()-1].x();
 }
 
-std::vector<QPoint> MapFrameWidget::getPoints(){
-    return points;
+
+bool MapFrameWidget::removeLastPoint()
+{
+    if(!points.empty()){
+        points.pop_back();
+        return true;
+    }
+    return false;
 }
