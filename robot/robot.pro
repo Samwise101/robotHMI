@@ -53,19 +53,15 @@ win32 {
 
 SOURCES += \
     CKobuki.cpp \
-    forwardspeedregulator.cpp \
     robot.cpp \
-    rplidar.cpp \
-    velocity.cpp
+    rplidar.cpp
 
 HEADERS += \
     CKobuki.h \
-    forwardspeedregulator.h \
     robot.h \
     robot_global.h \
     rplidar.h \
-    szevent.h \
-    velocity.h
+    szevent.h
 
 # Default rules for deployment.
 unix {

@@ -117,7 +117,7 @@ void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
     robotPosition.setY(y);
     //robotRealX = x;
     //robotRealY = y;
-
+    realTheta = theta;
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){
@@ -141,6 +141,11 @@ int MapFrameWidget::getGoalYPosition()
 int MapFrameWidget::getGoalXPosition()
 {
     return points[points.size()-1].x();
+}
+
+int MapFrameWidget::getGoalVectorSize()
+{
+    return points.size();
 }
 
 

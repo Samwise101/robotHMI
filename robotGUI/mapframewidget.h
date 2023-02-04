@@ -42,9 +42,6 @@ public:
 
     bool robotInitialized = false;
 
-    double stepY = 0;
-    double stepX = 0;
-
     void mousePressEvent(QMouseEvent *event);
 
     void updateRobotValuesForGUI(float& x, float& y, float& theta);
@@ -53,6 +50,7 @@ public:
     bool isGoalVectorEmpty();
     int getGoalYPosition();
     int getGoalXPosition();
+    int getGoalVectorSize();
     bool removeLastPoint();
 
 protected:

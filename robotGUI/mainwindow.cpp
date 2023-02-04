@@ -389,9 +389,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_zmazGoal_clicked()
 {
   if(!mapFrame->isGoalVectorEmpty()){
-     std::cout << "Hello:" << mapFrame->getPoints().size()  << std::endl;
+     std::cout << "Hello:" << mapFrame->getGoalVectorSize()  << std::endl;
      if(mapFrame->removeLastPoint())
-        std::cout << "Success:" << mapFrame->getPoints().size()  << std::endl;
+        std::cout << "Success:" << mapFrame->getGoalVectorSize()  << std::endl;
   }
 }
 

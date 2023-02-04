@@ -28,7 +28,6 @@
 #include <iostream>
 #include <memory>
 #include <limits.h>
-#include "forwardspeedregulator.h"
 
 
 class ROBOT_EXPORT Robot
