@@ -82,7 +82,10 @@ public:
     void robotOdometry(TKobukiData &output);
     float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
     float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning);
-    //float avoidObstacleRegulator(int xGoal, int )
+    float avoidObstacleRegulator(double distToObst, double angleToObst);
+    float getDistanceToGoal(int xGoal, int yGoal);
+    float robotFullTurn(float goalAngle);
+    void robotAtGoal();
 
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
@@ -107,13 +110,6 @@ public:
     float xReal;
     float yReal;
 
-    int nlOld = 0;
-    int nrOld = 0;
-    int nlDiff = 0;
-    int nrDiff = 0;
-    int nlCurr = 0;
-    int nrCurr = 0;
-
     bool getInitilize() const;
     void setInitilize(bool newInitilize);
 
@@ -121,7 +117,21 @@ public:
 
     float getV() const;
 
+    bool getAtGoal() const;
+
 private:
+
+    float eToGoalAngle;
+    float Kp3 = 0.5;
+    bool atGoal = false;
+
+    int nlOld = 0;
+    int nrOld = 0;
+    int nlDiff = 0;
+    int nrDiff = 0;
+    int nlCurr = 0;
+    int nrCurr = 0;
+
     double tempSpeed = 200.0;  //[mm/s]
     double tempVelocity;
 
@@ -155,6 +165,11 @@ private:
     float eYDist2;
     float eDist;
     float v = 0;
+
+    // [mm]
+    float xDistObst;
+    float yDistObst;
+    float eAngleToObst = 0.0;
 
 
     double radiusR = 0;

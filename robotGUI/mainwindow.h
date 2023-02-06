@@ -83,6 +83,8 @@ private:
 
     int dataCounter;
 
+    float goalAngle;
+
     bool missionLoaded;
     bool missionRunning;
     bool recordMission;

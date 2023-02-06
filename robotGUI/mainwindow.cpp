@@ -73,15 +73,32 @@ int MainWindow::processRobot(TKobukiData robotData){
     }
     else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
-        omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+       // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
+        if(mapFrame->getShortestDistanceLidar() < 350.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
+                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
+                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+        }
+        else{
+            omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+            v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+        }
+
         robotRotationalSpeed = omega;
-        v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
         robotForwardSpeed = v;
 
         if(v == 0.0 && omega == 0.0){
             std::cout << "At goal: [v,w]=[" << v << "," << omega << "]" << std::endl;
             if(!mapFrame->isGoalVectorEmpty()){
                 mapFrame->removeLastPoint();
+                goalAngle = robot->getTheta() + 2*PI;
+                std::cout << "Goal angle=" << goalAngle << std::endl;
+                while(robot->getTheta() < goalAngle){
+                    std::cout << "theta=" << robot->getTheta() << std::endl;
+                    omega = robot->robotFullTurn(goalAngle);
+                    robotRotationalSpeed = omega;
+                    robot->setRotationSpeed(robotRotationalSpeed);
+                    robot->robotOdometry(robotData);
+                }
             }
         }
     }

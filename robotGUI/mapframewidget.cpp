@@ -32,7 +32,7 @@ double MapFrameWidget::getShortestDistanceLidar()
 
 double MapFrameWidget::getShortestDistanceLidarAngle()
 {
-    return copyOfLaserData.Data[shortestLidarIndex].scanAngle;
+    return shortestLidarAngle;
 }
 
 void MapFrameWidget::paintEvent(QPaintEvent* event){
@@ -65,23 +65,30 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         painter.setPen(pen);
 
         // kolesa = vzdialenost 230mm + 10mm = 24
-        painter.drawEllipse(robotPosition.x()-12, robotPosition.y()-12, 24, 24);
-        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+12*std::cos(realTheta), robotPosition.y()-12*std::sin(realTheta));
+        painter.drawEllipse(robotPosition.x()-15, robotPosition.y()-15, 30, 30);
+        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta), robotPosition.y()-15*std::sin(realTheta));
 
-        pen.setWidth(3);
-        pen.setColor(Qt::green);
-        painter.setPen(pen);
-
-        //std::cout << "Robot position X= " << robotPosition.x() << ", Robot position Y=" << robotPosition.y() << std::endl;
-
+        shortestLidarDistance = 10000.0;
         for(int k=0;k<copyOfLaserData.numberOfScans;k++)
         {
             lidarDist=copyOfLaserData.Data[k].scanDistance;
-
-            if(lidarDist < shortestLidarDistance){
+            //std::cout << "Lidar distance=" << lidarDist << std::endl;
+            if(lidarDist < shortestLidarDistance && lidarDist > 0.0){
                 shortestLidarDistance = lidarDist;
-                shortestLidarIndex = k;
+                shortestLidarAngle = copyOfLaserData.Data[k].scanAngle*PI/180;
             }
+
+            pen.setWidth(3);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+
+            xpshort = (robotPosition.x() + shortestLidarDistance/10*sin((2*PI-(shortestLidarAngle)+PI/2)+realTheta));
+            ypshort = (robotPosition.y() + shortestLidarDistance/10*cos((2*PI-(shortestLidarAngle)+PI/2)+realTheta));
+            painter.drawEllipse(QPoint(xpshort, ypshort),2,2);
+
+            pen.setWidth(3);
+            pen.setColor(Qt::green);
+            painter.setPen(pen);
 
             // 1000 mm = 100 bodov
             lidarDist = lidarDist/10;
@@ -111,7 +118,6 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10){
            points.insert(points.begin(), QPoint(event->x(), event->y()));
-           pointsDistance.push_back(std::sqrt((event->x())^2 + (event->y()^2)));
         }
     }
 }

@@ -34,8 +34,6 @@ public:
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
-    std::vector<QPoint> points;
-    std::vector<int> pointsDistance;
 
     QPoint robotPosition;
     //RobotGoal robotGoal;
@@ -60,13 +58,15 @@ protected:
     void paintEvent(QPaintEvent* event);
 
 private:
+    std::vector<QPoint> points;
     double lidarDist = 0;
     int xp = 0;
     int yp = 0;
+    int xpshort;
+    int ypshort;
     float realTheta;
-    std::vector<QPoint> samples;
-    double shortestLidarDistance = 300;
-    int shortestLidarIndex = 0;
+    double shortestLidarDistance = 10000.0;
+    double shortestLidarAngle = 0.0;
     double offset;
     bool canTriggerEvents;
 };
