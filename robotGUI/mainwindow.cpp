@@ -105,7 +105,7 @@ int MainWindow::processRobot(TKobukiData robotData){
     else{
         //omega = robot->robotFullTurn(goalAngle);
         robotRotationalSpeed = omega;
-        if(omega == 0.0){
+        if(omega > -0.15 && omega < 0.15){
             mapFrame->removeLastPoint();
             robot->setAtGoal(false);
         }
@@ -113,16 +113,15 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
+    std::cout << "v=" << v << ", w=" << omega << std::endl;
     // dorobit medze rychlosti pre realny robot
-    if(robotForwardSpeed==0 && robotRotationalSpeed !=0)
+    if((robotForwardSpeed > -0.2 && robotForwardSpeed < 0.2) && robotRotationalSpeed !=0)
         robot->setRotationSpeed(robotRotationalSpeed);
-    else if(robotForwardSpeed!=0 && robotRotationalSpeed==0){
+    else if(robotForwardSpeed!=0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
         robot->setTranslationSpeed(robotForwardSpeed);
     }
     else if((robotForwardSpeed!=0 && robotRotationalSpeed!=0))
         robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
-    else
-        robot->setTranslationSpeed(0);
 
     dataCounter++;
 

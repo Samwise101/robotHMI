@@ -264,7 +264,7 @@ void Robot::imageViewer()
 float Robot::rampPosFunction(float speed)
 {
     if(speed < tempSpeed){
-        return speed+30;
+        return speed+15;
     }
     return tempSpeed;
 }
@@ -407,13 +407,13 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 
     w = Kp*eThetaToGoal;
 
-    if(w >= 3.0){
-        w = 3.0;
+    if(w >= 2.0){
+        w = 2.0;
     }
-    else if(w <= -3.0){
-        w = -3.0;
+    else if(w <= -2.0){
+        w = -2.0;
     }
-    else if((w > 0.0 && w <= 0.15) || (w < 0.0 && w >= -0.15)){
+    else if((w > 0.0 && w <= 0.1) || (w < 0.0 && w >= -0.1)){
         w = 0.0;
     }
 
@@ -425,11 +425,11 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType)
 {
     if(!robotRunning){
-        if(v > 5){
+        if(v > 5.0){
            v = Kp2*v;
         }
         else{
-            v = 0;
+            v = 0.0;
         }
         return v;
     }
@@ -442,19 +442,13 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
 
     eDist = std::sqrt(std::pow(eXDist2,2)+std::pow(eYDist2,2));
 
-    if(eDist >= 0 && eDist <= 40){
+    if(eDist >= 0.0 && eDist <= 30.0){
         v = 0.0;
         return v;
     }
 
-    if(Kp2*eDist > 200){
+    if(Kp2*eDist > tempSpeed){
         v = rampPosFunction(v);
-    }
-    else if(goalType == 1){
-        v = Kp2*eDist;
-        if(v < 100){
-            v = 100;
-        }
     }
     else{
         v = Kp2*eDist;
@@ -485,25 +479,24 @@ float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
 
     if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
        eThetaToObst = eThetaToObst + PI/2;
-       std::cout << "xD 1" << eThetaToObst << std::endl;
     }
     else if(eThetaToObst > PI/2 && eThetaToObst <= PI){
        eThetaToObst = eThetaToObst - PI/2;
-       std::cout << "xD 2" << eThetaToObst << std::endl;
     }
     else if(eThetaToObst < 0.0 && eThetaToObst > -PI/2){
        eThetaToObst = eThetaToObst - PI/2;
-       std::cout << "xD 3" << eThetaToObst << std::endl;
     }
     else if(eThetaToObst < -PI/2 && eThetaToObst >= -PI){
        eThetaToObst = eThetaToObst + PI/2;
-       std::cout << "xD 4" << eThetaToObst << std::endl;
     }
 
     w = Kp3*eThetaToObst;
 
     if(w > 2.0){
         w = 2.0;
+    }
+    else if(w < -2.0){
+        w = -2.0;
     }
 
    // std::cout << "distToObst=" << distToObst << ", angleToObst=" << angleToObst << ", theta= " << theta <<  ", eAngleToObst=" << eAngleToObst << std::endl;

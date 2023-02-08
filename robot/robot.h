@@ -124,7 +124,9 @@ public:
 private:
 
     float eToGoalAngle;
-    float Kp3 = 0.6;
+    float Kp3 = 0.4;
+    float Kp2 = 0.6;
+    float Kp = 1;
     bool atGoal = false;
 
     int nlOld = 0;
@@ -134,7 +136,7 @@ private:
     int nlCurr = 0;
     int nrCurr = 0;
 
-    double tempSpeed = 200.0;  //[mm/s]
+    double tempSpeed = 300.0;  //[mm/s]
     double tempVelocity;
 
     // [rad]
@@ -154,7 +156,6 @@ private:
     float ydt;
 
     // Orientation regulator
-    float Kp = 1.5;
     float eXDist;
     float eYDist;
     float thetaToGoal;
@@ -162,7 +163,6 @@ private:
     float w;
 
     // Forward speed regulator
-    float Kp2 = 0.5;
     float eXDist2;
     float eYDist2;
     float eDist;
