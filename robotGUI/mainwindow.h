@@ -36,6 +36,7 @@ public:
     ~MainWindow();
 
     bool setBatteryLevelWidget();
+    bool setForwardSpeedLevelWidget();
     bool getIpAddress();
     void connectRobotUiSetup();
     bool setupConnectionToRobot();

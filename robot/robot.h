@@ -121,6 +121,8 @@ public:
 
     void setAtGoal(bool newAtGoal);
 
+    double getTempSpeed() const;
+
 private:
 
     float eToGoalAngle;

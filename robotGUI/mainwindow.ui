@@ -427,7 +427,7 @@ color:black</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="speedLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -446,7 +446,7 @@ color:black;
 </string>
           </property>
           <property name="text">
-           <string> --- ms</string>
+           <string> --- mm/s</string>
           </property>
           <property name="scaledContents">
            <bool>false</bool>

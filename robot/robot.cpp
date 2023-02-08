@@ -638,3 +638,8 @@ void Robot::setAtGoal(bool newAtGoal)
 {
     atGoal = newAtGoal;
 }
+
+double Robot::getTempSpeed() const
+{
+    return tempSpeed;
+}

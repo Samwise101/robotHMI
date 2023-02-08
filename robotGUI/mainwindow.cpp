@@ -115,6 +115,11 @@ int MainWindow::processRobot(TKobukiData robotData){
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
+    ui->speedLabel->setText(QString::number(v) + " mm/s");
+
+    if(setForwardSpeedLevelWidget()){
+        std::cout  << "Success!" << std::endl;
+    }
 
     std::cout << "v=" << v << ", w=" << omega << std::endl;
     // dorobit medze rychlosti pre realny robot
@@ -262,6 +267,7 @@ bool MainWindow::setupConnectionToRobot(){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
 
+        std::cout << "Connected!" << std::endl;
         robot = new Robot(ipAddress);
         robotConnected = true;
 
@@ -271,6 +277,7 @@ bool MainWindow::setupConnectionToRobot(){
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         robot->robotStart();
+
         return true;
     }
     else{
@@ -286,10 +293,10 @@ bool MainWindow::setupConnectionToRobot(){
 void MainWindow::connectRobotUiSetup(){
     if(getIpAddress()){
         std::cout << "Ip address loaded" << std::endl;
-
         if(setBatteryLevelWidget()){
             std::cout  << "Success!" << std::endl;
         }
+
     }
 
     else{
@@ -404,6 +411,80 @@ bool MainWindow::setBatteryLevelWidget(){
         return 1;
     }
     return 0;
+}
+
+bool MainWindow::setForwardSpeedLevelWidget()
+{
+    if(robotConnected){
+        if(v == 0.0){
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             );
+        }
+        else if(v > 0.0 && v <= ((robot->getTempSpeed()/100)*20)){
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/speed_indicator/speed1.png)"
+                                             );
+        }
+        else if(v > ((robot->getTempSpeed()/100)*20) && v <= ((robot->getTempSpeed()/100)*40)){
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/speed_indicator/speed2.png)"
+                                             );
+        }
+        else if(v > ((robot->getTempSpeed()/100)*40) && v <= ((robot->getTempSpeed()/100)*60)){
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/speed_indicator/speed3.png)"
+                                             );
+        }
+        else if(v > ((robot->getTempSpeed()/100)*60) && v <= ((robot->getTempSpeed()/100)*80)){
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/speed_indicator/speed4.png)"
+                                             );
+        }
+        else{
+            ui->speedWidget->setStyleSheet("background-color: silver; "
+                                             "border-style:outset; "
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "min-width: 10em;"
+                                             "padding: 5px;"
+                                             "image:url(:/resource/speed_indicator/speed5.png)"
+                                             );
+            }
+        return true;
+        }
+
+    return false;
 }
 
 
