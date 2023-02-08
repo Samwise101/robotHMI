@@ -15,7 +15,6 @@ public:
     ~RobotGoal();
 
     const QColor &getColor() const;
-    void setColor(const QColor &newColor);
 
     int getType() const;
 

@@ -75,12 +75,6 @@ private:
     //std::string ipAddress = "192.168.1.15";//pre realneho robota 8000
     //std::string cameraPort = "8000";//pre realneho robota 8000
 
-    QTimer* accTimer;
-    int accInterval; //in miliseconds
-
-    QTimer* breakTimer;
-    int breakInterval;
-
     Robot* robot;
 
     int dataCounter;
@@ -93,13 +87,10 @@ private:
     bool robotConnected;
     bool robotRunning;
 
-    int index;
-
     float omega;
     float v;
 
     int goalIndex = 1;
-    int goalType;
 
     TKobukiData robotdata;
 

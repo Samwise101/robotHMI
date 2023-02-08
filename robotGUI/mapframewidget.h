@@ -71,12 +71,10 @@ private:
     double lidarDist = 0;
     int xp = 0;
     int yp = 0;
-    int xpshort;
-    int ypshort;
+
     int robotStartXPos;
     int robotStartYPos;
-    int xLast;
-    int yLast;
+
     float realTheta;
     double shortestLidarDistance = 10000.0;
     double shortestLidarAngle = 0.0;

@@ -19,11 +19,6 @@ const QColor &RobotGoal::getColor() const
     return color;
 }
 
-void RobotGoal::setColor(const QColor &newColor)
-{
-    color = newColor;
-}
-
 int RobotGoal::getType() const
 {
     return type;

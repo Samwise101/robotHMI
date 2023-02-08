@@ -139,7 +139,6 @@ private:
     int nrCurr = 0;
 
     double tempSpeed = 300.0;  //[mm/s]
-    double tempVelocity;
 
     // [rad]
     float theta = 0;
@@ -178,8 +177,6 @@ private:
     float eThetaToObst;
     float thetaToObst;
 
-
-    double radiusR = 0;
     bool initilize = false;
     unsigned short lastCheckTicks = 0;
 

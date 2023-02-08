@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     recordMission = false;
 
-    dataCounter = index = 0;
+    dataCounter = 0;
 
     ui->setupUi(this);
 
@@ -39,8 +39,6 @@ MainWindow::~MainWindow()
     delete cameraFrame;
     delete mapFrame;
     delete robot;
-    delete accTimer;
-    delete breakTimer;
     delete ui;
 }
 
@@ -110,7 +108,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             else if(mapFrame->getGoalType() == 3){
-                this_thread::sleep_for(5000ms);
+                this_thread::sleep_for(2000ms);
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
             }
