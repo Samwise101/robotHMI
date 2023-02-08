@@ -13,9 +13,11 @@ public:
     RobotGoal();
     ~RobotGoal();
     QColor color;
-private:
 
     bool reached;
+private:
+
+
 };
 
 #endif // ROBOTGOAL_H

@@ -10,6 +10,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
+    robotGoal.reached = true;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 

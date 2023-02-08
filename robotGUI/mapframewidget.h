@@ -16,7 +16,7 @@
 #include "opencv2/imgcodecs.hpp"
 
 #include "robot.h"
-#include <robotgoal.h>
+#include "robotgoal.h"
 
 class QFrame;
 class QPaintEvent;
@@ -36,7 +36,6 @@ public:
     int updateLaserPicture;
 
     QPoint robotPosition;
-    //RobotGoal robotGoal;
 
     QRect* rectangle;
 

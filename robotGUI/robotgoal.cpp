@@ -4,3 +4,9 @@ RobotGoal::RobotGoal()
 {
 
 }
+
+
+RobotGoal::~RobotGoal()
+{
+
+}

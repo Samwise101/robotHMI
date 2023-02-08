@@ -75,17 +75,7 @@ int MainWindow::processRobot(TKobukiData robotData){
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
            // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
             if(mapFrame->getShortestDistanceLidar() < 400.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
-                /*if(mapFrame->getShortestDistanceLidar() < 300.0 && robot->getTheta() < goalAngle){
-                     v = robot->regulateForwardSpeed(0, 0, false);
-                     robot->robotFullTurn(goalAngle);
-                     std::cout << "Turning, theta=" << robot->getTheta() << ", goal=" << goalAngle << std::endl;
-                }
-                else{
-                    v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-                    omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
-                    std::cout << "Fw speed" << std::endl;
-                }*/
-                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
+                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
                 omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
             }
             else{
@@ -103,12 +93,14 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
     }
     else{
-        //omega = robot->robotFullTurn(goalAngle);
+        /*omega = robot->robotFullTurn(goalAngle);
         robotRotationalSpeed = omega;
         if(omega > -0.15 && omega < 0.15){
             mapFrame->removeLastPoint();
             robot->setAtGoal(false);
-        }
+        }*/
+        mapFrame->removeLastPoint();
+        robot->setAtGoal(false);
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
