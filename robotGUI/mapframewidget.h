@@ -50,16 +50,24 @@ public:
     int getGoalYPosition();
     int getGoalXPosition();
     int getGoalVectorSize();
+    int getGoalType();
     void removeAllPoints();
     bool removeLastPoint();
 
     void setOffset(double newOffset);
 
+    void setPointColor(const QColor &newPointColor);
+
+    void setPointType(int newPointType);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
 private:
-    std::vector<QPoint> points;
+    std::vector<RobotGoal> points;
+    int pointType;
+    QColor pointColor;
+
     double lidarDist = 0;
     int xp = 0;
     int yp = 0;

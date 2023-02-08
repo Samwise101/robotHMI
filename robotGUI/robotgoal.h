@@ -5,19 +5,24 @@
 #include <QPoint>
 #include <QColor>
 #include <QObject>
+#include <QColor>
 
 class RobotGoal : public QPoint
 {
 
 public:
-    RobotGoal();
+    RobotGoal(int xpos, int ypos, int type, QColor color);
     ~RobotGoal();
-    QColor color;
 
-    bool reached;
+    const QColor &getColor() const;
+    void setColor(const QColor &newColor);
+
+    int getType() const;
+
 private:
-
-
+    QColor color;
+    bool reached;
+    int type;
 };
 
 #endif // ROBOTGOAL_H

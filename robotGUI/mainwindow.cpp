@@ -93,14 +93,25 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
     }
     else{
-        /*omega = robot->robotFullTurn(goalAngle);
-        robotRotationalSpeed = omega;
-        if(omega > -0.15 && omega < 0.15){
-            mapFrame->removeLastPoint();
-            robot->setAtGoal(false);
-        }*/
-        mapFrame->removeLastPoint();
-        robot->setAtGoal(false);
+        if(!mapFrame->isGoalVectorEmpty()){
+            if(mapFrame->getGoalType() == 2){
+                omega = robot->robotFullTurn(goalAngle);
+                if(omega > -0.15 && omega < 0.15){
+                    mapFrame->removeLastPoint();
+                    robot->setAtGoal(false);
+                }
+                robotRotationalSpeed = omega;
+            }
+            else if(mapFrame->getGoalType() == 3){
+                mapFrame->removeLastPoint();
+                robot->setAtGoal(false);
+                this_thread::sleep_for(2000ms);
+            }
+            else{
+                mapFrame->removeLastPoint();
+                robot->setAtGoal(false);
+            }
+        }
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
@@ -426,12 +437,6 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
-
-}
-
-
 void MainWindow::on_zmazGoal_clicked()
 {
     /*
@@ -442,3 +447,28 @@ void MainWindow::on_zmazGoal_clicked()
   }*/
   mapFrame->removeAllPoints();
 }
+
+void MainWindow::on_zmenTypBoduButton_clicked()
+{
+    goalIndex++;
+    if(goalIndex > 3){
+        goalIndex = 1;
+    }
+
+    if(goalIndex%3 == 1){
+        ui->zmenTypBoduButton->setText("Prejazdový\n bod");
+        mapFrame->setPointColor(Qt::yellow);
+        mapFrame->setPointType(1);
+    }
+    else if(goalIndex%3 == 2){
+        ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
+        mapFrame->setPointColor(Qt::darkMagenta);
+        mapFrame->setPointType(2);
+    }
+    else if(goalIndex%3 == 0){
+        ui->zmenTypBoduButton->setText("Čakaj\n 2 sekundy");
+        mapFrame->setPointColor(Qt::cyan);
+        mapFrame->setPointType(3);
+    }
+}
+

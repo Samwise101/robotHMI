@@ -10,30 +10,13 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
-    robotGoal.reached = true;
+    pointType = 1;
+    pointColor = Qt::yellow;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
 MapFrameWidget::~MapFrameWidget(){
 
-}
-
-double MapFrameWidget::getDistanceToFirstPoint()
-{
-    if(!points.empty()){
-        return std::sqrt((points[0].x() - robotPosition.x())^2 + (points[0].y() - robotPosition.y())^2);
-    }
-    return -1.0;
-}
-
-double MapFrameWidget::getShortestDistanceLidar()
-{
-    return shortestLidarDistance;
-}
-
-double MapFrameWidget::getShortestDistanceLidarAngle()
-{
-    return shortestLidarAngle;
 }
 
 void MapFrameWidget::paintEvent(QPaintEvent* event){
@@ -94,32 +77,41 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         }
 
         if(!points.empty()){
-            pen.setColor(Qt::yellow);
-            painter.setPen(pen);
-            painter.setBrush(Qt::yellow);
-            xLast = robotStartXPos;
-            yLast = robotStartYPos;
-
             for(int i = 0; i < points.size(); i++){
+                pen.setColor(points[i].getColor());
+                painter.setPen(pen);
+                painter.setBrush(points[i].getColor());
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
             }
         }
     }
 }
 
-void MapFrameWidget::setOffset(double newOffset)
-{
-    offset = newOffset;
-}
-
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10){
-           points.insert(points.begin(), QPoint(event->x(), event->y()));
+           points.insert(points.begin(), RobotGoal(event->x(), event->y(), this->pointType, this->pointColor));
         }
     }
 }
+
+bool MapFrameWidget::removeLastPoint()
+{
+    if(!points.empty()){
+        points.pop_back();
+        return true;
+    }
+    return false;
+}
+
+void MapFrameWidget::removeAllPoints()
+{
+    if(!points.empty()){
+        points.erase(points.begin(),points.end());
+    }
+}
+
 
 void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
 {
@@ -143,6 +135,40 @@ bool MapFrameWidget::isGoalVectorEmpty()
     return false;
 }
 
+
+double MapFrameWidget::getDistanceToFirstPoint()
+{
+    if(!points.empty()){
+        return std::sqrt((points[0].x() - robotPosition.x())^2 + (points[0].y() - robotPosition.y())^2);
+    }
+    return -1.0;
+}
+
+double MapFrameWidget::getShortestDistanceLidar()
+{
+    return shortestLidarDistance;
+}
+
+double MapFrameWidget::getShortestDistanceLidarAngle()
+{
+    return shortestLidarAngle;
+}
+
+void MapFrameWidget::setPointType(int newPointType)
+{
+    pointType = newPointType;
+}
+
+void MapFrameWidget::setPointColor(const QColor &newPointColor)
+{
+    pointColor = newPointColor;
+}
+
+void MapFrameWidget::setOffset(double newOffset)
+{
+    offset = newOffset;
+}
+
 int MapFrameWidget::getGoalYPosition()
 {
     return points[points.size()-1].y();
@@ -158,20 +184,9 @@ int MapFrameWidget::getGoalVectorSize()
     return points.size();
 }
 
-
-bool MapFrameWidget::removeLastPoint()
+int MapFrameWidget::getGoalType()
 {
-    if(!points.empty()){
-        points.pop_back();
-        return true;
-    }
-    return false;
+    return points[points.size()-1].getType();
 }
 
-void MapFrameWidget::removeAllPoints()
-{
-    if(!points.empty()){
-        points.erase(points.begin(),points.end());
-    }
-}
 

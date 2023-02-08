@@ -63,9 +63,9 @@ private slots:
 
     void on_checkBox_stateChanged(int arg1);
 
-    void on_pushButton_clicked();
-
     void on_zmazGoal_clicked();
+
+    void on_zmenTypBoduButton_clicked();
 
 private:
     std::string ipAddress = "127.0.0.1"; // pre simulaciu
@@ -96,6 +96,9 @@ private:
 
     float omega;
     float v;
+
+    int goalIndex = 1;
+    int goalType;
 
     TKobukiData robotdata;
 
