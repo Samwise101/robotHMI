@@ -264,7 +264,7 @@ void Robot::imageViewer()
 float Robot::rampPosFunction(float speed)
 {
     if(speed < tempSpeed){
-        return speed+15;
+        return speed+10;
     }
     return tempSpeed;
 }
@@ -442,13 +442,16 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
 
     eDist = std::sqrt(std::pow(eXDist2,2)+std::pow(eYDist2,2));
 
-    if(eDist >= 0.0 && eDist <= 30.0){
+    if(eDist >= 0.0 && eDist <= 30.0 && goalType != 1){
         v = 0.0;
         return v;
     }
-
-    if(Kp2*eDist > tempSpeed){
+    else if(Kp2*eDist > tempSpeed){
         v = rampPosFunction(v);
+    }
+    else if(goalType == 1){
+        if(v >= 110.0)
+            v = v - 10;
     }
     else{
         v = Kp2*eDist;

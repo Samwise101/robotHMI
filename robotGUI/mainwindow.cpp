@@ -68,27 +68,34 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             if(v > 0.0){
-                v = robot->regulateForwardSpeed(0, 0, false, 0);
+                v = robot->regulateForwardSpeed(0, 0, false, mapFrame->getGoalType());
                 robotForwardSpeed = v;
             }
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
            // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
             if(mapFrame->getShortestDistanceLidar() < 400.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
-                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
+                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
                 omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
             }
             else{
                 omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
+                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
             }
 
             robotRotationalSpeed = omega;
             robotForwardSpeed = v;
 
-            if(v == 0.0 && omega == 0.0){
-                goalAngle = robot->getTheta() + 2*PI;
-                robot->setAtGoal(true);
+            if(mapFrame->getGoalType() == 1){
+                if(robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) < 100.0){
+                   robot->setAtGoal(true);
+                }
+            }
+            else{
+                if(v == 0.0 && omega == 0.0){
+                    goalAngle = robot->getTheta() + 2*PI;
+                    robot->setAtGoal(true);
+                }
             }
         }
     }
@@ -103,9 +110,9 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             else if(mapFrame->getGoalType() == 3){
+                this_thread::sleep_for(5000ms);
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
-                this_thread::sleep_for(2000ms);
             }
             else{
                 mapFrame->removeLastPoint();
@@ -117,10 +124,10 @@ int MainWindow::processRobot(TKobukiData robotData){
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
     ui->speedLabel->setText(QString::number(v) + " mm/s");
 
-    if(setForwardSpeedLevelWidget()){
+ /*   if(setForwardSpeedLevelWidget()){
         std::cout  << "Success!" << std::endl;
     }
-
+ */
     std::cout << "v=" << v << ", w=" << omega << std::endl;
     // dorobit medze rychlosti pre realny robot
     if((robotForwardSpeed > -0.2 && robotForwardSpeed < 0.2) && robotRotationalSpeed !=0)

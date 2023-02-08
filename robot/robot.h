@@ -126,9 +126,9 @@ public:
 private:
 
     float eToGoalAngle;
-    float Kp3 = 0.4;
+    float Kp3 = 0.5;
     float Kp2 = 0.6;
-    float Kp = 1;
+    float Kp = 1.1;
     bool atGoal = false;
 
     int nlOld = 0;
