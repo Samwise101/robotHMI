@@ -407,11 +407,11 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 
     w = Kp*eThetaToGoal;
 
-    if(w >= 2.0){
-        w = 2.0;
+    if(w >= 3.0){
+        w = 3.0;
     }
-    else if(w <= -2.0){
-        w = -2.0;
+    else if(w <= -3.0){
+        w = -3.0;
     }
     else if((w > 0.0 && w <= 0.15) || (w < 0.0 && w >= -0.15)){
         w = 0.0;
@@ -422,7 +422,7 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
     return w;
 }
 
-float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
+float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType)
 {
     if(!robotRunning){
         if(v > 5){
@@ -450,6 +450,12 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
     if(Kp2*eDist > 200){
         v = rampPosFunction(v);
     }
+    else if(goalType == 1){
+        v = Kp2*eDist;
+        if(v < 100){
+            v = 100;
+        }
+    }
     else{
         v = Kp2*eDist;
     }
@@ -460,29 +466,45 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning)
 
 float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
 {
-
+    std::cout << "Shortest=" << distToObst << std::endl;
     //xDistObst = distToObst*std::cos(angleToObst);
     //yDistObst = distToObst*std::sin(angleToObst);
 
     xDistObst = (x + distToObst/10*sin((2*PI-(angleToObst)+PI/2)+theta));
     yDistObst = (y + distToObst/10*cos((2*PI-(angleToObst)+PI/2)+theta));
 
+    eXObst = (xDistObst - x)/100;
+    eYObst = -1*(yDistObst - y)/100;
 
-    if(x < xDistObst && y < yDistObst){
-       eAngleToObst = angleToObst - PI/2;
+    thetaToObst = std::atan2(eYObst, eXObst);
+    eThetaToObst = theta - thetaToObst;
+   // eThetaToObst = thetaToObst - theta;
+    eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
+    std::cout << "eXObst=" << eXObst << ", eYObst=" << eYObst << ", theta=" << theta <<  ", thetaToObst=" << thetaToObst << ", eThetaToObst=" << eThetaToObst << std::endl;
+
+
+    if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
+       eThetaToObst = eThetaToObst + PI/2;
+       std::cout << "xD 1" << eThetaToObst << std::endl;
     }
-    else if(x < xDistObst && y > yDistObst){
-       eAngleToObst = angleToObst + PI/2;
+    else if(eThetaToObst > PI/2 && eThetaToObst <= PI){
+       eThetaToObst = eThetaToObst - PI/2;
+       std::cout << "xD 2" << eThetaToObst << std::endl;
     }
-    else if(x > xDistObst && y < yDistObst){
-       eAngleToObst = angleToObst - PI/2;
+    else if(eThetaToObst < 0.0 && eThetaToObst > -PI/2){
+       eThetaToObst = eThetaToObst - PI/2;
+       std::cout << "xD 3" << eThetaToObst << std::endl;
     }
-    else if(x > xDistObst && y > yDistObst){
-       eAngleToObst = angleToObst + PI/2;
+    else if(eThetaToObst < -PI/2 && eThetaToObst >= -PI){
+       eThetaToObst = eThetaToObst + PI/2;
+       std::cout << "xD 4" << eThetaToObst << std::endl;
     }
 
-    eAngleToObst = std::atan2(std::sin(eAngleToObst), std::cos(eAngleToObst));
-    w = Kp2*eAngleToObst;
+    w = Kp3*eThetaToObst;
+
+    if(w > 2.0){
+        w = 2.0;
+    }
 
    // std::cout << "distToObst=" << distToObst << ", angleToObst=" << angleToObst << ", theta= " << theta <<  ", eAngleToObst=" << eAngleToObst << std::endl;
     return w;
@@ -496,7 +518,13 @@ float Robot::getDistanceToGoal(int xGoal, int yGoal)
 float Robot::robotFullTurn(float goalAngle)
 {
     eToGoalAngle = goalAngle - theta;
-    w = Kp3*eToGoalAngle;
+    if((eToGoalAngle > -0.15 && eToGoalAngle < 0.0) || (eToGoalAngle > 0.0 && eToGoalAngle < 0.15)){
+        w = 0.0;
+    }
+    else{
+        w = Kp3*eToGoalAngle;
+    }
+
     return w;
 }
 
@@ -613,3 +641,7 @@ bool Robot::getAtGoal() const
     return atGoal;
 }
 
+void Robot::setAtGoal(bool newAtGoal)
+{
+    atGoal = newAtGoal;
+}

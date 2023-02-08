@@ -60,46 +60,54 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     robot->robotOdometry(robotData);
 
-    if(!robotRunning || mapFrame->isGoalVectorEmpty()){
+    if(!robot->getAtGoal()){
+        if(!robotRunning || mapFrame->isGoalVectorEmpty()){
 
-        if(omega > 0.0 || omega < 0.0){
-            omega = robot->orientationRegulator(0, 0, false);
-            robotRotationalSpeed = omega;
+            if(omega > 0.0 || omega < 0.0){
+                omega = robot->orientationRegulator(0, 0, false);
+                robotRotationalSpeed = omega;
+            }
+            if(v > 0.0){
+                v = robot->regulateForwardSpeed(0, 0, false, 0);
+                robotForwardSpeed = v;
+            }
         }
-        if(v > 0.0){
-            v = robot->regulateForwardSpeed(0, 0, false);
+        else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
+           // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
+            if(mapFrame->getShortestDistanceLidar() < 400.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
+                /*if(mapFrame->getShortestDistanceLidar() < 300.0 && robot->getTheta() < goalAngle){
+                     v = robot->regulateForwardSpeed(0, 0, false);
+                     robot->robotFullTurn(goalAngle);
+                     std::cout << "Turning, theta=" << robot->getTheta() << ", goal=" << goalAngle << std::endl;
+                }
+                else{
+                    v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+                    omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
+                    std::cout << "Fw speed" << std::endl;
+                }*/
+                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
+                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
+            }
+            else{
+                omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
+                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, 0);
+            }
+
+            robotRotationalSpeed = omega;
             robotForwardSpeed = v;
+
+            if(v == 0.0 && omega == 0.0){
+                goalAngle = robot->getTheta() + 2*PI;
+                robot->setAtGoal(true);
+            }
         }
     }
-    else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
-
-       // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
-        if(mapFrame->getShortestDistanceLidar() < 350.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
-                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
-                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-        }
-        else{
-            omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-            v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
-        }
-
+    else{
+        //omega = robot->robotFullTurn(goalAngle);
         robotRotationalSpeed = omega;
-        robotForwardSpeed = v;
-
-        if(v == 0.0 && omega == 0.0){
-            std::cout << "At goal: [v,w]=[" << v << "," << omega << "]" << std::endl;
-            if(!mapFrame->isGoalVectorEmpty()){
-                mapFrame->removeLastPoint();
-                goalAngle = robot->getTheta() + 2*PI;
-                std::cout << "Goal angle=" << goalAngle << std::endl;
-                while(robot->getTheta() < goalAngle){
-                    std::cout << "theta=" << robot->getTheta() << std::endl;
-                    omega = robot->robotFullTurn(goalAngle);
-                    robotRotationalSpeed = omega;
-                    robot->setRotationSpeed(robotRotationalSpeed);
-                    robot->robotOdometry(robotData);
-                }
-            }
+        if(omega == 0.0){
+            mapFrame->removeLastPoint();
+            robot->setAtGoal(false);
         }
     }
 
@@ -138,8 +146,13 @@ void MainWindow::on_actionGo_Offline_triggered()
 
 void MainWindow::on_actionGo_Online_triggered()
 {
-    std::cout << "Hello from go online action!" << std::endl;
     connectRobotUiSetup();
+    if(!setupConnectionToRobot()){
+        std::cout << "Something went wrong, can't connect to robot!" << std::endl;
+    }
+    else{
+        std::cout << "Successfully connected to the robot!" << std::endl;
+    }
 }
 
 
@@ -233,6 +246,16 @@ void MainWindow::on_startButton_pressed()
 void MainWindow::on_connectToRobotButton_clicked()
 {
     connectRobotUiSetup();
+    if(!setupConnectionToRobot()){
+        std::cout << "Something went wrong, can't connect to robot!" << std::endl;
+    }
+    else{
+        std::cout << "Successfully connected to the robot!" << std::endl;
+    }
+
+}
+
+bool MainWindow::setupConnectionToRobot(){
     if(!ipAddress.empty()){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
@@ -246,7 +269,12 @@ void MainWindow::on_connectToRobotButton_clicked()
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         robot->robotStart();
+        return true;
     }
+    else{
+        return false;
+    }
+
 }
 
 
@@ -396,8 +424,10 @@ bool MainWindow::getIpAddress()
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     std::cout << "Hello from checkbox" << std::endl;
-    if(!recordMission){
+    if(arg1 && cameraFrame->updateCameraPicture == 1){
         recordMission = true;
+        //int frameWidth = cameraFrame->image->
+        //int frameHeight =
     }
     else{
         recordMission = false;
@@ -421,4 +451,3 @@ void MainWindow::on_zmazGoal_clicked()
   }*/
   mapFrame->removeAllPoints();
 }
-

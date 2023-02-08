@@ -79,14 +79,6 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             }
 
             pen.setWidth(3);
-            pen.setColor(Qt::red);
-            painter.setPen(pen);
-
-            xpshort = (robotPosition.x() + shortestLidarDistance/10*sin((2*PI-(shortestLidarAngle)+PI/2)+realTheta));
-            ypshort = (robotPosition.y() + shortestLidarDistance/10*cos((2*PI-(shortestLidarAngle)+PI/2)+realTheta));
-            painter.drawEllipse(QPoint(xpshort, ypshort),2,2);
-
-            pen.setWidth(3);
             pen.setColor(Qt::green);
             painter.setPen(pen);
 
@@ -104,13 +96,19 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             pen.setColor(Qt::yellow);
             painter.setPen(pen);
             painter.setBrush(Qt::yellow);
+            xLast = robotStartXPos;
+            yLast = robotStartYPos;
 
             for(int i = 0; i < points.size(); i++){
                 painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
-
             }
         }
     }
+}
+
+void MapFrameWidget::setOffset(double newOffset)
+{
+    offset = newOffset;
 }
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){

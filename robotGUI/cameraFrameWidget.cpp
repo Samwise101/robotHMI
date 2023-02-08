@@ -27,7 +27,7 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
 
     if(updateCameraPicture == 1){
         std::cout<<actIndex<<std::endl;
-        QImage image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
+        image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
         painter.drawImage(rectangle,image.rgbSwapped());
     }
 }

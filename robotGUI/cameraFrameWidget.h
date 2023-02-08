@@ -27,7 +27,7 @@ public:
     void draw(QPainter* painter, QPaintEvent event);
     int updateCameraPicture;
     int actIndex;
-    //    cv::Mat frame[3];
+    QImage image;
 
     cv::Mat frame[3];
 

@@ -38,6 +38,7 @@ public:
     bool setBatteryLevelWidget();
     bool getIpAddress();
     void connectRobotUiSetup();
+    bool setupConnectionToRobot();
     int processLidar(LaserMeasurement laserData);
     int processCamera(cv::Mat cameraData);
     int processRobot(TKobukiData robotData);
