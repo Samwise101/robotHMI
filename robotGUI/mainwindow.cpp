@@ -58,6 +58,11 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     robot->robotOdometry(robotData);
 
+    cameraFrame->setBatteryLevel(robotData.Battery);
+    cameraFrame->setV(v);
+    ui->speedLabel->setText(QString::number(v) + " mm/s");
+    ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
+
     if(!robot->getAtGoal()){
         if(!robotRunning || mapFrame->isGoalVectorEmpty()){
 
@@ -71,7 +76,6 @@ int MainWindow::processRobot(TKobukiData robotData){
             }
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
-           // std::cout << "Shortest lidar dist=" << mapFrame->getShortestDistanceLidar() << std::endl;
             if(mapFrame->getShortestDistanceLidar() < 400.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
                  v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
                 omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
@@ -109,7 +113,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             else if(mapFrame->getGoalType() == 3){
-                this_thread::sleep_for(2000ms);
+                this_thread::sleep_for(5000ms);
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
             }
@@ -121,19 +125,15 @@ int MainWindow::processRobot(TKobukiData robotData){
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
-    ui->speedLabel->setText(QString::number(v) + " mm/s");
-
-    //setForwardSpeedLevelWidget();
-
 
     std::cout << "v=" << v << ", w=" << omega << std::endl;
-    // dorobit medze rychlosti pre realny robot
-    if((robotForwardSpeed > -0.2 && robotForwardSpeed < 0.2) && robotRotationalSpeed !=0)
+
+    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0)
         robot->setRotationSpeed(robotRotationalSpeed);
-    else if(robotForwardSpeed!=0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
+    else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
         robot->setTranslationSpeed(robotForwardSpeed);
     }
-    else if((robotForwardSpeed!=0 && robotRotationalSpeed!=0))
+    else if((robotForwardSpeed != 0 && robotRotationalSpeed != 0))
         robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
 
     dataCounter++;
@@ -219,9 +219,6 @@ void MainWindow::on_startButton_clicked()
 }
 
 
-
-
-
 void MainWindow::on_startButton_pressed()
 {
     if(robotConnected && !robotRunning){
@@ -253,8 +250,6 @@ void MainWindow::on_startButton_pressed()
 }
 
 
-
-
 void MainWindow::on_connectToRobotButton_clicked()
 {
     connectRobotUiSetup();
@@ -283,6 +278,10 @@ bool MainWindow::setupConnectionToRobot(){
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         robot->robotStart();
 
+        cameraFrame->setTempSpeed(robot->getTempSpeed());
+        cameraFrame->speedFrame = ui->speedWidget;
+        cameraFrame->batteryFrame = ui->batteryWidget;
+
         return true;
     }
     else{
@@ -298,12 +297,8 @@ bool MainWindow::setupConnectionToRobot(){
 void MainWindow::connectRobotUiSetup(){
     if(getIpAddress()){
         std::cout << "Ip address loaded" << std::endl;
-        if(setBatteryLevelWidget()){
-            std::cout  << "Success!" << std::endl;
-        }
 
     }
-
     else{
         std::cout << "No ip address loaded!" << std::endl;
     }
@@ -342,158 +337,6 @@ void MainWindow::on_replayMissionButton_clicked()
             }
     }
 }
-
-
-
-
-bool MainWindow::setBatteryLevelWidget(){
-    if(robotConnected){
-        if(batteryLevel > 80.0){
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery5.png)"
-                                             );
-        }
-        else if(batteryLevel > 60.0){
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery4.png)"
-                                             );
-        }
-        else if(batteryLevel > 40.0){
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery3.png)"
-                                             );
-        }
-        else if(batteryLevel > 20.0){
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery2.png)");
-        }
-        else if(batteryLevel > 0.0){
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery1.png)"
-                                             );
-        }
-        else{
-            ui->batteryWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/Baterka/battery0.png)"
-                                             );
-        }
-        return 1;
-    }
-    return 0;
-}
-
-bool MainWindow::setForwardSpeedLevelWidget()
-{
-    if(robotConnected){
-        if(v == 0.0){
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             );
-        }
-        else if(v > 0.0 && v <= ((robot->getTempSpeed()/100)*20)){
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/speed_indicator/speed1.png)"
-                                             );
-        }
-        else if(v > ((robot->getTempSpeed()/100)*20) && v <= ((robot->getTempSpeed()/100)*40)){
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/speed_indicator/speed2.png)"
-                                             );
-        }
-        else if(v > ((robot->getTempSpeed()/100)*40) && v <= ((robot->getTempSpeed()/100)*60)){
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/speed_indicator/speed3.png)"
-                                             );
-        }
-        else if(v > ((robot->getTempSpeed()/100)*60) && v <= ((robot->getTempSpeed()/100)*80)){
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/speed_indicator/speed4.png)"
-                                             );
-        }
-        else{
-            ui->speedWidget->setStyleSheet("background-color: silver; "
-                                             "border-style:outset; "
-                                             "border-radius: 10px;"
-                                             "border-color:black;"
-                                             "border-width:4px;"
-                                             "min-width: 10em;"
-                                             "padding: 5px;"
-                                             "image:url(:/resource/speed_indicator/speed5.png)"
-                                             );
-            }
-        return true;
-        }
-
-    return false;
-}
-
-
-
 
 bool MainWindow::getIpAddress()
 {

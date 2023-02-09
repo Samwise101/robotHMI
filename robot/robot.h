@@ -74,10 +74,8 @@ public:
     }
 
     float rampPosFunction(float speed);
-    double rampNegFunction(double speed);
 
     void callbackAcc(int dir, double& mmpersec, double& radpersec);
-    void callbackBreak(double& mmpersec, double& radpersec);
 
     void robotOdometry(TKobukiData &output);
     float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
@@ -126,9 +124,12 @@ public:
 private:
 
     float eToGoalAngle;
-    float Kp3 = 0.5;
+
+    float Kp3 = 0.7;
     float Kp2 = 0.6;
-    float Kp = 1.1;
+    float Kp = 1;
+    float KpTurn = 0.4;
+
     bool atGoal = false;
 
     int nlOld = 0;

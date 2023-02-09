@@ -35,8 +35,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    bool setBatteryLevelWidget();
-    bool setForwardSpeedLevelWidget();
     bool getIpAddress();
     void connectRobotUiSetup();
     bool setupConnectionToRobot();
@@ -69,11 +67,11 @@ private slots:
     void on_zmenTypBoduButton_clicked();
 
 private:
-    std::string ipAddress = "127.0.0.1"; // pre simulaciu
-    std::string cameraPort = "8889"; //pre simulaciu
+    //std::string ipAddress = "127.0.0.1"; // pre simulaciu
+    //std::string cameraPort = "8889"; //pre simulaciu
 
-    //std::string ipAddress = "192.168.1.15";//pre realneho robota 8000
-    //std::string cameraPort = "8000";//pre realneho robota 8000
+    std::string ipAddress = "192.168.1.11";//pre realneho robota 8000
+    std::string cameraPort = "8000";//pre realneho robota 8000
 
     Robot* robot;
 

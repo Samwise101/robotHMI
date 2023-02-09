@@ -37,10 +37,6 @@ public:
 
     QPoint robotPosition;
 
-    QImage* image;
-
-    QRect* rectangle;
-
     bool robotInitialized = false;
 
     void mousePressEvent(QMouseEvent *event);

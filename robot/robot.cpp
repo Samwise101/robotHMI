@@ -264,7 +264,7 @@ void Robot::imageViewer()
 float Robot::rampPosFunction(float speed)
 {
     if(speed < tempSpeed){
-        return speed+10;
+        return speed+5;
     }
     return tempSpeed;
 }
@@ -275,35 +275,6 @@ void Robot::callbackAcc(int dir, double& mmpersec, double& radpersec){
     }
     else{
         mmpersec = tempSpeed;
-    }
-}
-
-double Robot::rampNegFunction(double speed)
-{
-    if(speed > 0 && (speed-30) > 0){
-        return speed-30;
-    }
-    else
-        speed = 0;
-    if(speed < 0 && (speed+30) < 0){
-        return speed+30;
-    }
-    else
-        speed = 0;
-    return 0.0;
-}
-
-void Robot::callbackBreak(double& mmpersec, double& radpersec){
-    if(std::abs(mmpersec) > 0){
-        mmpersec = rampNegFunction(mmpersec);
-        std::cout << mmpersec << std::endl;;
-    }
-    else if(std::abs(radpersec) > 0){
-        radpersec = rampNegFunction(radpersec);
-        std::cout << mmpersec << std::endl;;
-    }
-    else{
-        //std::cout << "Robot is not moving" << std::endl;
     }
 }
 
@@ -454,7 +425,7 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
         v = rampPosFunction(v);
     }
     else if(goalType == 1){
-        if(v >= 110.0)
+        if(v >= 160.0)
             v = v - 10;
     }
     else{
@@ -522,7 +493,7 @@ float Robot::robotFullTurn(float goalAngle)
         w = 0.0;
     }
     else{
-        w = Kp3*eToGoalAngle;
+        w = KpTurn*eToGoalAngle;
     }
 
     return w;

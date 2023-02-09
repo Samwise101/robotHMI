@@ -445,7 +445,7 @@ color:black;
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_5">
+         <widget class="QLabel" name="batteryLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -575,7 +575,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1187</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
