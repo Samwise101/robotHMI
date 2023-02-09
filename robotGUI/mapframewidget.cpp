@@ -33,6 +33,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
     if(!robotInitialized){
         robotPosition.setX(rectangle.width()/2);
         robotPosition.setY(rectangle.height()/2);
+        robotStartXPos = robotPosition.x();
+        robotStartYPos = robotPosition.y();
         robotInitialized = true;
     }
 
@@ -75,6 +77,8 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
                 painter.drawEllipse(QPoint(xp, yp),2,2);
             }
         }
+
+
 
         if(!points.empty()){
             for(int i = 0; i < points.size(); i++){

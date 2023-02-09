@@ -443,8 +443,12 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
     eDist = std::sqrt(std::pow(eXDist2,2)+std::pow(eYDist2,2));
 
     if(eDist >= 0.0 && eDist <= 30.0 && goalType != 1){
-        v = 0.0;
-        return v;
+        if(v > 5.0){
+           v = Kp2*v;
+        }
+        else{
+            v = 0.0;
+        }
     }
     else if(Kp2*eDist > tempSpeed){
         v = rampPosFunction(v);

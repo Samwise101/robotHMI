@@ -77,6 +77,8 @@ private:
 
     Robot* robot;
 
+    bool alarmSet = false;
+
     int dataCounter;
 
     float goalAngle;

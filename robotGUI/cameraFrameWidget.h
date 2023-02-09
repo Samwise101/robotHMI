@@ -28,6 +28,7 @@ public:
     int updateCameraPicture;
     int actIndex;
     QImage image;
+    QImage image2;
 
     cv::Mat frame[3];
 

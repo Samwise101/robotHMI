@@ -37,6 +37,8 @@ public:
 
     QPoint robotPosition;
 
+    QImage* image;
+
     QRect* rectangle;
 
     bool robotInitialized = false;
@@ -71,6 +73,9 @@ private:
     double lidarDist = 0;
     int xp = 0;
     int yp = 0;
+
+    int xLast;
+    int yLast;
 
     int robotStartXPos;
     int robotStartYPos;
