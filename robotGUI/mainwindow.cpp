@@ -28,10 +28,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->addressField->setMaxLength(20);
 
     cameraFrame = new CameraFrameWidget();
-    ui->cameraMapLayout->addWidget(cameraFrame, 0, 1);
+    ui->cameraFrame->addWidget(cameraFrame, 0, 1);
 
     mapFrame = new MapFrameWidget();
-    ui->cameraMapLayout->addWidget(mapFrame, 0, 2);
+    ui->mapFrame->addWidget(mapFrame, 0, 2);
 }
 
 MainWindow::~MainWindow()
