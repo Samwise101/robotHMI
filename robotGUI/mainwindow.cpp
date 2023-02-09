@@ -60,6 +60,7 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
+
     ui->speedLabel->setText(QString::number(v) + " mm/s");
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
@@ -76,11 +77,20 @@ int MainWindow::processRobot(TKobukiData robotData){
             }
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
-            if(mapFrame->getShortestDistanceLidar() < 400.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
-                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
+
+            if(mapFrame->getShortestDistanceLidar() <= 350.0){
+               cameraFrame->setDispRedWarning(true);
+            }
+            else if(mapFrame->getShortestDistanceLidar() <= 450.0){
+                cameraFrame->setDispYellowWarning(true);
+            }
+
+            if(mapFrame->getShortestDistanceLidar() < 450.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
+                v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
                 omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
             }
             else{
+                cameraFrame->resetWarnings();
                 omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
             }
@@ -126,15 +136,20 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
-    std::cout << "v=" << v << ", w=" << omega << std::endl;
+    //std::cout << "v=" << v << ", w=" << omega << std::endl;
 
-    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0)
+    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
+        std::cout << "Rotation!" << std::endl;
         robot->setRotationSpeed(robotRotationalSpeed);
+    }
     else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
+        std::cout << "Translation!" << std::endl;
         robot->setTranslationSpeed(robotForwardSpeed);
     }
-    else if((robotForwardSpeed != 0 && robotRotationalSpeed != 0))
+    else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
+        std::cout << "Arc!" << std::endl;
         robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
+    }
 
     dataCounter++;
 
@@ -281,6 +296,7 @@ bool MainWindow::setupConnectionToRobot(){
         cameraFrame->setTempSpeed(robot->getTempSpeed());
         cameraFrame->speedFrame = ui->speedWidget;
         cameraFrame->batteryFrame = ui->batteryWidget;
+        cameraFrame->setRobotOnline(true);
 
         return true;
     }

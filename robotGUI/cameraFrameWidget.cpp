@@ -14,7 +14,9 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
     offset = 10;
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    image2 = QImage(":/resource/Alarmy/warning_red.png");
+    imageWarnRed = QImage(":/resource/Alarmy/warning_red.png");
+    imageWarnYellow = QImage(":/resource/Alarmy/warning_yellow.png");
+    imageOnline = QImage(":/resource/Alarmy/online.png");
 }
 
 CameraFrameWidget::~CameraFrameWidget(){
@@ -174,21 +176,52 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
         image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
         painter.drawImage(rectangle,image.rgbSwapped());
         //painter.drawText(QPoint(300,300), "Hello");
-        painter.drawImage(QPoint(10,10), image2.scaled(100,100, Qt::KeepAspectRatio));
         setSpeedWidget();
         setBatteryWidget();
+        if(robotOnline){
+           painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
+        }
+        if(dispRedWarning){
+           dispYellowWarning = false;
+           painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
+        }
+        else if(dispYellowWarning){
+           dispRedWarning = false;
+           painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
+        }
     }
 }
+
+void CameraFrameWidget::setRobotOnline(bool newRobotOnline)
+{
+    robotOnline = newRobotOnline;
+}
+
+void CameraFrameWidget::setDispRedWarning(bool newDispRedWarning)
+{
+    dispRedWarning = newDispRedWarning;
+}
+
+void CameraFrameWidget::setDispYellowWarning(bool newDispYellowWarning)
+{
+    dispYellowWarning = newDispYellowWarning;
+}
+
 
 unsigned short CameraFrameWidget::getBatteryPercantage() const
 {
     return batteryPercantage;
 }
 
+void CameraFrameWidget::resetWarnings()
+{
+    dispRedWarning = dispYellowWarning = false;
+}
+
 void CameraFrameWidget::setBatteryLevel(const unsigned char newBatteryLevel)
 {
     batteryLevel = newBatteryLevel;
-    std::cout << "Battery level = " << batteryLevel << std::endl;
+    //std::cout << "Battery level = " << batteryLevel << std::endl;
 }
 
 void CameraFrameWidget::setV(float newV)

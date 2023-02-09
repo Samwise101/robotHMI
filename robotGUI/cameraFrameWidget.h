@@ -41,8 +41,13 @@ protected:
 
 private:
     double offset;
-    QImage image2;
-    float v;
+    QImage imageWarnRed;
+    QImage imageWarnYellow;
+    QImage imageOnline;
+    float v = 0.0;
+    bool robotOnline = false;
+    bool dispYellowWarning = false;
+    bool dispRedWarning = false;
     unsigned short batteryPercantage = 0;
     double tempSpeed = 0.0;
     unsigned short batteryLevel = 0;
@@ -53,6 +58,10 @@ public:
     void setV(float newV);
     void setBatteryLevel(const unsigned char newBatteryLevel);
     unsigned short getBatteryPercantage() const;
+    void resetWarnings();
+    void setDispYellowWarning(bool newDispYellowWarning);
+    void setDispRedWarning(bool newDispRedWarning);
+    void setRobotOnline(bool newRobotOnline);
 };
 
 #endif // CAMERAFRAMEWIDGET_H

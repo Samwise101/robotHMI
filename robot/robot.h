@@ -81,8 +81,11 @@ public:
     float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
     float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType);
     float avoidObstacleRegulator(double distToObst, double angleToObst);
+
     float getDistanceToGoal(int xGoal, int yGoal);
+
     float robotFullTurn(float goalAngle);
+
     void robotAtGoal();
 
     void setRobotPose(int xPos, int yPos, float orientation);
