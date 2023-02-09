@@ -80,7 +80,7 @@ public:
     void robotOdometry(TKobukiData &output);
     float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
     float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType);
-    float avoidObstacleRegulator(double distToObst, double angleToObst);
+    float avoidObstacleRegulator(double angleToObst);
 
     float getDistanceToGoal(int xGoal, int yGoal);
 
@@ -128,10 +128,10 @@ private:
 
     float eToGoalAngle;
 
-    float Kp3 = 0.7;
+    float Kp3 = 0.65;
     float Kp2 = 0.6;
     float Kp = 1;
-    float KpTurn = 0.4;
+    float KpTurn = 0.45;
 
     bool atGoal = false;
 

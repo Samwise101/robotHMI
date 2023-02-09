@@ -85,9 +85,13 @@ int MainWindow::processRobot(TKobukiData robotData){
                 cameraFrame->setDispYellowWarning(true);
             }
 
-            if(mapFrame->getShortestDistanceLidar() < 450.0 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
+            if(mapFrame->getShortestDistanceLidar() < 450.0 &&
+              ((mapFrame->getShortestDistanceLidarAngle() >= 3*PI/2.0 && mapFrame->getShortestDistanceLidarAngle() <= 2.0*PI) ||
+               (mapFrame->getShortestDistanceLidarAngle() >= 0.0 && mapFrame->getShortestDistanceLidarAngle() <= PI/2.0))
+               && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 350.0){
+
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
-                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getShortestDistanceLidarAngle());
+                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidarAngle());
             }
             else{
                 cameraFrame->resetWarnings();

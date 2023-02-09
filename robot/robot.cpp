@@ -436,39 +436,19 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
     return v;
 }
 
-float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
+float Robot::avoidObstacleRegulator(double angleToObst)
 {
-    std::cout << "Shortest=" << distToObst << std::endl;
-    //xDistObst = distToObst*std::cos(angleToObst);
-    //yDistObst = distToObst*std::sin(angleToObst);
-
-    xDistObst = (x + distToObst/10*sin((2*PI-(angleToObst)+PI/2)+theta));
-    yDistObst = (y + distToObst/10*cos((2*PI-(angleToObst)+PI/2)+theta));
-
-    eXObst = (xDistObst - x)/100;
-    eYObst = -1*(yDistObst - y)/100;
-
-    thetaToObst = std::atan2(eYObst, eXObst);
-    eThetaToObst = theta - thetaToObst;
-   // eThetaToObst = thetaToObst - theta;
-    eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
-    std::cout << "eXObst=" << eXObst << ", eYObst=" << eYObst << ", theta=" << theta <<  ", thetaToObst=" << thetaToObst << ", eThetaToObst=" << eThetaToObst << std::endl;
-
-
-    if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
-       eThetaToObst = eThetaToObst + PI/2;
+    if(angleToObst >= 0.0 && angleToObst <= PI/2){
+       eThetaToObst = angleToObst + PI/2;
+       w = Kp3*eThetaToObst;
     }
-    else if(eThetaToObst > PI/2 && eThetaToObst <= PI){
-       eThetaToObst = eThetaToObst - PI/2;
+    else if(angleToObst >= 3*PI/2 && angleToObst <= 2*PI){
+       eThetaToObst = angleToObst - PI/2;
+       w = Kp3*eThetaToObst;
     }
-    else if(eThetaToObst < 0.0 && eThetaToObst > -PI/2){
-       eThetaToObst = eThetaToObst - PI/2;
+    else{
+       w = 0;
     }
-    else if(eThetaToObst < -PI/2 && eThetaToObst >= -PI){
-       eThetaToObst = eThetaToObst + PI/2;
-    }
-
-    w = Kp3*eThetaToObst;
 
     if(w > 2.0){
         w = 2.0;
@@ -477,7 +457,7 @@ float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
         w = -2.0;
     }
 
-   // std::cout << "distToObst=" << distToObst << ", angleToObst=" << angleToObst << ", theta= " << theta <<  ", eAngleToObst=" << eAngleToObst << std::endl;
+    std::cout << "angleToObst=" << angleToObst*180/PI  << std::endl;
     return w;
 }
 
