@@ -62,13 +62,7 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
-    if(v < 0.0){
-       ui->speedLabel->setText(QString::number(0) + " mm/s");
-    }
-    else{
-       ui->speedLabel->setText(QString::number(v) + " mm/s");
-    }
-
+    ui->speedLabel->setText(QString::number(v) + " mm/s");
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
@@ -85,14 +79,14 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
-            if(mapFrame->getShortestDistanceLidar() <= 350.0){
+            if(mapFrame->getShortestDistanceLidar() <= 400.0){
                cameraFrame->setDispRedWarning(true);
             }
-            else if(mapFrame->getShortestDistanceLidar() <= 450.0){
+            else if(mapFrame->getShortestDistanceLidar() <= 500.0){
                 cameraFrame->setDispYellowWarning(true);
             }
 
-            if(mapFrame->getShortestDistanceLidar() < 450.0 &&
+            if(mapFrame->getShortestDistanceLidar() < 500.0 &&
               ((mapFrame->getShortestDistanceLidarAngle() >= 3*PI/2.0 && mapFrame->getShortestDistanceLidarAngle() <= 2.0*PI) ||
                (mapFrame->getShortestDistanceLidarAngle() >= 0.0 && mapFrame->getShortestDistanceLidarAngle() <= PI/2.0))
                && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 350.0){
@@ -292,6 +286,7 @@ bool MainWindow::setupConnectionToRobot(){
     if(!ipAddress.empty()){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
+        v = 0.0;
 
         std::cout << "Connected!" << std::endl;
         robot = new Robot(ipAddress);

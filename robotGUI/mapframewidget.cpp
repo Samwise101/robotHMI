@@ -10,6 +10,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
+    placeGoals = false;
     pointType = 1;
     pointColor = Qt::yellow;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -92,7 +93,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 }
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
-    if(canTriggerEvents){
+    if(canTriggerEvents && placeGoals){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10){
            points.insert(points.begin(), RobotGoal(event->x(), event->y(), this->pointType, this->pointColor));
@@ -193,4 +194,8 @@ int MapFrameWidget::getGoalType()
     return points[points.size()-1].getType();
 }
 
+void MapFrameWidget::setPlaceGoals(bool newPlaceGoals)
+{
+    placeGoals = newPlaceGoals;
+}
 

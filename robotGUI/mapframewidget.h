@@ -58,6 +58,8 @@ public:
 
     void setPointType(int newPointType);
 
+    void setPlaceGoals(bool newPlaceGoals);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -65,6 +67,8 @@ private:
     std::vector<RobotGoal> points;
     int pointType;
     QColor pointColor;
+
+    bool placeGoals;
 
     double lidarDist = 0;
     int xp = 0;
