@@ -92,6 +92,9 @@ private:
     float omega;
     float v;
 
+    float uhloprieckaCamera = 0.0;
+    float uhloprieckaMapa = 0.0;
+
     int goalIndex = 1;
     int switchIndex = 0;
 

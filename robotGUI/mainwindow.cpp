@@ -149,11 +149,6 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
-    /*
-    if(robotRotationalSpeed > -0.2 && robotRotationalSpeed < 0.2)
-        robotRotationalSpeed = 0.0;
-*/
-    //std::cout << "v=" << v << ", w=" << omega << std::endl;
 /*
     if(robotForwardSpeed == 0.0 && robotRotationalSpeed != 0.0){
        // std::cout << "Rotation!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
@@ -451,8 +446,8 @@ void MainWindow::on_zmenTypBoduButton_clicked()
 
 void MainWindow::on_switchButton_clicked()
 {
-    std::cout << "Camera widget [width, height]=[" << cameraFrame->width() << ", " << cameraFrame->height() << std::endl;
-    std::cout << "Map widget [width, height]=[" << mapFrame->width() << ", " << mapFrame->height() << std::endl;
+    std::cout << "Camera widget [width, height]=[" << cameraFrame->width() << ", " << cameraFrame->height() << "]" << std::endl;
+    std::cout << "Map widget [width, height]=[" << mapFrame->width() << ", " << mapFrame->height() << "]" << std::endl;
 
     if(switchIndex == 0){
         ui->cameraWidget->removeWidget(cameraFrame);
@@ -460,7 +455,10 @@ void MainWindow::on_switchButton_clicked()
         ui->cameraWidget->addWidget(mapFrame);
         ui->mapWidgetFrame->addWidget(cameraFrame);
 
-        mapFrame->setScale(0.7);
+        uhloprieckaCamera = std::sqrt(std::pow(cameraFrame->width(),2) + std::pow(cameraFrame->height(),2));
+        uhloprieckaMapa = std::sqrt(std::pow(mapFrame->width(),2) + std::pow(mapFrame->height(),2));
+
+        mapFrame->setScale(uhloprieckaCamera/uhloprieckaMapa);
         ui->switchButton->setText("Použi mapu");
         mapFrame->setPlaceGoals(false);
         ++switchIndex;

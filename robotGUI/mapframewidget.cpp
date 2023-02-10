@@ -79,7 +79,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
 
             if(rectangle.contains(xp,yp)){
-                if(scale != 1.0){
+                if(scale < 1.0){
                    painter.drawEllipse(QPoint(xp, yp),1,1);
                 }
                 else{
