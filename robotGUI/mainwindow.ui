@@ -342,7 +342,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
     <item row="2" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="8,5">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,9">
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,9,0">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -611,6 +611,19 @@ color:black</string>
           </item>
          </layout>
         </item>
+        <item>
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </item>
       <item>
@@ -719,7 +732,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1283</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
