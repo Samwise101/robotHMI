@@ -26,7 +26,7 @@ CameraFrameWidget::~CameraFrameWidget(){
 
 void CameraFrameWidget::setSpeedWidget()
 {
-    if(v == 0.0){
+    if(v == 0.0 || v < 0.0){
         speedFrame->setStyleSheet("background-color: silver; "
                                          "border-style:outset; "
                                          "border-radius: 10px;"

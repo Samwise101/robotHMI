@@ -22,16 +22,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     recordMission = false;
 
     dataCounter = 0;
+    switchIndex = 0;
 
     ui->setupUi(this);
 
     ui->addressField->setMaxLength(20);
 
     cameraFrame = new CameraFrameWidget();
-    ui->cameraFrame->addWidget(cameraFrame, 0, 1);
+    ui->cameraWidget->addWidget(cameraFrame, 0, 1);
 
     mapFrame = new MapFrameWidget();
-    ui->mapFrame->addWidget(mapFrame, 0, 2);
+    ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 }
 
 MainWindow::~MainWindow()
@@ -61,7 +62,13 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
-    ui->speedLabel->setText(QString::number(v) + " mm/s");
+    if(v < 0.0){
+       ui->speedLabel->setText(QString::number(0) + " mm/s");
+    }
+    else{
+       ui->speedLabel->setText(QString::number(v) + " mm/s");
+    }
+
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
@@ -388,12 +395,6 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 
 void MainWindow::on_zmazGoal_clicked()
 {
-    /*
-  if(!mapFrame->isGoalVectorEmpty()){
-     std::cout << "Hello:" << mapFrame->getGoalVectorSize()  << std::endl;
-     if(mapFrame->removeLastPoint())
-        std::cout << "Success:" << mapFrame->getGoalVectorSize()  << std::endl;
-  }*/
   mapFrame->removeAllPoints();
 }
 
@@ -423,6 +424,25 @@ void MainWindow::on_zmenTypBoduButton_clicked()
         ui->zmenTypBoduButton->setText("Cieľový\n bod");
         mapFrame->setPointColor(Qt::gray);
         mapFrame->setPointType(4);
+    }
+}
+
+
+void MainWindow::on_switchButton_clicked()
+{
+    if(switchIndex == 0){
+        ui->cameraWidget->removeWidget(cameraFrame);
+        ui->mapWidgetFrame->removeWidget(mapFrame);
+        ui->cameraWidget->addWidget(mapFrame);
+        ui->mapWidgetFrame->addWidget(cameraFrame);
+        ++switchIndex;
+    }
+    else if(switchIndex == 1){
+        ui->cameraWidget->removeWidget(mapFrame);
+        ui->mapWidgetFrame->removeWidget(cameraFrame);
+        ui->cameraWidget->addWidget(cameraFrame);
+        ui->mapWidgetFrame->addWidget(mapFrame);
+        --switchIndex;
     }
 }
 

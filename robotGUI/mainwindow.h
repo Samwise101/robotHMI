@@ -66,6 +66,8 @@ private slots:
 
     void on_zmenTypBoduButton_clicked();
 
+    void on_switchButton_clicked();
+
 private:
     std::string ipAddress = "127.0.0.1"; // pre simulaciu
     std::string cameraPort = "8889"; //pre simulaciu
@@ -91,6 +93,7 @@ private:
     float v;
 
     int goalIndex = 1;
+    int switchIndex = 0;
 
     TKobukiData robotdata;
 
