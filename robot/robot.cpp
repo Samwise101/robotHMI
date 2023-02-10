@@ -425,7 +425,7 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
         v = rampPosFunction(v);
     }
     else if(goalType == 1){
-        if(v >= 160.0)
+        if(v >= 260)
             v = v - 10;
     }
     else{
@@ -438,26 +438,28 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
 
 float Robot::avoidObstacleRegulator(double angleToObst)
 {
-    if(angleToObst >= 0.0 && angleToObst <= PI/2){
-       eThetaToObst = angleToObst + PI/2;
+    //std::cout << "Got angle=" << angleToObst << std::endl;
+    if(angleToObst >= 0.0 && angleToObst <= 90){
+       eThetaToObst = angleToObst*PI/180 + PI/2;
+       //std::cout << "angleToObst=" << angleToObst*PI/180  << std::endl;
        w = Kp3*eThetaToObst;
     }
-    else if(angleToObst >= 3*PI/2 && angleToObst <= 2*PI){
-       eThetaToObst = angleToObst - PI/2;
+    else if(angleToObst >= 270 && angleToObst <= 360){
+       eThetaToObst = angleToObst*PI/180 - PI/2;
+       //std::cout << "angleToObst=" << angleToObst*PI/180  << std::endl;
        w = Kp3*eThetaToObst;
     }
     else{
        w = 0;
     }
-
+/*
     if(w > 2.0){
         w = 2.0;
     }
     else if(w < -2.0){
         w = -2.0;
     }
-
-    std::cout << "angleToObst=" << angleToObst*180/PI  << std::endl;
+*/
     return w;
 }
 

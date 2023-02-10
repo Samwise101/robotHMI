@@ -30,7 +30,7 @@ public:
     void draw(QPainter* painter, QPaintEvent event);
     double getDistanceToFirstPoint();
     double getShortestDistanceLidar();
-    double getShortestDistanceLidarAngle();
+    double getLidarAngle();
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
@@ -60,6 +60,8 @@ public:
 
     void setPlaceGoals(bool newPlaceGoals);
 
+    void setScale(float newScale);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -69,8 +71,10 @@ private:
     QColor pointColor;
 
     bool placeGoals;
+    float scale = 1.0;
 
     double lidarDist = 0;
+
     int xp = 0;
     int yp = 0;
 

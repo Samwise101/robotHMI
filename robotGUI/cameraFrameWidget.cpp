@@ -192,6 +192,11 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
     }
 }
 
+void CameraFrameWidget::setScale(float newScale)
+{
+    scale = newScale;
+}
+
 void CameraFrameWidget::setRobotOnline(bool newRobotOnline)
 {
     robotOnline = newRobotOnline;

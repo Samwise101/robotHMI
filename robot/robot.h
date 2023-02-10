@@ -128,9 +128,9 @@ private:
 
     float eToGoalAngle;
 
-    float Kp3 = 0.65;
-    float Kp2 = 0.6;
-    float Kp = 1;
+    float Kp3 = 0.8;
+    float Kp2 = 0.7;
+    float Kp = 0.9;
     float KpTurn = 0.45;
 
     bool atGoal = false;
@@ -142,7 +142,7 @@ private:
     int nlCurr = 0;
     int nrCurr = 0;
 
-    double tempSpeed = 300.0;  //[mm/s]
+    double tempSpeed = 400.0;  //[mm/s]
 
     // [rad]
     float theta = 0;

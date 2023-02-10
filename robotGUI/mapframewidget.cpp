@@ -36,6 +36,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         robotPosition.setY(rectangle.height()/2);
         robotStartXPos = robotPosition.x();
         robotStartYPos = robotPosition.y();
+        realTheta = 0;
         robotInitialized = true;
     }
 
@@ -51,18 +52,21 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         pen.setColor(Qt::red);
         painter.setPen(pen);
 
+        robotPosition.setX(robotPosition.x()*scale);
+        robotPosition.setY(robotPosition.y()*scale);
+
         // kolesa = vzdialenost 230mm + 10mm = 24
-        painter.drawEllipse(robotPosition.x()-15, robotPosition.y()-15, 30, 30);
-        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta), robotPosition.y()-15*std::sin(realTheta));
+        painter.drawEllipse(robotPosition.x()-15*scale, robotPosition.y()-15*scale, 30*scale, 30*scale);
+        painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta)*scale, robotPosition.y()-15*std::sin(realTheta)*scale);
 
         shortestLidarDistance = 10000.0;
         for(int k=0;k<copyOfLaserData.numberOfScans;k++)
         {
             lidarDist=copyOfLaserData.Data[k].scanDistance;
-            //std::cout << "Lidar distance=" << lidarDist << std::endl;
             if(lidarDist < shortestLidarDistance && lidarDist > 0.0){
                 shortestLidarDistance = lidarDist;
-                shortestLidarAngle = copyOfLaserData.Data[k].scanAngle*PI/180;
+                shortestLidarAngle = copyOfLaserData.Data[k].scanAngle;
+                //std::cout << "Lidar angle=" << shortestLidarAngle << std::endl;
             }
 
             pen.setWidth(3);
@@ -70,12 +74,17 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             painter.setPen(pen);
 
             // 1000 mm = 100 bodov
-            lidarDist = lidarDist/10;
-            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta));
-            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta));
+            lidarDist = lidarDist/10*scale;
+            xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().x());
+            yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
 
             if(rectangle.contains(xp,yp)){
-                painter.drawEllipse(QPoint(xp, yp),2,2);
+                if(scale != 1.0){
+                   painter.drawEllipse(QPoint(xp, yp),1,1);
+                }
+                else{
+                    painter.drawEllipse(QPoint(xp, yp),2,2);
+                }
             }
         }
 
@@ -86,10 +95,15 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
                 pen.setColor(points[i].getColor());
                 painter.setPen(pen);
                 painter.setBrush(points[i].getColor());
-                painter.drawEllipse(points[i].x(), points[i].y(), 10, 10);
+                painter.drawEllipse(points[i].x()*scale, points[i].y()*scale, 10*scale, 10*scale);
             }
         }
     }
+}
+
+void MapFrameWidget::setScale(float newScale)
+{
+    scale = newScale;
 }
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
@@ -122,8 +136,6 @@ void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
 {
     robotPosition.setX(x);
     robotPosition.setY(y);
-    //robotRealX = x;
-    //robotRealY = y;
     realTheta = theta;
 }
 
@@ -154,7 +166,7 @@ double MapFrameWidget::getShortestDistanceLidar()
     return shortestLidarDistance;
 }
 
-double MapFrameWidget::getShortestDistanceLidarAngle()
+double MapFrameWidget::getLidarAngle()
 {
     return shortestLidarAngle;
 }

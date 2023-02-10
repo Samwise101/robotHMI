@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "alarmdialog.h"
-#include "qtimer.h"
 #include "ui_mainwindow.h"
 #include <qgridlayout.h>
 #include <iostream>
@@ -52,8 +51,15 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 
 int MainWindow::processRobot(TKobukiData robotData){
 
+    //std::cout << "Gyro angle = "<< robotData.GyroAngle/100 << std::endl; //<-32768, 32767>
+
     if(!robot->getInitilize()){
-        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0);
+        int initialTheta =  robotData.GyroAngle/100;
+        if(robotData.GyroAngle/100.0 < 0){
+            initialTheta = 360 + initialTheta;
+        }
+        std::cout << "initialTheta=" << initialTheta << std::endl;
+        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0 /*initialTheta*PI/180*/);
         robot->setInitilize(true);
     }
 
@@ -70,29 +76,31 @@ int MainWindow::processRobot(TKobukiData robotData){
 
             if(omega > 0.0 || omega < 0.0){
                 omega = robot->orientationRegulator(0, 0, false);
+                std::cout << "omega=" << omega << std::endl;
                 robotRotationalSpeed = omega;
             }
             if(v > 0.0){
                 v = robot->regulateForwardSpeed(0, 0, false, mapFrame->getGoalType());
+                std::cout << "v=" << v << std::endl;
                 robotForwardSpeed = v;
             }
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
-            if(mapFrame->getShortestDistanceLidar() <= 400.0){
+            if(mapFrame->getShortestDistanceLidar() <= 300.0){
                cameraFrame->setDispRedWarning(true);
             }
-            else if(mapFrame->getShortestDistanceLidar() <= 500.0){
+            else if(mapFrame->getShortestDistanceLidar() <= 400.0){
                 cameraFrame->setDispYellowWarning(true);
             }
 
-            if(mapFrame->getShortestDistanceLidar() < 500.0 &&
-              ((mapFrame->getShortestDistanceLidarAngle() >= 3*PI/2.0 && mapFrame->getShortestDistanceLidarAngle() <= 2.0*PI) ||
-               (mapFrame->getShortestDistanceLidarAngle() >= 0.0 && mapFrame->getShortestDistanceLidarAngle() <= PI/2.0))
-               && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 350.0){
+            if(mapFrame->getShortestDistanceLidar() < 400.0 &&
+              ((mapFrame->getLidarAngle() >= 270 && mapFrame->getLidarAngle() <= 360) ||
+               (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= 90))
+               && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
 
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
-                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidarAngle());
+                omega = robot->avoidObstacleRegulator(mapFrame->getLidarAngle());
             }
             else{
                 cameraFrame->resetWarnings();
@@ -141,20 +149,38 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
+    /*
+    if(robotRotationalSpeed > -0.2 && robotRotationalSpeed < 0.2)
+        robotRotationalSpeed = 0.0;
+*/
     //std::cout << "v=" << v << ", w=" << omega << std::endl;
-
-    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
-        std::cout << "Rotation!" << std::endl;
+/*
+    if(robotForwardSpeed == 0.0 && robotRotationalSpeed != 0.0){
+       // std::cout << "Rotation!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
         robot->setRotationSpeed(robotRotationalSpeed);
     }
-    else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
-        std::cout << "Translation!" << std::endl;
+    else if(robotForwardSpeed > 200.0 && robotRotationalSpeed == 0.0){
+        std::cout << "Translation!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
         robot->setTranslationSpeed(robotForwardSpeed);
     }
     else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
-        std::cout << "Arc!" << std::endl;
+        std::cout << "Arc!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
         robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
     }
+*/
+
+    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
+            std::cout << "Rotation!" << std::endl;
+            robot->setRotationSpeed(robotRotationalSpeed);
+        }
+    else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
+            std::cout << "Translation!" << std::endl;
+            robot->setTranslationSpeed(robotForwardSpeed);
+        }
+    else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
+            std::cout << "Arc!" << std::endl;
+            robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
+        }
 
     dataCounter++;
 
@@ -425,12 +451,16 @@ void MainWindow::on_zmenTypBoduButton_clicked()
 
 void MainWindow::on_switchButton_clicked()
 {
+    std::cout << "Camera widget [width, height]=[" << cameraFrame->width() << ", " << cameraFrame->height() << std::endl;
+    std::cout << "Map widget [width, height]=[" << mapFrame->width() << ", " << mapFrame->height() << std::endl;
+
     if(switchIndex == 0){
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
         ui->cameraWidget->addWidget(mapFrame);
         ui->mapWidgetFrame->addWidget(cameraFrame);
 
+        mapFrame->setScale(0.7);
         ui->switchButton->setText("Použi mapu");
         mapFrame->setPlaceGoals(false);
         ++switchIndex;
@@ -441,6 +471,7 @@ void MainWindow::on_switchButton_clicked()
         ui->cameraWidget->addWidget(cameraFrame);
         ui->mapWidgetFrame->addWidget(mapFrame);
 
+        mapFrame->setScale(1.0);
         ui->switchButton->setText("Použi kameru");
         mapFrame->setPlaceGoals(true);
         --switchIndex;

@@ -51,6 +51,7 @@ private:
     unsigned short batteryPercantage = 0;
     double tempSpeed = 0.0;
     unsigned short batteryLevel = 0;
+    float scale = 1.0;
 
 public:
 
@@ -62,6 +63,7 @@ public:
     void setDispYellowWarning(bool newDispYellowWarning);
     void setDispRedWarning(bool newDispRedWarning);
     void setRobotOnline(bool newRobotOnline);
+    void setScale(float newScale);
 };
 
 #endif // CAMERAFRAMEWIDGET_H
