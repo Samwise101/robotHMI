@@ -193,7 +193,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0">
             <item>
              <widget class="QCheckBox" name="checkBox">
               <property name="sizePolicy">
@@ -208,13 +208,13 @@ font: 12pt &quot;Segoe UI&quot;;</string>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_4">
+             <spacer name="horizontalSpacer_10">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>60</width>
+                <width>40</width>
                 <height>20</height>
                </size>
               </property>
@@ -222,6 +222,18 @@ font: 12pt &quot;Segoe UI&quot;;</string>
             </item>
             <item>
              <widget class="QPushButton" name="switchButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="styleSheet">
                <string notr="true">#switchButton{
 	background-color: silver;
@@ -249,19 +261,6 @@ font: 12pt &quot;Segoe UI&quot;;</string>
                <string>Použi kameru</string>
               </property>
              </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_8">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>60</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item>
              <widget class="QPushButton" name="zmazGoal">

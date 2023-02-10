@@ -430,6 +430,9 @@ void MainWindow::on_switchButton_clicked()
         ui->mapWidgetFrame->removeWidget(mapFrame);
         ui->cameraWidget->addWidget(mapFrame);
         ui->mapWidgetFrame->addWidget(cameraFrame);
+
+        ui->switchButton->setText("Použi mapu");
+        mapFrame->setPlaceGoals(false);
         ++switchIndex;
     }
     else if(switchIndex == 1){
@@ -437,6 +440,9 @@ void MainWindow::on_switchButton_clicked()
         ui->mapWidgetFrame->removeWidget(cameraFrame);
         ui->cameraWidget->addWidget(cameraFrame);
         ui->mapWidgetFrame->addWidget(mapFrame);
+
+        ui->switchButton->setText("Použi kameru");
+        mapFrame->setPlaceGoals(true);
         --switchIndex;
     }
 }

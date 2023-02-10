@@ -10,7 +10,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     offset = 10;
     updateLaserPicture = 0;
     canTriggerEvents = false;
-    placeGoals = false;
+    placeGoals = true;
     pointType = 1;
     pointColor = Qt::yellow;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
