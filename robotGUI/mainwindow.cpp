@@ -95,12 +95,12 @@ int MainWindow::processRobot(TKobukiData robotData){
             }
 
             if(mapFrame->getShortestDistanceLidar() < 400.0 &&
-              ((mapFrame->getLidarAngle() >= 270 && mapFrame->getLidarAngle() <= 360) ||
-               (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= 90))
+              ((mapFrame->getLidarAngle() >= 3*PI/2 && mapFrame->getLidarAngle() <= 2*PI) ||
+               (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= PI/2))
                && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
 
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
-                omega = robot->avoidObstacleRegulator(mapFrame->getLidarAngle());
+                omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getLidarAngle());
             }
             else{
                 cameraFrame->resetWarnings();
@@ -136,7 +136,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             else if(mapFrame->getGoalType() == 3){
-                this_thread::sleep_for(5000ms);
+                this_thread::sleep_for(2000ms);
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
             }
@@ -165,15 +165,15 @@ int MainWindow::processRobot(TKobukiData robotData){
 */
 
     if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
-            std::cout << "Rotation!" << std::endl;
+            //std::cout << "Rotation!" << std::endl;
             robot->setRotationSpeed(robotRotationalSpeed);
         }
     else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
-            std::cout << "Translation!" << std::endl;
+            //std::cout << "Translation!" << std::endl;
             robot->setTranslationSpeed(robotForwardSpeed);
         }
     else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
-            std::cout << "Arc!" << std::endl;
+            //std::cout << "Arc!" << std::endl;
             robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
         }
 

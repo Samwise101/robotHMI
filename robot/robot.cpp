@@ -436,23 +436,47 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
     return v;
 }
 
-float Robot::avoidObstacleRegulator(double angleToObst)
+float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
 {
-    //std::cout << "Got angle=" << angleToObst << std::endl;
+
+    xDistObst = (x + distToObst/10*sin((2*PI-(angleToObst)+PI/2)+theta));
+    yDistObst = (y + distToObst/10*cos((2*PI-(angleToObst)+PI/2)+theta));
+
+    eXObst = (xDistObst - x)/100;
+    eYObst = -1*(yDistObst - y)/100;
+
+    thetaToObst = std::atan2(eYObst, eXObst);
+    eThetaToObst = theta - thetaToObst;
+    eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
+
+    std::cout << "Angle=" << eThetaToObst*180/PI << std::endl;
+
+    if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
+           w = eThetaToObst + PI/2;
+    }
+    else if(eThetaToObst >= -PI/2 && eThetaToObst < 0.0){
+           w = eThetaToObst - PI/2;
+    }
+    else{
+        w = 0.0;
+    }
+
+    /*
+    std::cout << "Got angle=" << angleToObst << std::endl;
     if(angleToObst >= 0.0 && angleToObst <= 90){
        eThetaToObst = angleToObst*PI/180 + PI/2;
-       //std::cout << "angleToObst=" << angleToObst*PI/180  << std::endl;
+       std::cout << "Hello 1" << std::endl;
        w = Kp3*eThetaToObst;
     }
     else if(angleToObst >= 270 && angleToObst <= 360){
        eThetaToObst = angleToObst*PI/180 - PI/2;
-       //std::cout << "angleToObst=" << angleToObst*PI/180  << std::endl;
+       std::cout << "Hello 2" << std::endl;
        w = Kp3*eThetaToObst;
     }
     else{
        w = 0;
     }
-/*
+
     if(w > 2.0){
         w = 2.0;
     }
@@ -460,7 +484,7 @@ float Robot::avoidObstacleRegulator(double angleToObst)
         w = -2.0;
     }
 */
-    return w;
+    return Kp3*w;
 }
 
 float Robot::getDistanceToGoal(int xGoal, int yGoal)

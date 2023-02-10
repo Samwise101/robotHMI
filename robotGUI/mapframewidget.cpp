@@ -65,7 +65,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             lidarDist=copyOfLaserData.Data[k].scanDistance;
             if(lidarDist < shortestLidarDistance && lidarDist > 0.0){
                 shortestLidarDistance = lidarDist;
-                shortestLidarAngle = copyOfLaserData.Data[k].scanAngle;
+                shortestLidarAngle = copyOfLaserData.Data[k].scanAngle*PI/180;
                 //std::cout << "Lidar angle=" << shortestLidarAngle << std::endl;
             }
 
