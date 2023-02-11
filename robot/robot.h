@@ -128,7 +128,7 @@ private:
 
     float eToGoalAngle;
 
-    float Kp3 = 1.2;
+    float Kp3 = 1.0;
     float Kp2 = 0.7;
     float Kp = 0.9;
     float KpTurn = 0.45;

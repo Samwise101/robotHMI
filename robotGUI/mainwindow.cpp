@@ -149,21 +149,6 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
-/*
-    if(robotForwardSpeed == 0.0 && robotRotationalSpeed != 0.0){
-       // std::cout << "Rotation!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
-        robot->setRotationSpeed(robotRotationalSpeed);
-    }
-    else if(robotForwardSpeed > 200.0 && robotRotationalSpeed == 0.0){
-        std::cout << "Translation!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
-        robot->setTranslationSpeed(robotForwardSpeed);
-    }
-    else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
-        std::cout << "Arc!  v=" << robotForwardSpeed << ", w=" << robotRotationalSpeed << std::endl;
-        robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
-    }
-*/
-
     if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
             //std::cout << "Rotation!" << std::endl;
             robot->setRotationSpeed(robotRotationalSpeed);

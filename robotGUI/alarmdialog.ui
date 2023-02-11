@@ -136,7 +136,7 @@ color:#ffffff;</string>
 color:#ffffff;</string>
       </property>
       <property name="text">
-       <string>- </string>
+       <string>- Robot veľmi blízko prekážky</string>
       </property>
      </widget>
     </item>
@@ -166,7 +166,7 @@ color:#ffffff;</string>
 color:#ffffff;</string>
       </property>
       <property name="text">
-       <string>- </string>
+       <string>- Robot blízko prekážky</string>
       </property>
      </widget>
     </item>
