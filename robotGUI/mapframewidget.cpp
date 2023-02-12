@@ -13,6 +13,8 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     placeGoals = true;
     pointType = 1;
     pointColor = Qt::yellow;
+    imageWidth = this->size().width() - offset;
+    imageHeight = this->size().height() - offset;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
@@ -34,9 +36,9 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
     if(!robotInitialized){
         robotPosition.setX(rectangle.width()/2);
         robotPosition.setY(rectangle.height()/2);
-        robotStartXPos = robotPosition.x();
-        robotStartYPos = robotPosition.y();
         realTheta = 0;
+        imageWidth = this->size().width() - offset;
+        imageHeight = this->size().height() - offset;
         robotInitialized = true;
     }
 
@@ -88,8 +90,6 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             }
         }
 
-
-
         if(!points.empty()){
             for(int i = 0; i < points.size(); i++){
                 pen.setColor(points[i].getColor());
@@ -99,6 +99,48 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             }
         }
     }
+}
+
+
+QImage MapFrameWidget::createImage()
+{
+    QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
+    QImage testImage(QSize(imageWidth, imageHeight),QImage::Format_RGB32);
+
+    QPainter painter2(&testImage);
+    QPen pen;
+
+    pen.setWidth(2);
+    pen.setColor(Qt::red);
+    painter2.setPen(pen);
+    painter2.setBrush(Qt::red);
+    painter2.drawEllipse(robotImagePos.x()-3, robotImagePos.y()-3, 6, 6);
+
+    if(robotPositionInTime.size() > 1){
+        for(int i = 0; i < robotPositionInTime.size() - 1; i++){
+            pen.setWidth(4);
+            painter2.drawLine(robotPositionInTime[i].x(), robotPositionInTime[i].y(), robotPositionInTime[i+1].x(), robotPositionInTime[i+1].y());
+        }
+
+    }
+
+    for(int k=0;k<copyOfLaserData.numberOfScans;k++)
+    {
+
+        pen.setWidth(3);
+        pen.setColor(Qt::green);
+        painter2.setPen(pen);
+
+        lidarDistImage = copyOfLaserData.Data[k].scanDistance/10;
+        xp2 = (robotImagePos.x() + lidarDistImage*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().x());
+        yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
+
+        if(rectTest.contains(xp2,yp2)){
+           painter2.drawEllipse(QPoint(xp2, yp2),2,2);
+        }
+    }
+
+    return testImage;
 }
 
 void MapFrameWidget::setScale(float newScale)
@@ -136,7 +178,14 @@ void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
 {
     robotPosition.setX(x);
     robotPosition.setY(y);
+    robotImagePos.setX(x);
+    robotImagePos.setY(y);
     realTheta = theta;
+    if(capFreq % 20 == 0){
+       robotPositionInTime.push_back(QPoint(x,y));
+       capFreq = 0;
+    }
+    capFreq++;
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){

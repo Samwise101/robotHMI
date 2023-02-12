@@ -172,10 +172,8 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
 
 
     if(updateCameraPicture == 1){
-        std::cout<<actIndex<<std::endl;
         image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
-        painter.drawImage(rectangle,image.rgbSwapped());
-        //painter.drawText(QPoint(300,300), "Hello");
+        painter.drawImage(rectangle,image.rgbSwapped());;
         setSpeedWidget();
         setBatteryWidget();
         if(robotOnline){

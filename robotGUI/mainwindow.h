@@ -79,6 +79,9 @@ private:
 
     bool alarmSet = false;
 
+    cv::VideoWriter* video;
+    QImage image;
+
     int dataCounter;
 
     float goalAngle;
@@ -89,8 +92,8 @@ private:
     bool robotConnected;
     bool robotRunning;
 
-    float omega;
-    float v;
+    float omega = 0.0f;
+    float v = 0.0f;
 
     float uhloprieckaCamera = 0.0;
     float uhloprieckaMapa = 0.0;

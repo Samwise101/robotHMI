@@ -28,7 +28,7 @@ public:
     void setSpeedWidget();
     void setBatteryWidget();
     int updateCameraPicture;
-    int actIndex;
+    int actIndex=-1;
     QImage image;
 
     QFrame* speedFrame;

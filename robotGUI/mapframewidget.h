@@ -62,27 +62,35 @@ public:
 
     void setScale(float newScale);
 
+    QImage createImage();
+    int imageHeight = 0;
+    int imageWidth = 0;
+
+
 protected:
     void paintEvent(QPaintEvent* event);
 
 private:
+    QPoint robotImagePos;
+    std::vector<QPoint> robotPositionInTime;
+
     std::vector<RobotGoal> points;
     int pointType;
     QColor pointColor;
 
     bool placeGoals;
-    float scale = 1.0;
+    float scale = 1.0f;
 
     double lidarDist = 0;
+    double lidarDistImage = 0.0;
 
     int xp = 0;
     int yp = 0;
 
-    int xLast;
-    int yLast;
+    int capFreq = 0;
 
-    int robotStartXPos;
-    int robotStartYPos;
+    int xp2 = 0;
+    int yp2 = 0;
 
     float realTheta;
     double shortestLidarDistance = 10000.0;

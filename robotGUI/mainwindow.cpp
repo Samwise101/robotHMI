@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     dataCounter = 0;
     switchIndex = 0;
 
+    video = new cv::VideoWriter("outcpp_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(640,640), true);
+
     ui->setupUi(this);
 
     ui->addressField->setMaxLength(20);
@@ -36,9 +38,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
 MainWindow::~MainWindow()
 {
+    delete video;
+
+    if(robotConnected)
+        delete robot;
+
     delete cameraFrame;
     delete mapFrame;
-    delete robot;
     delete ui;
 }
 
@@ -63,6 +69,14 @@ int MainWindow::processRobot(TKobukiData robotData){
         robot->setInitilize(true);
     }
 
+    if(recordMission && video->isOpened()){
+        image = mapFrame->createImage();
+        cv::Mat frame = cv::Mat(image.height(), image.width(), CV_8UC4, image.bits(), image.bytesPerLine());
+        cv::resize(frame,frame,cv::Size(640,640));
+        std::cout << "Image size2 = [" << image.width() << ", " << image.height() << "]" << std::endl;
+        video->write(frame);
+    }
+
     robot->robotOdometry(robotData);
 
     cameraFrame->setBatteryLevel(robotData.Battery);
@@ -80,7 +94,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             if(v > 0.0){
-                v = robot->regulateForwardSpeed(0, 0, false, mapFrame->getGoalType());
+                v = robot->regulateForwardSpeed(0, 0, false, 0);
                 std::cout << "v=" << v << std::endl;
                 robotForwardSpeed = v;
             }
@@ -385,11 +399,11 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
     std::cout << "Hello from checkbox" << std::endl;
     if(arg1 && cameraFrame->updateCameraPicture == 1){
         recordMission = true;
-        //int frameWidth = cameraFrame->image->
-        //int frameHeight =
+        video->open("outcpp_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(640,640), true);
     }
     else{
         recordMission = false;
+        video->release();
     }
 }
 
