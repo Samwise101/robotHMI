@@ -7,6 +7,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <thread>
+#include <fstream>
+#include <iostream>
+#include <string.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -19,12 +22,10 @@
 #include "alarmdialog.h"
 #include "cameraFrameWidget.h"
 #include "mapframewidget.h"
-#include <iostream>
-#include <string.h>
-
 #include "robot.h"
 
 static bool isFinished = false;
+static bool isFinished2 = false;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,7 +45,8 @@ public:
     int processLidar(LaserMeasurement laserData);
     int processCamera(cv::Mat cameraData);
     int processRobot(TKobukiData robotData);
-    void doWork();
+    void recordCamera();
+    void recordMap();
 
 private slots:
 
@@ -80,11 +82,19 @@ private:
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
+    float timepassed = 0.0f;
+    float timepassed2 = 0.0f;
+
+    fstream mapFile;
 
     std::thread worker;
-    bool threadStarted;
+    bool workerStarted;
+
+    std::thread worker2;
+    bool worker2Started;
 
     bool alarmSet = false;
+    bool videoCreated = false;
 
     cv::VideoWriter* video;
     QImage image;

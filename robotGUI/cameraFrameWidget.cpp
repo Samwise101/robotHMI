@@ -17,8 +17,6 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 }
 
 CameraFrameWidget::~CameraFrameWidget(){
-    delete writer;
-    delete timer;
     delete batteryFrame;
     delete speedFrame;
 }

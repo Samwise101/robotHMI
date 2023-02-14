@@ -38,10 +38,6 @@ public:
 
     cv::Mat frame[3];
 
-    bool canWriteVideo;
-    cv::VideoWriter*  writer;
-    QTimer* timer;
-
 protected:
     void paintEvent(QPaintEvent* event);
 

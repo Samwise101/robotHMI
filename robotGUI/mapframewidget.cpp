@@ -69,7 +69,6 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         robotPosition.setX(robotPosition.x()*scale);
         robotPosition.setY(robotPosition.y()*scale);
 
-        // kolesa = vzdialenost 230mm + 10mm = 24
         painter.drawEllipse(robotPosition.x()-15*scale, robotPosition.y()-15*scale, 30*scale, 30*scale);
         painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta)*scale, robotPosition.y()-15*std::sin(realTheta)*scale);
 

@@ -112,7 +112,12 @@ public:
 
     double getTempSpeed() const;
 
+
+    double getFps() const;
+
 private:
+
+    double fps = 0.0;
 
     float Kp3 = 0.7f;
     float Kp2 = 0.7f;

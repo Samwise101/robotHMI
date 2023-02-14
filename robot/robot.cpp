@@ -248,6 +248,7 @@ void Robot::imageViewer()
 {
     cv::VideoCapture cap;
     cap.open(camera_link);
+    fps = cap.get(cv::CAP_PROP_FPS);
     cv::Mat frameBuf;
     while(1)
     {
@@ -615,3 +616,9 @@ double Robot::getTempSpeed() const
 {
     return tempSpeed;
 }
+
+double Robot::getFps() const
+{
+    return fps;
+}
+

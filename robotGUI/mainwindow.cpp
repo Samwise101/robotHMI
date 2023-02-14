@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     dataCounter = 0;
     switchIndex = 0;
 
-    threadStarted = false;
+    workerStarted = false;
+    worker2Started = false;
 
     ui->setupUi(this);
 
@@ -34,20 +35,22 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     mapFrame = new MapFrameWidget();
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
-
-    video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 20, cv::Size(640,640), true);
 }
 
 MainWindow::~MainWindow()
 {
-    if(threadStarted && !isFinished){
+    if(workerStarted && !isFinished){
         isFinished = true;
-        std::cout << "thread finished\n";
-        video->release();
+        std::cout << "camera recording thread finished\n";
         worker.join();
+        delete video;
     }
 
-    delete video;
+    if(worker2Started && !isFinished2){
+        isFinished2 = true;
+        std::cout << "map recording thread finished\n";
+        worker2.join();
+    }
 
     if(robotConnected)
         delete robot;
@@ -189,18 +192,32 @@ int MainWindow::processRobot(TKobukiData robotData){
     return 0;
 }
 
-void MainWindow::doWork()
+void MainWindow::recordCamera()
 {
-
-    video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, cv::Size(640,640), true);
+    video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, cv::Size(640,640), true);
 
     while(!isFinished && video->isOpened()){
-        std::cout << "Working..." << std::endl;
-        frame = this->cameraFrame->getCameraFrame();
+        frame = cameraFrame->getCameraFrame();
         frame.resize(640,640);
         video->write(frame);
-        this_thread::sleep_for(20ms);
+        this_thread::sleep_for(10ms);
+        timepassed += 10;
     }
+    video->release();
+}
+
+void MainWindow::recordMap()
+{
+    if(!mapFile.is_open()){
+        mapFile.open("mapLog.txt", ios::out);
+    }
+
+    while(!isFinished2 && mapFile.is_open()){
+        mapFile << "HELLO, " << timepassed2 << "ms passed\n";
+        this_thread::sleep_for(10ms);
+        timepassed2 += 10;
+    }
+    mapFile.close();
 }
 
 int MainWindow::processCamera(cv::Mat cameraData){
@@ -417,13 +434,22 @@ bool MainWindow::getIpAddress()
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-    std::cout << "Hello from checkbox" << std::endl;
+    std::cout << "Frame width="  << mapFrame->imageWidth << ", frame height=" <<  mapFrame->imageHeight << std::endl;
     if(arg1 && cameraFrame->updateCameraPicture == 1){
-        if(robotConnected && !threadStarted){
+        if(robotConnected && !workerStarted){
            recordMission = true;
-           threadStarted = true;
-           std::function<void(void)> func =std::bind(&MainWindow::doWork, this);
+           workerStarted = true;
+           if(!videoCreated){
+                video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, cv::Size(640,640), true);
+                videoCreated = true;
+           }
+           std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
            worker = std::thread(func);
+        }
+        if(robotConnected && !worker2Started){
+            worker2Started = true;
+            std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
+            worker2 = std::thread(func);
         }
     }
     else{
