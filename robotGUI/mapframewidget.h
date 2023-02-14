@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <vector>
+#include <fstream>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -62,7 +63,7 @@ public:
 
     QPoint robotPosition;
 
-    QImage createImage();
+    void createFrameLog(float& timepassed, fstream& file);
 
     int imageHeight = 0;
     int imageWidth = 0;
@@ -94,6 +95,7 @@ private:
 
     int xp2 = 0;
     int yp2 = 0;
+    int number = 0;
 
     int sectionsX = 0;
     int sectionsY = 0;

@@ -114,45 +114,35 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 }
 
 
-QImage MapFrameWidget::createImage()
+void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
-    QImage testImage(QSize(imageWidth, imageHeight),QImage::Format_RGB32);
 
-    QPainter painter2(&testImage);
-    QPen pen;
+    file << timepassed << ";" << robotImagePos.x() << "," << robotImagePos.y() << ";";
 
-    pen.setWidth(2);
-    pen.setColor(Qt::red);
-    painter2.setPen(pen);
-    painter2.setBrush(Qt::red);
-    painter2.drawEllipse(robotImagePos.x()-3, robotImagePos.y()-3, 6, 6);
+    robotPositionInTime.push_back(QPoint(robotImagePos.x(),robotImagePos.y()));
 
-    if(robotPositionInTime.size() > 1){
-        for(int i = 0; i < robotPositionInTime.size() - 1; i++){
-            pen.setWidth(4);
-            painter2.drawLine(robotPositionInTime[i].x(), robotPositionInTime[i].y(), robotPositionInTime[i+1].x(), robotPositionInTime[i+1].y());
-        }
-
+    for(int i = 0; i < robotPositionInTime.size(); i++){;
+        file << robotPositionInTime[i].x() <<  "," << robotPositionInTime[i].y();
     }
+
+    if(!robotPositionInTime.empty()){
+       file << ";";
+    }
+
+    number = 0;
 
     for(int k=0;k<copyOfLaserData.numberOfScans;k++)
     {
-
-        pen.setWidth(3);
-        pen.setColor(Qt::green);
-        painter2.setPen(pen);
-
         lidarDistImage = copyOfLaserData.Data[k].scanDistance/10;
         xp2 = (robotImagePos.x() + lidarDistImage*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().x());
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
-        if(rectTest.contains(xp2,yp2)){
-           painter2.drawEllipse(QPoint(xp2, yp2),2,2);
+        if(rectTest.contains(xp2,yp2) && number<10){
+           file << xp2 << "," << yp2;
         }
     }
-
-    return testImage;
+    file << "\n";
 }
 
 void MapFrameWidget::setScale(float newScale)
@@ -193,11 +183,6 @@ void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta
     robotImagePos.setX(x);
     robotImagePos.setY(y);
     realTheta = theta;
-    if(capFreq % 20 == 0){
-       robotPositionInTime.push_back(QPoint(x,y));
-       capFreq = 0;
-    }
-    capFreq++;
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){

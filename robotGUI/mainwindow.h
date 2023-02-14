@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
+#include <QFileDialog>
 #include <thread>
 #include <fstream>
 #include <iostream>
@@ -86,6 +87,9 @@ private:
     float timepassed2 = 0.0f;
 
     fstream mapFile;
+    fstream replayFile;
+
+    QFileDialog dialog;
 
     std::thread worker;
     bool workerStarted;

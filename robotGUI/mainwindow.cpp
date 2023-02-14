@@ -213,9 +213,9 @@ void MainWindow::recordMap()
     }
 
     while(!isFinished2 && mapFile.is_open()){
-        mapFile << "HELLO, " << timepassed2 << "ms passed\n";
-        this_thread::sleep_for(10ms);
-        timepassed2 += 10;
+        mapFrame->createFrameLog(timepassed2, mapFile);
+        this_thread::sleep_for(200ms);
+        timepassed2 += 0.2;
     }
     mapFile.close();
 }
@@ -392,11 +392,20 @@ void MainWindow::on_replayMissionButton_clicked()
 {
     std::cout << "Mission before:  " << missionRunning << std::endl;
 
-    if(robotConnected){
+    if(!robotConnected){
         if(!missionLoaded){
             if(!missionRunning){
                 missionRunning = true;
-                std::cout << "Mission: " << missionRunning << std::endl;
+
+                QString s = dialog.getOpenFileName(this, "Select a file to open...", QDir::homePath());
+                replayFile.open(s.toStdString(), ios::in);
+
+                if(replayFile.is_open()){
+                    std::string line;
+                    std::getline(replayFile, line);
+                    std::cout << "First line: " << line << std::endl;
+                }
+
                 ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
                                                        "silver;border-style:outset;border-radius: "
                                                        "10px;border-color:black;border-width:4px;padding: "
@@ -406,7 +415,6 @@ void MainWindow::on_replayMissionButton_clicked()
                }
             else{
                 missionRunning = false;
-                std::cout << "Mission: " << missionRunning << std::endl;
                 ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
                                                        "silver;border-style:outset;border-radius: "
                                                        "10px;border-color:black;border-width:4px;padding: "
