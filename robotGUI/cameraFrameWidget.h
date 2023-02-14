@@ -37,6 +37,7 @@ public:
     QFrame* batteryFrame;
 
     cv::Mat frame[3];
+    cv::Mat replayFrame;
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -46,6 +47,7 @@ private:
     QImage imageWarnRed;
     QImage imageWarnYellow;
     QImage imageOnline;
+    cv::VideoCapture cap;
     double v = 0.0;
     bool robotOnline = false;
     bool dispYellowWarning = false;
@@ -54,6 +56,7 @@ private:
     double tempSpeed = 0.0;
     unsigned short batteryLevel = 0;
     float scale = 1.0f;
+    bool missionLoaded = false;
 
 public:
 
@@ -66,6 +69,9 @@ public:
     void setDispRedWarning(bool newDispRedWarning);
     void setRobotOnline(bool newRobotOnline);
     void setScale(float newScale);
+    void setCap(const cv::VideoCapture &newCap);
+    void setReplayFrame(const cv::Mat &newReplayFrame);
+    void setMissionLoaded(bool newMissionLoaded);
 };
 
 #endif // CAMERAFRAMEWIDGET_H

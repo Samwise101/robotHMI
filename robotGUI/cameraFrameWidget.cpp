@@ -29,23 +29,41 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
 
 
     if(updateCameraPicture == 1){
-        image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
-        painter.drawImage(rectangle,image.rgbSwapped());;
-        setSpeedWidget();
-        setBatteryWidget();
 
-        if(robotOnline){
-           painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
+        if(!missionLoaded){
+              image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888);
+              setSpeedWidget();
+              setBatteryWidget();
+
+              if(robotOnline){
+                 painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
+              }
+              if(dispRedWarning){
+                 dispYellowWarning = false;
+                 painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
+              }
+              else if(dispYellowWarning){
+                 dispRedWarning = false;
+                 painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
+              }
         }
-        if(dispRedWarning){
-           dispYellowWarning = false;
-           painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
+        else{
+            cv::Mat dest;
+            cv::resize(replayFrame, dest, cv::Size(rectangle.width(), rectangle.height()));
+            image = QImage((uchar*)replayFrame.data, replayFrame.cols, replayFrame.rows, replayFrame.step, QImage::Format_RGB888);
         }
-        else if(dispYellowWarning){
-           dispRedWarning = false;
-           painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
-        }
+        painter.drawImage(rectangle,image.rgbSwapped());;
     }
+}
+
+void CameraFrameWidget::setMissionLoaded(bool newMissionLoaded)
+{
+    missionLoaded = newMissionLoaded;
+}
+
+void CameraFrameWidget::setCap(const cv::VideoCapture &newCap)
+{
+    cap = newCap;
 }
 
 void CameraFrameWidget::setSpeedWidget()

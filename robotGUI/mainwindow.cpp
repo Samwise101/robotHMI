@@ -52,6 +52,16 @@ MainWindow::~MainWindow()
         worker2.join();
     }
 
+    if(workerStarted && missionLoaded){
+        std::cout << "camera replay thread finished\n";
+        worker.join();
+    }
+
+    if(worker2Started && missionLoaded){
+        std::cout << "map replay thread finished\n";
+        worker2.join();
+    }
+
     if(robotConnected)
         delete robot;
 
@@ -136,7 +146,6 @@ int MainWindow::processRobot(TKobukiData robotData){
             robotRotationalSpeed = omega;
             robotForwardSpeed = v;
 
-
             if(mapFrame->getGoalType() == 1){
                 if(robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) < 100.0){
                    robot->setAtGoal(true);
@@ -194,37 +203,71 @@ int MainWindow::processRobot(TKobukiData robotData){
 
 void MainWindow::recordCamera()
 {
-    video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, cv::Size(640,640), true);
+    if(!missionLoaded){
+        video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, cv::Size(640,640), true);
 
-    while(!isFinished && video->isOpened()){
-        frame = cameraFrame->getCameraFrame();
-        frame.resize(640,640);
-        video->write(frame);
-        this_thread::sleep_for(10ms);
-        timepassed += 10;
+        while(!isFinished && video->isOpened()){
+            frame = cameraFrame->getCameraFrame();
+            cv::Mat dest;
+            cv::resize(frame, dest, cv::Size(640,640));
+            video->write(dest);
+            this_thread::sleep_for(10ms);
+            timepassed += 10;
+        }
+        video->release();
     }
-    video->release();
+    else{
+        cameraFrame->setMissionLoaded(true);
+        cv::VideoCapture cap(s1.toStdString());
+        if(!cap.isOpened()){
+            std::cout << "Could not open the video file" << std::endl;
+        }
+
+        while(cap.isOpened()){
+            if(!cap.read(cameraFrame->replayFrame)){
+                break;
+            }
+            //cv::imshow("Frame", cameraFrame->replayFrame);
+            cameraFrame->updateCameraPicture=1;
+            cameraFrame->update();
+        }
+        cameraFrame->setMissionLoaded(false);
+    }
 }
 
 void MainWindow::recordMap()
 {
-    if(!mapFile.is_open()){
-        mapFile.open("mapLog.txt", ios::out);
-    }
+    if(!missionLoaded){
+        if(!mapFile.is_open()){
+            mapFile.open("mapLog.txt", ios::out);
+        }
 
-    while(!isFinished2 && mapFile.is_open()){
-        mapFrame->createFrameLog(timepassed2, mapFile);
-        this_thread::sleep_for(200ms);
-        timepassed2 += 0.2;
+        while(!isFinished2 && mapFile.is_open()){
+            mapFrame->createFrameLog(timepassed2, mapFile);
+            this_thread::sleep_for(200ms);
+            timepassed2 += 0.2;
+        }
+        mapFile.close();
     }
-    mapFile.close();
+    else{
+        replayFile.open(s2.toStdString(), ios::in);
+
+        if(replayFile.is_open()){
+           std::string line;
+           std::getline(replayFile, line);
+           std::cout << "First line: " << line << std::endl;
+        }
+        replayFile.close();
+    }
 }
 
 int MainWindow::processCamera(cv::Mat cameraData){
-    cameraData.copyTo(cameraFrame->frame[(cameraFrame->actIndex+1)%3]);
-    cameraFrame->actIndex=(cameraFrame->actIndex+1)%3;
-    cameraFrame->updateCameraPicture=1;
-    cameraFrame->update();
+    if(!missionLoaded){
+        cameraData.copyTo(cameraFrame->frame[(cameraFrame->actIndex+1)%3]);
+        cameraFrame->actIndex=(cameraFrame->actIndex+1)%3;
+        cameraFrame->updateCameraPicture=1;
+        cameraFrame->update();
+    }
 
     return 0;
 }
@@ -397,13 +440,20 @@ void MainWindow::on_replayMissionButton_clicked()
             if(!missionRunning){
                 missionRunning = true;
 
-                QString s = dialog.getOpenFileName(this, "Select a file to open...", QDir::homePath());
-                replayFile.open(s.toStdString(), ios::in);
+                s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath());
+                s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath());
 
-                if(replayFile.is_open()){
-                    std::string line;
-                    std::getline(replayFile, line);
-                    std::cout << "First line: " << line << std::endl;
+                missionLoaded = true;
+
+                if(!workerStarted){
+                   workerStarted = true;
+                   std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
+                   worker = std::thread(func);
+                }
+                if(!worker2Started){
+                    worker2Started = true;
+                    std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
+                    worker2 = std::thread(func);
                 }
 
                 ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
@@ -412,7 +462,7 @@ void MainWindow::on_replayMissionButton_clicked()
                                                         "5px;image:url(:/resource/stop_start/stop_play.png)}"
                                                        );
 
-               }
+                }
             else{
                 missionRunning = false;
                 ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "

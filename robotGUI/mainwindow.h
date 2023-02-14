@@ -101,7 +101,11 @@ private:
     bool videoCreated = false;
 
     cv::VideoWriter* video;
+    //cv::VideoCapture* cap;
+
     QImage image;
+    QString s1;
+    QString s2;
 
     cv::Mat frame;
 
