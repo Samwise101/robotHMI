@@ -1,11 +1,8 @@
 #include "cameraFrameWidget.h"
-#include "mainwindow.h"
 #include <iostream>
 #include <QWidget>
 #include <QtGui>
 #include <QFrame>
-
-
 
 
 CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
@@ -20,8 +17,37 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 }
 
 CameraFrameWidget::~CameraFrameWidget(){
+    delete writer;
+    delete timer;
     delete batteryFrame;
     delete speedFrame;
+}
+
+void CameraFrameWidget::paintEvent(QPaintEvent* event){
+    QPainter painter(this);
+    painter.setBrush(Qt::black);
+    QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
+    painter.drawRect(rectangle);
+
+
+    if(updateCameraPicture == 1){
+        image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
+        painter.drawImage(rectangle,image.rgbSwapped());;
+        setSpeedWidget();
+        setBatteryWidget();
+
+        if(robotOnline){
+           painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
+        }
+        if(dispRedWarning){
+           dispYellowWarning = false;
+           painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
+        }
+        else if(dispYellowWarning){
+           dispRedWarning = false;
+           painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
+        }
+    }
 }
 
 void CameraFrameWidget::setSpeedWidget()
@@ -164,31 +190,6 @@ void CameraFrameWidget::setBatteryWidget()
     }
 }
 
-void CameraFrameWidget::paintEvent(QPaintEvent* event){
-    QPainter painter(this);
-    painter.setBrush(Qt::black);
-    QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
-    painter.drawRect(rectangle);
-
-
-    if(updateCameraPicture == 1){
-        image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888  );
-        painter.drawImage(rectangle,image.rgbSwapped());;
-        setSpeedWidget();
-        setBatteryWidget();
-        if(robotOnline){
-           painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
-        }
-        if(dispRedWarning){
-           dispYellowWarning = false;
-           painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
-        }
-        else if(dispYellowWarning){
-           dispRedWarning = false;
-           painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
-        }
-    }
-}
 
 void CameraFrameWidget::setScale(float newScale)
 {
@@ -227,7 +228,7 @@ void CameraFrameWidget::setBatteryLevel(const unsigned char newBatteryLevel)
     //std::cout << "Battery level = " << batteryLevel << std::endl;
 }
 
-void CameraFrameWidget::setV(float newV)
+void CameraFrameWidget::setV(double newV)
 {
     v = newV;
 }
@@ -235,4 +236,8 @@ void CameraFrameWidget::setV(float newV)
 void CameraFrameWidget::setTempSpeed(double newTempSpeed)
 {
     tempSpeed = newTempSpeed;
+}
+
+cv::Mat CameraFrameWidget::getCameraFrame(){
+    return this->frame[0];
 }

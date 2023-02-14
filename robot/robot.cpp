@@ -18,6 +18,10 @@ std::function<int(LaserMeasurement)> Robot::do_nothing_laser=[](LaserMeasurement
 
 Robot::~Robot()
 {
+   // this->setRotationSpeed(0);
+   // this->setTranslationSpeed(0);
+   // this->setArcSpeed(0,0);
+
     ready_promise.set_value();
     robotthreadHandle.join();
     laserthreadHandle.join();
@@ -261,21 +265,12 @@ void Robot::imageViewer()
     cap.release();
 }
 
-float Robot::rampPosFunction(float speed)
+double Robot::rampPosFunction(double speed)
 {
     if(speed < tempSpeed){
         return speed+5;
     }
     return tempSpeed;
-}
-
-void Robot::callbackAcc(int dir, double& mmpersec, double& radpersec){
-    if(std::abs(mmpersec) < tempSpeed){
-        mmpersec = rampPosFunction(std::abs(mmpersec));
-    }
-    else{
-        mmpersec = tempSpeed;
-    }
 }
 
 void Robot::robotOdometry(TKobukiData &output)
@@ -333,9 +328,6 @@ void Robot::robotOdometry(TKobukiData &output)
     x = x + xdt*100;
     y = y - ydt*100;
 
-    xReal = xReal + xdt;
-    yReal = yReal - ydt;
-
     if(xdt / 1000 != 0.0)
         xdt = 0.0;
     if(ydt / 1000 != 0.0)
@@ -344,7 +336,7 @@ void Robot::robotOdometry(TKobukiData &output)
     //std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
 }
 
-float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
+double Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 {
     if(!robotRunning){
         if(w >= 0.5 || w <= -0.5){
@@ -393,7 +385,7 @@ float Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
     return w;
 }
 
-float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType)
+double Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType)
 {
     if(!robotRunning){
         if(v > 5.0){
@@ -436,7 +428,7 @@ float Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int g
     return v;
 }
 
-float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
+double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
 {
 
     xDistObst = (x + distToObst/10*sin((2*PI-(angleToObst)+PI/2)+theta));
@@ -449,7 +441,7 @@ float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     eThetaToObst = theta - thetaToObst;
     eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
 
-    std::cout << "Angle=" << eThetaToObst*180/PI << std::endl;
+   // std::cout << "Angle=" << eThetaToObst*180/PI << std::endl;
 
     if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
            w = eThetaToObst + PI/2;
@@ -487,12 +479,12 @@ float Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     return Kp3*w;
 }
 
-float Robot::getDistanceToGoal(int xGoal, int yGoal)
+double Robot::getDistanceToGoal(int xGoal, int yGoal)
 {
     return std::sqrt(std::pow((xGoal - x)*10, 2) + std::pow((yGoal - y)*10, 2));
 }
 
-float Robot::robotFullTurn(float goalAngle)
+double Robot::robotFullTurn(float goalAngle)
 {
     eToGoalAngle = goalAngle - theta;
     if((eToGoalAngle > -0.15 && eToGoalAngle < 0.0) || (eToGoalAngle > 0.0 && eToGoalAngle < 0.15)){
@@ -521,8 +513,6 @@ void Robot::setRobotPose(int xPos, int yPos, float orientation)
     x = xPos;
     y = yPos;
     theta = orientation;
-    xReal = 0.0;
-    yReal = 0.0;
     std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
 
@@ -531,8 +521,6 @@ void Robot::resetRobotPose()
     x = 0;
     y = 0;
     theta = 0.0;
-    xReal = 0.0;
-    yReal = 0.0;
 }
 
 bool Robot::emergencyStop(int dist)
@@ -563,32 +551,32 @@ double Robot::getDeltaS()
     return deltaS;
 }
 
-float& Robot::getTheta()
+double& Robot::getTheta()
 {
     return theta;
 }
 
-float& Robot::getDeltaTheta()
+double& Robot::getDeltaTheta()
 {
     return deltaTheta;
 }
 
-float& Robot::getYdt()
+double& Robot::getYdt()
 {
     return ydt;
 }
 
-float& Robot::getXdt()
+double& Robot::getXdt()
 {
     return xdt;
 }
 
-float& Robot::getX()
+double& Robot::getX()
 {
     return x;
 }
 
-float& Robot::getY()
+double& Robot::getY()
 {
     return y;
 }
@@ -603,12 +591,12 @@ void Robot::setInitilize(bool newInitilize)
     initilize = newInitilize;
 }
 
-float Robot::getW() const
+double Robot::getW() const
 {
     return w;
 }
 
-float Robot::getV() const
+double Robot::getV() const
 {
     return v;
 }

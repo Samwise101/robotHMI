@@ -48,8 +48,20 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
     if(updateLaserPicture == 1){
 
+        sectionsX = rectangle.width()/100;
+        sectionsY = rectangle.height()/100;
+
         updateLaserPicture = 0;
 
+        pen.setWidth(1);
+        pen.setColor(Qt::darkGray);
+        painter.setPen(pen);
+/*
+        for(int i = 1; i <= sectionsX; i++){
+            painter.drawLine(i*100+offset/2, offset/2, i*100+offset/2, rectangle.height()+offset/2);
+            painter.drawLine(offset/2, i*100+offset/2, rectangle.width()+offset/2, i*100+offset/2);
+        }
+*/
         pen.setWidth(2);
         pen.setColor(Qt::red);
         painter.setPen(pen);
@@ -79,6 +91,7 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
             lidarDist = lidarDist/10*scale;
             xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().x());
             yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
+
 
             if(rectangle.contains(xp,yp)){
                 if(scale < 1.0){
@@ -174,7 +187,7 @@ void MapFrameWidget::removeAllPoints()
 }
 
 
-void MapFrameWidget::updateRobotValuesForGUI(float& x, float& y, float& theta)
+void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta)
 {
     robotPosition.setX(x);
     robotPosition.setY(y);
@@ -247,7 +260,7 @@ int MapFrameWidget::getGoalXPosition()
 
 int MapFrameWidget::getGoalVectorSize()
 {
-    return points.size();
+    return (int)points.size();
 }
 
 int MapFrameWidget::getGoalType()

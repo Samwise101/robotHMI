@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QFrame>
+#include <QTimer>
 
 
 #include <opencv2/core/core.hpp>
@@ -27,6 +28,7 @@ public:
     void draw(QPainter* painter, QPaintEvent event);
     void setSpeedWidget();
     void setBatteryWidget();
+    cv::Mat getCameraFrame();
     int updateCameraPicture;
     int actIndex=-1;
     QImage image;
@@ -36,6 +38,10 @@ public:
 
     cv::Mat frame[3];
 
+    bool canWriteVideo;
+    cv::VideoWriter*  writer;
+    QTimer* timer;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -44,19 +50,19 @@ private:
     QImage imageWarnRed;
     QImage imageWarnYellow;
     QImage imageOnline;
-    float v = 0.0;
+    double v = 0.0;
     bool robotOnline = false;
     bool dispYellowWarning = false;
     bool dispRedWarning = false;
     unsigned short batteryPercantage = 0;
     double tempSpeed = 0.0;
     unsigned short batteryLevel = 0;
-    float scale = 1.0;
+    float scale = 1.0f;
 
 public:
 
     void setTempSpeed(double newTempSpeed);
-    void setV(float newV);
+    void setV(double newV);
     void setBatteryLevel(const unsigned char newBatteryLevel);
     unsigned short getBatteryPercantage() const;
     void resetWarnings();

@@ -35,13 +35,11 @@ public:
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
 
-    QPoint robotPosition;
-
     bool robotInitialized = false;
 
     void mousePressEvent(QMouseEvent *event);
 
-    void updateRobotValuesForGUI(float& x, float& y, float& theta);
+    void updateRobotValuesForGUI(double& x, double& y, double& theta);
 
     void setCanTriggerEvent(bool state);
     bool isGoalVectorEmpty();
@@ -62,7 +60,10 @@ public:
 
     void setScale(float newScale);
 
+    QPoint robotPosition;
+
     QImage createImage();
+
     int imageHeight = 0;
     int imageWidth = 0;
 
@@ -72,6 +73,7 @@ protected:
 
 private:
     QPoint robotImagePos;
+
     std::vector<QPoint> robotPositionInTime;
 
     std::vector<RobotGoal> points;
@@ -86,13 +88,16 @@ private:
 
     int xp = 0;
     int yp = 0;
+    double realTheta = 0.0;
 
     int capFreq = 0;
 
     int xp2 = 0;
     int yp2 = 0;
 
-    float realTheta;
+    int sectionsX = 0;
+    int sectionsY = 0;
+
     double shortestLidarDistance = 10000.0;
     double shortestLidarAngle = 0.0;
     double offset;

@@ -6,6 +6,7 @@ RobotGoal::RobotGoal(int xpos, int ypos, int type, QColor color):QPoint(xpos, yp
     this->color = color;
     this->reached = false;
     this->type = type;
+    this->checked = false;
 }
 
 
@@ -22,4 +23,14 @@ const QColor &RobotGoal::getColor() const
 int RobotGoal::getType() const
 {
     return type;
+}
+
+bool RobotGoal::getChecked() const
+{
+    return checked;
+}
+
+void RobotGoal::setChecked(bool newChecked)
+{
+    checked = newChecked;
 }

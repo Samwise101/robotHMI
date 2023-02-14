@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     dataCounter = 0;
     switchIndex = 0;
 
-    video = new cv::VideoWriter("outcpp_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(640,640), true);
+    threadStarted = false;
 
     ui->setupUi(this);
 
@@ -34,10 +34,19 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     mapFrame = new MapFrameWidget();
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
+
+    video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 20, cv::Size(640,640), true);
 }
 
 MainWindow::~MainWindow()
 {
+    if(threadStarted && !isFinished){
+        isFinished = true;
+        std::cout << "thread finished\n";
+        video->release();
+        worker.join();
+    }
+
     delete video;
 
     if(robotConnected)
@@ -60,21 +69,13 @@ int MainWindow::processRobot(TKobukiData robotData){
     //std::cout << "Gyro angle = "<< robotData.GyroAngle/100 << std::endl; //<-32768, 32767>
 
     if(!robot->getInitilize()){
-        int initialTheta =  robotData.GyroAngle/100;
+        /*int initialTheta =  robotData.GyroAngle/100;
         if(robotData.GyroAngle/100.0 < 0){
             initialTheta = 360 + initialTheta;
         }
-        std::cout << "initialTheta=" << initialTheta << std::endl;
+        std::cout << "initialTheta=" << initialTheta << std::endl;*/
         robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0 /*initialTheta*PI/180*/);
         robot->setInitilize(true);
-    }
-
-    if(recordMission && video->isOpened()){
-        image = mapFrame->createImage();
-        cv::Mat frame = cv::Mat(image.height(), image.width(), CV_8UC4, image.bits(), image.bytesPerLine());
-        cv::resize(frame,frame,cv::Size(640,640));
-        std::cout << "Image size2 = [" << image.width() << ", " << image.height() << "]" << std::endl;
-        video->write(frame);
     }
 
     robot->robotOdometry(robotData);
@@ -86,32 +87,36 @@ int MainWindow::processRobot(TKobukiData robotData){
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
-        if(!robotRunning || mapFrame->isGoalVectorEmpty()){
-
+        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() < 180.0)){
+            //td::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
             if(omega > 0.0 || omega < 0.0){
                 omega = robot->orientationRegulator(0, 0, false);
-                std::cout << "omega=" << omega << std::endl;
                 robotRotationalSpeed = omega;
+            }
+            else{
+                robotRotationalSpeed = 0.0;
             }
             if(v > 0.0){
                 v = robot->regulateForwardSpeed(0, 0, false, 0);
-                std::cout << "v=" << v << std::endl;
                 robotForwardSpeed = v;
+            }
+            else{
+                robotForwardSpeed = 0;
             }
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
-            if(mapFrame->getShortestDistanceLidar() <= 300.0){
+            if(mapFrame->getShortestDistanceLidar() <= 350.0){
                cameraFrame->setDispRedWarning(true);
             }
-            else if(mapFrame->getShortestDistanceLidar() <= 400.0){
+            else if(mapFrame->getShortestDistanceLidar() <= 450.0){
                 cameraFrame->setDispYellowWarning(true);
             }
 
-            if(mapFrame->getShortestDistanceLidar() < 400.0 &&
+            if(mapFrame->getShortestDistanceLidar() < 450.0 &&
               ((mapFrame->getLidarAngle() >= 3*PI/2 && mapFrame->getLidarAngle() <= 2*PI) ||
                (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= PI/2))
-               && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 300.0){
+               && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) > 350.0){
 
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
                 omega = robot->avoidObstacleRegulator(mapFrame->getShortestDistanceLidar(), mapFrame->getLidarAngle());
@@ -121,6 +126,9 @@ int MainWindow::processRobot(TKobukiData robotData){
                 omega = robot->orientationRegulator(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning);
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
             }
+
+            //std::cout << "omega=" << omega << std::endl;
+            //std::cout << "v=" << v << std::endl;
 
             robotRotationalSpeed = omega;
             robotForwardSpeed = v;
@@ -179,6 +187,20 @@ int MainWindow::processRobot(TKobukiData robotData){
     dataCounter++;
 
     return 0;
+}
+
+void MainWindow::doWork()
+{
+
+    video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, cv::Size(640,640), true);
+
+    while(!isFinished && video->isOpened()){
+        std::cout << "Working..." << std::endl;
+        frame = this->cameraFrame->getCameraFrame();
+        frame.resize(640,640);
+        video->write(frame);
+        this_thread::sleep_for(20ms);
+    }
 }
 
 int MainWindow::processCamera(cv::Mat cameraData){
@@ -304,15 +326,14 @@ void MainWindow::on_connectToRobotButton_clicked()
 
 bool MainWindow::setupConnectionToRobot(){
     if(!ipAddress.empty()){
+        v = 0.0;
+        omega = 0.0;
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
-        v = 0.0;
 
         std::cout << "Connected!" << std::endl;
         robot = new Robot(ipAddress);
         robotConnected = true;
-
-        //mapFrame->setCanTriggerEvent(true);
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
@@ -398,12 +419,17 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     std::cout << "Hello from checkbox" << std::endl;
     if(arg1 && cameraFrame->updateCameraPicture == 1){
-        recordMission = true;
-        video->open("outcpp_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(640,640), true);
+        if(robotConnected && !threadStarted){
+           recordMission = true;
+           threadStarted = true;
+           std::function<void(void)> func =std::bind(&MainWindow::doWork, this);
+           worker = std::thread(func);
+        }
     }
     else{
-        recordMission = false;
-        video->release();
+        if(robotConnected){
+           recordMission = false;
+        }
     }
 }
 

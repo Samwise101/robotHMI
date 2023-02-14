@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
+#include <thread>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -22,6 +23,8 @@
 #include <string.h>
 
 #include "robot.h"
+
+static bool isFinished = false;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,6 +44,7 @@ public:
     int processLidar(LaserMeasurement laserData);
     int processCamera(cv::Mat cameraData);
     int processRobot(TKobukiData robotData);
+    void doWork();
 
 private slots:
 
@@ -69,22 +73,27 @@ private slots:
     void on_switchButton_clicked();
 
 private:
-    std::string ipAddress = "127.0.0.1"; // pre simulaciu
-    std::string cameraPort = "8889"; //pre simulaciu
+    std::string ipAddress = "127.0.0.1";    // pre simulaciu
+    std::string cameraPort = "8889";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.15";//pre realneho robota 8000
-    //std::string cameraPort = "8000";//pre realneho robota 8000
+    //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
+    //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
+
+    std::thread worker;
+    bool threadStarted;
 
     bool alarmSet = false;
 
     cv::VideoWriter* video;
     QImage image;
 
+    cv::Mat frame;
+
     int dataCounter;
 
-    float goalAngle;
+    float goalAngle = 0.0f;
 
     bool missionLoaded;
     bool missionRunning;
@@ -92,19 +101,19 @@ private:
     bool robotConnected;
     bool robotRunning;
 
-    float omega = 0.0f;
-    float v = 0.0f;
+    double omega = 0.0;
+    double v = 0.0;
 
-    float uhloprieckaCamera = 0.0;
-    float uhloprieckaMapa = 0.0;
+    float uhloprieckaCamera = 0.0f;
+    float uhloprieckaMapa = 0.0f;
 
     int goalIndex = 1;
     int switchIndex = 0;
 
     TKobukiData robotdata;
 
-    double robotForwardSpeed;
-    double robotRotationalSpeed;
+    double robotForwardSpeed = 0;
+    double robotRotationalSpeed = 0;
 
     double batteryLevel;
 

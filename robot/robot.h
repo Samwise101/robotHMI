@@ -73,19 +73,15 @@ public:
         wasCameraSet=1;
     }
 
-    float rampPosFunction(float speed);
-
-    void callbackAcc(int dir, double& mmpersec, double& radpersec);
+    double rampPosFunction(double speed);
 
     void robotOdometry(TKobukiData &output);
-    float orientationRegulator(int xGoal, int yGoal, bool robotRunning);
-    float regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType);
-    float avoidObstacleRegulator(double distToObsr, double angleToObst);
+    double orientationRegulator(int xGoal, int yGoal, bool robotRunning);
+    double regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType);
+    double avoidObstacleRegulator(double distToObsr, double angleToObst);
 
-    float getDistanceToGoal(int xGoal, int yGoal);
-
-    float robotFullTurn(float goalAngle);
-
+    double getDistanceToGoal(int xGoal, int yGoal);
+    double robotFullTurn(float goalAngle);
     void robotAtGoal();
 
     void setRobotPose(int xPos, int yPos, float orientation);
@@ -95,43 +91,33 @@ public:
     double getDeltaSr();
     double getDeltaS();
 
-    float& getTheta();
-    float& getDeltaTheta();
+    double& getTheta();
+    double& getDeltaTheta();
 
     bool emergencyStop(int dist);
 
-    float& getYdt();
-
-    float& getXdt();
-
-    float& getX();
-
-    float& getY();
-
-    float xReal;
-    float yReal;
+    double& getYdt();
+    double& getXdt();
+    double& getX();
+    double& getY();
 
     bool getInitilize() const;
     void setInitilize(bool newInitilize);
 
-    float getW() const;
-
-    float getV() const;
+    double getW() const;
+    double getV() const;
 
     bool getAtGoal() const;
-
     void setAtGoal(bool newAtGoal);
 
     double getTempSpeed() const;
 
 private:
 
-    float eToGoalAngle;
-
-    float Kp3 = 1.0;
-    float Kp2 = 0.7;
-    float Kp = 0.9;
-    float KpTurn = 0.45;
+    float Kp3 = 0.7f;
+    float Kp2 = 0.7f;
+    float Kp = 0.9f;
+    float KpTurn = 0.45f;
 
     bool atGoal = false;
 
@@ -145,41 +131,40 @@ private:
     double tempSpeed = 400.0;  //[mm/s]
 
     // [rad]
-    float theta = 0;
-    float deltaTheta = 0;
+    double theta = 0;
+    double deltaTheta = 0;
 
     //[mm]
-    double sl = 0;
-    double sr = 0;
-    double s = 0;
     double deltaS = 0;
     double deltaSl = 0;
     double deltaSr = 0;
-    float x;
-    float y;
-    float xdt;
-    float ydt;
+    double x;
+    double y;
+    double xdt;
+    double ydt;
 
     // Orientation regulator
-    float eXDist;
-    float eYDist;
-    float thetaToGoal;
-    float eThetaToGoal;
-    float w;
+    double eXDist;
+    double eYDist;
+    double thetaToGoal;
+    double eThetaToGoal;
+    double w;
 
     // Forward speed regulator
-    float eXDist2;
-    float eYDist2;
-    float eDist;
-    float v = 0;
+    double eXDist2;
+    double eYDist2;
+    double eDist;
+    double v = 0;
 
     // [mm]
-    float xDistObst;
-    float yDistObst;
-    float eXObst;
-    float eYObst;
-    float eThetaToObst;
-    float thetaToObst;
+    double xDistObst;
+    double yDistObst;
+    double eXObst;
+    double eYObst;
+    double eThetaToObst;
+    double thetaToObst;
+
+    double eToGoalAngle;
 
     bool initilize = false;
     unsigned short lastCheckTicks = 0;

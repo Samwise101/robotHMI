@@ -18,10 +18,15 @@ public:
 
     int getType() const;
 
+    bool getChecked() const;
+
+    void setChecked(bool newChecked);
+
 private:
     QColor color;
     bool reached;
     int type;
+    bool checked;
 };
 
 #endif // ROBOTGOAL_H
