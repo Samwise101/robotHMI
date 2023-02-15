@@ -465,19 +465,22 @@ void MainWindow::on_loadMissionButton_clicked()
                                             "5px;image:url(:/resource/stop_start/play.png)}"
                                            );
 
-    missionLoaded = true;
-    s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath());
-    s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath());
 
-    if(!workerStarted){
-        workerStarted = true;
-        std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
-        worker = std::thread(func);
-    }
-    if(!worker2Started){
-        worker2Started = true;
-        std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
-        worker2 = std::thread(func);
+    if(!robotConnected){
+        missionLoaded = true;
+        s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath());
+        s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath());
+
+        if(!workerStarted){
+            workerStarted = true;
+            std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
+            worker = std::thread(func);
+        }
+        if(!worker2Started){
+            worker2Started = true;
+            std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
+            worker2 = std::thread(func);
+        }
     }
 }
 
