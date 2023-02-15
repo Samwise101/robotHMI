@@ -75,6 +75,8 @@ private slots:
 
     void on_switchButton_clicked();
 
+    void on_loadMissionButton_clicked();
+
 private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
@@ -88,6 +90,8 @@ private:
 
     fstream mapFile;
     fstream replayFile;
+
+    cv::VideoCapture cap;
 
     QFileDialog dialog;
 

@@ -17,8 +17,10 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 }
 
 CameraFrameWidget::~CameraFrameWidget(){
-    delete batteryFrame;
-    delete speedFrame;
+    if(robotOnline){
+        delete batteryFrame;
+        delete speedFrame;
+    }
 }
 
 void CameraFrameWidget::paintEvent(QPaintEvent* event){
@@ -32,6 +34,7 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
 
         if(!missionLoaded){
               image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888);
+              painter.drawImage(rectangle,image.rgbSwapped());;
               setSpeedWidget();
               setBatteryWidget();
 
@@ -48,11 +51,10 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
               }
         }
         else{
-            cv::Mat dest;
-            cv::resize(replayFrame, dest, cv::Size(rectangle.width(), rectangle.height()));
+            //cv::resize(replayFrame, dest, cv::Size(rectangle.width(), rectangle.height()));
             image = QImage((uchar*)replayFrame.data, replayFrame.cols, replayFrame.rows, replayFrame.step, QImage::Format_RGB888);
+            painter.drawImage(rectangle,image.rgbSwapped());;
         }
-        painter.drawImage(rectangle,image.rgbSwapped());;
     }
 }
 

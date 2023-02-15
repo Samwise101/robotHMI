@@ -38,6 +38,7 @@ public:
 
     cv::Mat frame[3];
     cv::Mat replayFrame;
+    cv::Mat dest;
 
 protected:
     void paintEvent(QPaintEvent* event);
