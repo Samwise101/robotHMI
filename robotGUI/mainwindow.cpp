@@ -204,12 +204,10 @@ int MainWindow::processRobot(TKobukiData robotData){
 }
 
 int MainWindow::processCamera(cv::Mat cameraData){
-    if(!missionLoaded){
         cameraData.copyTo(cameraFrame->frame[(cameraFrame->actIndex+1)%3]);
         cameraFrame->actIndex=(cameraFrame->actIndex+1)%3;
         cameraFrame->updateCameraPicture=1;
         cameraFrame->update();
-    }
 
     return 0;
 }
@@ -322,6 +320,10 @@ void MainWindow::on_connectToRobotButton_clicked()
     }
     else{
         std::cout << "Successfully connected to the robot!" << std::endl;
+        cameraFrame->setMissionLoaded(false);
+        cameraFrame->setTempSpeed(robot->getTempSpeed());
+        cameraFrame->speedFrame = ui->speedWidget;
+        cameraFrame->batteryFrame = ui->batteryWidget;
     }
 
 }
@@ -333,19 +335,30 @@ bool MainWindow::setupConnectionToRobot(){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
 
+        if(workerStarted && missionLoaded){
+            missionRunning = false;
+            missionLoaded = false;
+            workerStarted = false;
+            worker.join();
+        }
+
+        if(worker2Started && missionLoaded){
+            missionRunning = false;
+            missionLoaded = false;
+            worker2Started = false;
+            worker2.join();
+        }
+
         robot = new Robot(ipAddress);
         robotConnected = true;
+
+        cameraFrame->setRobotOnline(true);
+        cameraFrame->updateCameraPicture = 1;
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
         robot->robotStart();
-
-        cameraFrame->setMissionLoaded(false);
-        cameraFrame->setTempSpeed(robot->getTempSpeed());
-        cameraFrame->speedFrame = ui->speedWidget;
-        cameraFrame->batteryFrame = ui->batteryWidget;
-        cameraFrame->setRobotOnline(true);
 
         return true;
     }
@@ -413,7 +426,6 @@ void MainWindow::recordMap()
         while(!isFinished2 && mapFile.is_open()){
             mapFrame->createFrameLog(timepassed2, mapFile);
             this_thread::sleep_for(200ms);
-            timepassed2 += 0.2;
         }
         mapFile.close();
     }
@@ -434,31 +446,39 @@ void MainWindow::recordMap()
 void MainWindow::on_loadMissionButton_clicked()
 {
     if(workerStarted && missionLoaded){
-        ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                               "silver;border-style:outset;border-radius: "
-                                               "10px;border-color:black;border-width:4px;padding: "
-                                                "5px;image:url(:/resource/stop_start/play.png)}"
-                                               );
         missionRunning = false;
         missionLoaded = false;
         workerStarted = false;
         worker.join();
     }
 
+    if(worker2Started && missionLoaded){
+        missionRunning = false;
+        missionLoaded = false;
+        worker2Started = false;
+        worker2.join();
+    }
+
+    ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
+                                           "silver;border-style:outset;border-radius: "
+                                           "10px;border-color:black;border-width:4px;padding: "
+                                            "5px;image:url(:/resource/stop_start/play.png)}"
+                                           );
+
     missionLoaded = true;
     s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath());
-    //s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath());
+    s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath());
 
     if(!workerStarted){
         workerStarted = true;
         std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
         worker = std::thread(func);
     }
-   /* if(!worker2Started){
+    if(!worker2Started){
         worker2Started = true;
         std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
         worker2 = std::thread(func);
-    }*/
+    }
 }
 
 

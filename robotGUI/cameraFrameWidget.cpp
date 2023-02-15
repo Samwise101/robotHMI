@@ -9,6 +9,7 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 {
     actIndex=-1;
     offset = 10;
+
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     imageWarnRed = QImage(":/resource/Alarmy/warning_red.png");
@@ -32,7 +33,7 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
 
     if(updateCameraPicture == 1){
 
-        if(!missionLoaded){
+        if(robotOnline){
               image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888);
               painter.drawImage(rectangle,image.rgbSwapped());;
               setSpeedWidget();
@@ -56,6 +57,11 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
             painter.drawImage(rectangle,image.rgbSwapped());;
         }
     }
+}
+
+bool CameraFrameWidget::getRobotOnline() const
+{
+    return robotOnline;
 }
 
 void CameraFrameWidget::setMissionLoaded(bool newMissionLoaded)
@@ -243,7 +249,6 @@ void CameraFrameWidget::resetWarnings()
 void CameraFrameWidget::setBatteryLevel(const unsigned char newBatteryLevel)
 {
     batteryLevel = newBatteryLevel;
-    //std::cout << "Battery level = " << batteryLevel << std::endl;
 }
 
 void CameraFrameWidget::setV(double newV)

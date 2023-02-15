@@ -73,6 +73,7 @@ public:
     void setCap(const cv::VideoCapture &newCap);
     void setReplayFrame(const cv::Mat &newReplayFrame);
     void setMissionLoaded(bool newMissionLoaded);
+    bool getRobotOnline() const;
 };
 
 #endif // CAMERAFRAMEWIDGET_H
