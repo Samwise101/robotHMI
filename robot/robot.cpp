@@ -418,7 +418,7 @@ double Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int 
         v = rampPosFunction(v);
     }
     else if(goalType == 1){
-        if(v >= 260)
+        if(v >= 210)
             v = v - 10;
     }
     else{

@@ -68,6 +68,12 @@ public:
     int imageHeight = 0;
     int imageWidth = 0;
 
+    void setRobotOnline(bool newRobotOnline);
+
+    bool openFileForReading(std::string path);
+    void closeReplayFile();
+
+    const fstream &getReplayFile() const;
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -76,10 +82,13 @@ private:
     QPoint robotImagePos;
 
     std::vector<QPoint> robotPositionInTime;
+    fstream replayFile;
 
     std::vector<RobotGoal> points;
     int pointType;
     QColor pointColor;
+
+    bool robotOnline;
 
     bool placeGoals;
     float scale = 1.0f;

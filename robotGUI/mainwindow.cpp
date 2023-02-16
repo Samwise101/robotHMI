@@ -355,6 +355,9 @@ bool MainWindow::setupConnectionToRobot(){
         cameraFrame->setRobotOnline(true);
         cameraFrame->updateCameraPicture = 1;
 
+        mapFrame->setRobotOnline(true);
+        mapFrame->updateLaserPicture = 1;
+
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
@@ -430,14 +433,7 @@ void MainWindow::recordMap()
         mapFile.close();
     }
     else{
-        replayFile.open(s2.toStdString(), ios::in);
 
-        if(replayFile.is_open()){
-           std::string line;
-           std::getline(replayFile, line);
-           std::cout << "First line: " << line << std::endl;
-        }
-        replayFile.close();
     }
 }
 
@@ -527,7 +523,7 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     std::cout << "Frame width="  << mapFrame->imageWidth << ", frame height=" <<  mapFrame->imageHeight << std::endl;
     if(arg1 && cameraFrame->updateCameraPicture == 1){
-        if(robotConnected && !workerStarted && missionLoaded){
+        if(robotConnected && !workerStarted && !missionLoaded){
            recordMission = true;
            workerStarted = true;
            if(!videoCreated){
@@ -537,7 +533,7 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
            std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
            worker = std::thread(func);
         }
-        if(robotConnected && !worker2Started && missionLoaded){
+        if(robotConnected && !worker2Started && !missionLoaded){
             worker2Started = true;
             std::function<void(void)> func =std::bind(&MainWindow::recordMap, this);
             worker2 = std::thread(func);
