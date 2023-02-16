@@ -416,8 +416,6 @@ double Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int 
     else{
         v = Kp2*eDist;
     }
-    //std::cout << "xDist2ToGoal=" << eXDist2 << ", yDist2ToGoal=" << eYDist2 << ", eDistToGoal=" << eDist;
-    //std::cout << "v=" << v << std::endl;
     return v;
 }
 

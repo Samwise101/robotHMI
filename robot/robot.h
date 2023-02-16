@@ -119,7 +119,7 @@ private:
 
     double fps = 0.0;
 
-    float Kp3 = 0.7f;
+    float Kp3 = 0.6f;
     float Kp2 = 0.7f;
     float Kp = 0.9f;
     float KpTurn = 0.45f;

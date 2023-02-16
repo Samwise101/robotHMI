@@ -78,11 +78,11 @@ private slots:
     void on_loadMissionButton_clicked();
 
 private:
-    std::string ipAddress = "127.0.0.1";    // pre simulaciu
-    std::string cameraPort = "8889";        // pre simulaciu
+    //std::string ipAddress = "127.0.0.1";    // pre simulaciu
+    //std::string cameraPort = "8889";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.14";   // pre realneho robota 8000
-    //std::string cameraPort = "8000";          // pre realneho robota 8000
+    std::string ipAddress = "192.168.1.14";   // pre realneho robota 8000
+    std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
     float timepassed = 0.0f;
@@ -125,6 +125,7 @@ private:
 
     double omega = 0.0;
     double v = 0.0;
+    int radius = 0;
 
     float uhloprieckaCamera = 0.0f;
     float uhloprieckaMapa = 0.0f;

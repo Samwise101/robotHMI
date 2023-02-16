@@ -116,7 +116,6 @@ std::vector<unsigned char> CKobuki::setArcSpeed(int mmpersec, int radius)
 {
     if (radius == 0) {
         return setTranslationSpeed(mmpersec);
-
     }
 
     int speedvalue = mmpersec * ((radius + (radius>0? b*1000:-b*1000) )/ 2 ) / radius;

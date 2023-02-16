@@ -84,11 +84,6 @@ int MainWindow::processRobot(TKobukiData robotData){
     //std::cout << "Gyro angle = "<< robotData.GyroAngle/100 << std::endl; //<-32768, 32767>
 
     if(!robot->getInitilize()){
-        /*int initialTheta =  robotData.GyroAngle/100;
-        if(robotData.GyroAngle/100.0 < 0){
-            initialTheta = 360 + initialTheta;
-        }
-        std::cout << "initialTheta=" << initialTheta << std::endl;*/
         robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0 /*initialTheta*PI/180*/);
         robot->setInitilize(true);
     }
@@ -102,12 +97,13 @@ int MainWindow::processRobot(TKobukiData robotData){
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
-        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 180.0)){
+        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 250.0)){
            // std::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
             omega = robot->orientationRegulator(0, 0, false);
             robotRotationalSpeed = omega;
             v = robot->regulateForwardSpeed(0, 0, false, 0);
             robotForwardSpeed = v;
+            //std::cout << "Hello, zastal som" << std::endl;
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
@@ -146,7 +142,6 @@ int MainWindow::processRobot(TKobukiData robotData){
                     robot->setAtGoal(true);
                 }
             }
-            std::cout << "Helllp" <<std::endl;
         }
     }
     else{
@@ -173,20 +168,29 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
-    std::cout << "omega=" << omega << std::endl;
-    std::cout << "v=" << v << std::endl;
 
-    if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
+    //std::cout << "omega=" << omega << std::endl;
+    //std::cout << "v=" << v << std::endl;
+
+    /*if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
+            std::cout << "Rotation!" << std::endl;
             robot->setRotationSpeed(robotRotationalSpeed);
         }
-    /*else if(robotForwardSpeed > 200 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
+    else if(robotForwardSpeed > 200 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
             //std::cout << "Translation!" << std::endl;
             robot->setTranslationSpeed(robotForwardSpeed);
         }*/
-    else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
-            robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
-        }
-    else if((robotForwardSpeed == 0.0 && robotRotationalSpeed == 0.0)){
+    if(robotForwardSpeed > 0.1){
+        radius = robotForwardSpeed/robotRotationalSpeed;
+        if(radius == 0)
+            robot->setArcSpeed(robotForwardSpeed,0);
+        else
+            robot->setArcSpeed(robotForwardSpeed,radius);
+    }
+    else if((robotForwardSpeed <= 0.05) && ((robotRotationalSpeed >= 0.1) || (robotRotationalSpeed < -0.1))){
+        robot->setRotationSpeed(robotRotationalSpeed);
+    }
+    else if((robotForwardSpeed <= 0.1) && ((robotRotationalSpeed >= -0.1) && (robotRotationalSpeed <= 0.1))){
         robot->setArcSpeed(0,0);
     }
 
@@ -378,7 +382,8 @@ void MainWindow::connectRobotUiSetup(){
 void MainWindow::recordCamera()
 {
     if(!missionLoaded){
-        video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), robot->getFps(), cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+        // camera robota 14 - 15 fps
+        video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
             frame = cameraFrame->getCameraFrame();
@@ -518,7 +523,8 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
            recordMission = true;
            workerStarted = true;
            if(!videoCreated){
-                video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), robot->getFps(), cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+                // camera robota 14 - 15 fps
+                video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
                 videoCreated = true;
            }
            std::function<void(void)> func =std::bind(&MainWindow::recordCamera, this);
