@@ -279,13 +279,8 @@ void Robot::robotOdometry(TKobukiData &output)
     nlOld = nlCurr;
     nrOld = nrCurr;
 
-    // max encoder = 65 536 => 2^16
-
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
-
-//    std::cout << "nlOld=" << nlOld << "; nrOld=" << nrOld << std::endl;
-//    std::cout << "nlCurr=" << nlCurr << "; nrCurr=" << nrCurr << std::endl;
 
     if((nlOld - nlCurr) < -(UINT16_MAX/2)){
         nlDiff = (nlCurr - nlOld) - UINT16_MAX;
@@ -324,8 +319,6 @@ void Robot::robotOdometry(TKobukiData &output)
     else
         ydt += deltaS * std::sin(theta);
 
-    //std::cout  << "deltaS=" << deltaS << "xdt=" << xdt << ", ydt=" << ydt << std::endl;
-
     x = x + xdt*100;
     y = y - ydt*100;
 
@@ -334,7 +327,6 @@ void Robot::robotOdometry(TKobukiData &output)
     if(ydt / 1000 != 0.0)
         ydt = 0.0;
 
-    //std::cout << "New pose: x=" << x << ", y=" << y << ", theta=" << theta << std::endl;
 }
 
 double Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)

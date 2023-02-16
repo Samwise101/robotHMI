@@ -102,22 +102,12 @@ int MainWindow::processRobot(TKobukiData robotData){
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
-        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() < 180.0)){
-            //td::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
-            if(omega > 0.0 || omega < 0.0){
-                omega = robot->orientationRegulator(0, 0, false);
-                robotRotationalSpeed = omega;
-            }
-            else{
-                robotRotationalSpeed = 0.0;
-            }
-            if(v > 0.0){
-                v = robot->regulateForwardSpeed(0, 0, false, 0);
-                robotForwardSpeed = v;
-            }
-            else{
-                robotForwardSpeed = 0;
-            }
+        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 180.0)){
+           // std::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
+            omega = robot->orientationRegulator(0, 0, false);
+            robotRotationalSpeed = omega;
+            v = robot->regulateForwardSpeed(0, 0, false, 0);
+            robotForwardSpeed = v;
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
 
@@ -142,9 +132,6 @@ int MainWindow::processRobot(TKobukiData robotData){
                 v = robot->regulateForwardSpeed(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), robotRunning, mapFrame->getGoalType());
             }
 
-            //std::cout << "omega=" << omega << std::endl;
-            //std::cout << "v=" << v << std::endl;
-
             robotRotationalSpeed = omega;
             robotForwardSpeed = v;
 
@@ -159,6 +146,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                     robot->setAtGoal(true);
                 }
             }
+            std::cout << "Helllp" <<std::endl;
         }
     }
     else{
@@ -185,18 +173,22 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
+    std::cout << "omega=" << omega << std::endl;
+    std::cout << "v=" << v << std::endl;
+
     if((robotForwardSpeed < 1.0) && robotRotationalSpeed != 0.0){
-            //std::cout << "Rotation!" << std::endl;
             robot->setRotationSpeed(robotRotationalSpeed);
         }
-    else if(robotForwardSpeed != 0.0 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
+    /*else if(robotForwardSpeed > 200 && (robotRotationalSpeed > -0.1 && robotRotationalSpeed < 0.1)){
             //std::cout << "Translation!" << std::endl;
             robot->setTranslationSpeed(robotForwardSpeed);
-        }
+        }*/
     else if((robotForwardSpeed != 0.0 && robotRotationalSpeed != 0.0)){
-            //std::cout << "Arc!" << std::endl;
             robot->setArcSpeed(robotForwardSpeed,robotForwardSpeed/robotRotationalSpeed);
         }
+    else if((robotForwardSpeed == 0.0 && robotRotationalSpeed == 0.0)){
+        robot->setArcSpeed(0,0);
+    }
 
     dataCounter++;
 
@@ -512,7 +504,6 @@ bool MainWindow::getIpAddress()
         std::cout << ipAddress << std::endl;
         return 1;
     }
-
     return 0;
 }
 
