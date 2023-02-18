@@ -27,6 +27,8 @@
 
 static bool isFinished = false;
 static bool isFinished2 = false;
+static bool isFinishedReplay = false;
+static bool isFinishedReplay2 = false;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -78,11 +80,11 @@ private slots:
     void on_loadMissionButton_clicked();
 
 private:
-    //std::string ipAddress = "127.0.0.1";    // pre simulaciu
-    //std::string cameraPort = "8889";        // pre simulaciu
+    std::string ipAddress = "127.0.0.1";    // pre simulaciu
+    std::string cameraPort = "8889";        // pre simulaciu
 
-    std::string ipAddress = "192.168.1.14";   // pre realneho robota 8000
-    std::string cameraPort = "8000";          // pre realneho robota 8000
+    //std::string ipAddress = "192.168.1.14";   // pre realneho robota 8000
+    //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
     float timepassed = 0.0f;
@@ -90,6 +92,10 @@ private:
 
     fstream mapFile;
     fstream replayFile;
+
+    std::function<void(void)> func;
+
+    std::string str;
 
     cv::VideoCapture cap;
 
@@ -112,6 +118,7 @@ private:
     QString s2;
 
     cv::Mat frame;
+    cv::Mat dest;
 
     int dataCounter;
 

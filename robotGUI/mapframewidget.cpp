@@ -22,7 +22,7 @@ MapFrameWidget::~MapFrameWidget(){
 
 }
 
-void MapFrameWidget::paintEvent(QPaintEvent* event){
+void MapFrameWidget::paintEvent(QPaintEvent*){
     QPainter painter(this);
     painter.setBrush(Qt::black);
     QPen pen;
@@ -33,16 +33,16 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
     //std::cout << "Rect [x,y]=[" << (float)rectangle.width()/100.0 << "," << (float)rectangle.height()/100.0 << "][m]" << std::endl;
 
-    if(robotOnline){
-        if(!robotInitialized){
-            robotPosition.setX(rectangle.width()/2);
-            robotPosition.setY(rectangle.height()/2);
-            realTheta = 0;
-            imageWidth = this->size().width() - offset;
-            imageHeight = this->size().height() - offset;
-            robotInitialized = true;
-        }
+    if(!robotInitialized){
+        robotPosition.setX(rectangle.width()/2);
+        robotPosition.setY(rectangle.height()/2);
+        realTheta = 0;
+        imageWidth = this->size().width() - offset;
+        imageHeight = this->size().height() - offset;
+        robotInitialized = true;
+    }
 
+    if(robotOnline){
         if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
             canTriggerEvents = 1;
         };
@@ -54,15 +54,15 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
 
             updateLaserPicture = 0;
 
-            pen.setWidth(1);
+         /* pen.setWidth(1);
             pen.setColor(Qt::darkGray);
             painter.setPen(pen);
-    /*
+
             for(int i = 1; i <= sectionsX; i++){
                 painter.drawLine(i*100+offset/2, offset/2, i*100+offset/2, rectangle.height()+offset/2);
                 painter.drawLine(offset/2, i*100+offset/2, rectangle.width()+offset/2, i*100+offset/2);
             }
-    */
+         */
             pen.setWidth(2);
             pen.setColor(Qt::red);
             painter.setPen(pen);
@@ -113,45 +113,89 @@ void MapFrameWidget::paintEvent(QPaintEvent* event){
         }
     }
     else{
+        if(!str.empty() && updateLaserPicture == 1){
 
+           pos = str.find(",");
+           token = str.substr(0, pos);
+           str.erase(0, pos + 1);
+           robotImagePos.setX(std::stoi(token));
+
+           pos = str.find(",");
+           token = str.substr(0, pos);
+           str.erase(0, pos + 1);
+           robotImagePos.setY(std::stoi(token));
+
+           pos = str.find(",");
+           token = str.substr(0, pos);
+           str.erase(0, pos + 1);
+           imageTheta = std::stod(token);
+
+           pen.setWidth(2);
+           pen.setColor(Qt::red);
+           painter.setPen(pen);
+
+           painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
+           painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
+
+           while(pos != std::string::npos){
+                 pos = str.find(",");
+                 token = str.substr(0, pos);
+                 str.erase(0, pos + 1);
+                 xp = std::stoi(token);
+
+                 pos = str.find(",");
+                 token = str.substr(0, pos);
+                 str.erase(0, pos + 1);
+                 yp = std::stoi(token);
+
+                 pen.setWidth(3);
+                 pen.setColor(Qt::green);
+                 painter.setPen(pen);
+
+                 if(scale < 1.0){
+                    painter.drawEllipse(QPoint(xp, yp),1,1);
+                 }
+                 else{
+                    painter.drawEllipse(QPoint(xp, yp),2,2);
+                 }
+           }
+        }
     }
 }
 
-const fstream &MapFrameWidget::getReplayFile() const
+void MapFrameWidget::setStr(const std::string &newStr)
 {
-    return replayFile;
+    str = newStr;
 }
 
+const std::string &MapFrameWidget::getStr() const
+{
+    return str;
+}
+
+void MapFrameWidget::setFileEndReached(bool newFileEndReached)
+{
+    fileEndReached = newFileEndReached;
+}
+
+bool MapFrameWidget::getFileEndReached() const
+{
+    return fileEndReached;
+}
 
 void MapFrameWidget::setRobotOnline(bool newRobotOnline)
 {
     robotOnline = newRobotOnline;
 }
 
-bool MapFrameWidget::openFileForReading(string path)
-{
-    replayFile.open(path, ios::in);
-    if(replayFile.is_open()){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-void MapFrameWidget::closeReplayFile()
-{
-    if(replayFile.is_open())
-        replayFile.close();
-}
-
 void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
 
-    file << timepassed << ";" << robotImagePos.x() << "," << robotImagePos.y() << ";";
+    file  << robotImagePos.x() << "," << robotImagePos.y() << "," << realTheta;
 
-    robotPositionInTime.push_back(QPoint(robotImagePos.x(),robotImagePos.y()));
+    /*robotPositionInTime.push_back(QPoint(robotImagePos.x(),robotImagePos.y()));
+
 
     for(int i = 0; i < robotPositionInTime.size(); i++){;
         file << robotPositionInTime[i].x() <<  "," << robotPositionInTime[i].y();
@@ -160,7 +204,7 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
     if(!robotPositionInTime.empty()){
        file << ";";
     }
-
+*/
     number = 0;
 
     for(int k=0;k<copyOfLaserData.numberOfScans;k++)
@@ -169,9 +213,10 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
         xp2 = (robotImagePos.x() + lidarDistImage*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().x());
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
-        if(rectTest.contains(xp2,yp2) && number<10){
-           file << xp2 << "," << yp2;
+        if(rectTest.contains(xp2,yp2) && (number < copyOfLaserData.numberOfScans) && number%6 == 0){
+           file << "," << xp2 << "," << yp2;
         }
+        number++;
     }
     file << "\n";
 }

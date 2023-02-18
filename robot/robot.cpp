@@ -248,10 +248,10 @@ void Robot::imageViewer()
 {
     cv::VideoCapture cap;
     cap.open(camera_link);
-    fps = cap.get(cv::CAP_PROP_FPS);
     cv::Mat frameBuf;
     while(1)
     {
+        if(initilize){
         if(readyFuture.wait_for(std::chrono::seconds(0))==std::future_status::ready)
             break;
         cap >> frameBuf;
@@ -261,7 +261,7 @@ void Robot::imageViewer()
       //  frameBuf.copyTo(robotPicture);
         std::async(std::launch::async, [this](cv::Mat camdata) { camera_callback(camdata.clone()); },frameBuf);
         cv::waitKey(1);
-
+        }
     }
     cap.release();
 }
@@ -459,14 +459,14 @@ double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     else{
        w = 0;
     }
-
+*/
     if(w > 2.0){
         w = 2.0;
     }
     else if(w < -2.0){
         w = -2.0;
     }
-*/
+
     return Kp3*w;
 }
 
@@ -484,7 +484,6 @@ double Robot::robotFullTurn(float goalAngle)
     else{
         w = KpTurn*eToGoalAngle;
     }
-
     return w;
 }
 
@@ -516,7 +515,6 @@ void Robot::resetRobotPose()
 
 bool Robot::emergencyStop(int dist)
 {
-
     if(dist >= 0 && dist < 35){  // [m]
         std::cout << "Robot emergency stop called" << std::endl;
         return true;
@@ -606,9 +604,3 @@ double Robot::getTempSpeed() const
 {
     return tempSpeed;
 }
-
-double Robot::getFps() const
-{
-    return fps;
-}
-

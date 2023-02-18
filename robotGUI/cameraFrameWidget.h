@@ -45,14 +45,14 @@ protected:
 
 private:
     double offset;
-    QImage imageWarnRed;
-    QImage imageWarnYellow;
+    QImage imageDistanceWarn;
     QImage imageOnline;
     cv::VideoCapture cap;
     double v = 0.0;
     bool robotOnline = false;
     bool dispYellowWarning = false;
     bool dispRedWarning = false;
+    bool dispRobotStopped = false;
     unsigned short batteryPercantage = 0;
     double tempSpeed = 0.0;
     unsigned short batteryLevel = 0;
@@ -68,6 +68,7 @@ public:
     void resetWarnings();
     void setDispYellowWarning(bool newDispYellowWarning);
     void setDispRedWarning(bool newDispRedWarning);
+    void setRobotStoppedWarning(bool newWarning);
     void setRobotOnline(bool newRobotOnline);
     void setScale(float newScale);
     void setCap(const cv::VideoCapture &newCap);

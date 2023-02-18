@@ -7,6 +7,7 @@
 #include <QEvent>
 #include <vector>
 #include <fstream>
+#include <cstring>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -70,19 +71,26 @@ public:
 
     void setRobotOnline(bool newRobotOnline);
 
-    bool openFileForReading(std::string path);
-    void closeReplayFile();
+    bool getFileEndReached() const;
 
-    const fstream &getReplayFile() const;
+    void setFileEndReached(bool newFileEndReached);
+
+    const std::string &getStr() const;
+
+    void setStr(const std::string &newStr);
 
 protected:
     void paintEvent(QPaintEvent* event);
 
 private:
     QPoint robotImagePos;
+    double imageTheta = 0.0;
 
     std::vector<QPoint> robotPositionInTime;
-    fstream replayFile;
+    bool fileEndReached;
+    std::string str;
+    std::string token;
+    size_t pos;
 
     std::vector<RobotGoal> points;
     int pointType;
@@ -93,11 +101,12 @@ private:
     bool placeGoals;
     float scale = 1.0f;
 
-    double lidarDist = 0;
+    double lidarDist = 0.0;
     double lidarDistImage = 0.0;
 
     int xp = 0;
     int yp = 0;
+
     double realTheta = 0.0;
 
     int capFreq = 0;

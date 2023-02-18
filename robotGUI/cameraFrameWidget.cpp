@@ -12,8 +12,6 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    imageWarnRed = QImage(":/resource/Alarmy/warning_red.png");
-    imageWarnYellow = QImage(":/resource/Alarmy/warning_yellow.png");
     imageOnline = QImage(":/resource/Alarmy/online.png");
 }
 
@@ -24,7 +22,7 @@ CameraFrameWidget::~CameraFrameWidget(){
     }
 }
 
-void CameraFrameWidget::paintEvent(QPaintEvent* event){
+void CameraFrameWidget::paintEvent(QPaintEvent*){
     QPainter painter(this);
     painter.setBrush(Qt::black);
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
@@ -44,11 +42,18 @@ void CameraFrameWidget::paintEvent(QPaintEvent* event){
               }
               if(dispRedWarning){
                  dispYellowWarning = false;
-                 painter.drawImage(QPoint(60,10), imageWarnRed.scaled(100,100, Qt::KeepAspectRatio));
+                 imageDistanceWarn = QImage(":/resource/Alarmy/warning_red.png");
+                 painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
               else if(dispYellowWarning){
                  dispRedWarning = false;
-                 painter.drawImage(QPoint(60,10), imageWarnYellow.scaled(100,100, Qt::KeepAspectRatio));
+                 imageDistanceWarn = QImage(":/resource/Alarmy/warning_yellow.png");
+                 painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
+              }
+              else if(dispRobotStopped){
+                 dispRobotStopped = false;
+                 imageDistanceWarn = QImage(":/resource/Alarmy/Alarm3.png");
+                 painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
         }
         else{
@@ -228,6 +233,11 @@ void CameraFrameWidget::setRobotOnline(bool newRobotOnline)
 void CameraFrameWidget::setDispRedWarning(bool newDispRedWarning)
 {
     dispRedWarning = newDispRedWarning;
+}
+
+void CameraFrameWidget::setRobotStoppedWarning(bool newWarning)
+{
+    dispRobotStopped = newWarning;
 }
 
 void CameraFrameWidget::setDispYellowWarning(bool newDispYellowWarning)
