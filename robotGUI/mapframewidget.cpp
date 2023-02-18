@@ -12,6 +12,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     canTriggerEvents = false;
     placeGoals = true;
     pointType = 1;
+    number2 = 0;
     pointColor = Qt::yellow;
     imageWidth = this->size().width() - offset;
     imageHeight = this->size().height() - offset;
@@ -115,52 +116,86 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     else{
         if(!str.empty() && updateLaserPicture == 1){
 
-           pos = str.find(",");
-           token = str.substr(0, pos);
-           str.erase(0, pos + 1);
-           robotImagePos.setX(std::stoi(token));
+            temp1 = str.substr(0, str.find(";"));
+            temp2 = str.substr(str.find(";") + 1, str.find("\n"));
 
-           pos = str.find(",");
-           token = str.substr(0, pos);
-           str.erase(0, pos + 1);
-           robotImagePos.setY(std::stoi(token));
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            robotImagePos.setX(std::stoi(token));
 
-           pos = str.find(",");
-           token = str.substr(0, pos);
-           str.erase(0, pos + 1);
-           imageTheta = std::stod(token);
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            robotImagePos.setY(std::stoi(token));
 
-           pen.setWidth(2);
-           pen.setColor(Qt::red);
-           painter.setPen(pen);
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            imageTheta = std::stod(token);
 
-           painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
-           painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
+            pen.setWidth(2);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
 
-           while(pos != std::string::npos){
-                 pos = str.find(",");
-                 token = str.substr(0, pos);
-                 str.erase(0, pos + 1);
-                 xp = std::stoi(token);
+            painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
+            painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
 
-                 pos = str.find(",");
-                 token = str.substr(0, pos);
-                 str.erase(0, pos + 1);
-                 yp = std::stoi(token);
+            std::cout << str << std::endl;
 
-                 pen.setWidth(3);
-                 pen.setColor(Qt::green);
-                 painter.setPen(pen);
+            while(pos != std::string::npos){
+                  pos = temp1.find(",");
+                  std::cout << pos << std::endl;
+                  token = temp1.substr(0, pos);
+                  temp1.erase(0, pos + 1);
+                  xp = std::stoi(token);
 
-                 if(scale < 1.0){
-                    painter.drawEllipse(QPoint(xp, yp),1,1);
-                 }
-                 else{
-                    painter.drawEllipse(QPoint(xp, yp),2,2);
-                 }
-           }
+                  pos = temp1.find(",");
+                  token = temp1.substr(0, pos);
+                  temp1.erase(0, pos + 1);
+                  yp = std::stoi(token);
+
+                  if(scale < 1.0){
+                     painter.drawEllipse(QPoint(xp, yp),1,1);
+                  }
+                  else{
+                     painter.drawEllipse(QPoint(xp, yp),2,2);
+                  }
+            }
+
+            pen.setWidth(3);
+            pen.setColor(Qt::green);
+            painter.setPen(pen);
+
+            pos = 0;
+
+            while(pos != std::string::npos){
+
+                  pos = temp2.find(",");
+                  token = temp2.substr(0, pos);
+                  temp2.erase(0, pos + 1);
+                  xp = std::stoi(token);
+
+                  pos = temp2.find(",");
+                  token = temp2.substr(0, pos);
+                  temp2.erase(0, pos + 1);
+                  yp = std::stoi(token);
+
+                  if(scale < 1.0){
+                     painter.drawEllipse(QPoint(xp, yp),1,1);
+                  }
+                  else{
+                     painter.drawEllipse(QPoint(xp, yp),2,2);
+                  }
+            }
+
         }
     }
+}
+
+void MapFrameWidget::setNumber2(int newNumber2)
+{
+    number2 = newNumber2;
 }
 
 void MapFrameWidget::setStr(const std::string &newStr)
@@ -171,16 +206,6 @@ void MapFrameWidget::setStr(const std::string &newStr)
 const std::string &MapFrameWidget::getStr() const
 {
     return str;
-}
-
-void MapFrameWidget::setFileEndReached(bool newFileEndReached)
-{
-    fileEndReached = newFileEndReached;
-}
-
-bool MapFrameWidget::getFileEndReached() const
-{
-    return fileEndReached;
 }
 
 void MapFrameWidget::setRobotOnline(bool newRobotOnline)
@@ -194,17 +219,16 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
 
     file  << robotImagePos.x() << "," << robotImagePos.y() << "," << realTheta;
 
-    /*robotPositionInTime.push_back(QPoint(robotImagePos.x(),robotImagePos.y()));
-
+    if(number2%10 == 0){
+        robotPositionInTime.push_back(QPoint(robotImagePos.x(),robotImagePos.y()));
+    }
+    number2++;
 
     for(int i = 0; i < robotPositionInTime.size(); i++){;
-        file << robotPositionInTime[i].x() <<  "," << robotPositionInTime[i].y();
+        file << "," << robotPositionInTime[i].x() <<  "," << robotPositionInTime[i].y();
     }
 
-    if(!robotPositionInTime.empty()){
-       file << ";";
-    }
-*/
+    file << ';';
     number = 0;
 
     for(int k=0;k<copyOfLaserData.numberOfScans;k++)
@@ -213,11 +237,19 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
         xp2 = (robotImagePos.x() + lidarDistImage*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().x());
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
-        if(rectTest.contains(xp2,yp2) && (number < copyOfLaserData.numberOfScans) && number%6 == 0){
-           file << "," << xp2 << "," << yp2;
+        if(rectTest.contains(xp2,yp2)){
+            if((number < copyOfLaserData.numberOfScans) && number%10 == 0){
+                if(number == 0){
+                   file << xp2 << "," << yp2;
+                }
+                else{
+                   file << "," << xp2 << "," << yp2;
+                }
+            }
+            number++;
         }
-        number++;
     }
+    number = 0;
     file << "\n";
 }
 

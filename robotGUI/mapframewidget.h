@@ -71,13 +71,11 @@ public:
 
     void setRobotOnline(bool newRobotOnline);
 
-    bool getFileEndReached() const;
-
-    void setFileEndReached(bool newFileEndReached);
-
     const std::string &getStr() const;
 
     void setStr(const std::string &newStr);
+
+    void setNumber2(int newNumber2);
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -87,9 +85,10 @@ private:
     double imageTheta = 0.0;
 
     std::vector<QPoint> robotPositionInTime;
-    bool fileEndReached;
     std::string str;
     std::string token;
+    std::string temp1;
+    std::string temp2;
     size_t pos;
 
     std::vector<RobotGoal> points;
@@ -114,6 +113,7 @@ private:
     int xp2 = 0;
     int yp2 = 0;
     int number = 0;
+    int number2 = 0;
 
     int sectionsX = 0;
     int sectionsY = 0;

@@ -113,7 +113,6 @@ int MainWindow::processRobot(TKobukiData robotData){
             robotRotationalSpeed = omega;
             v = robot->regulateForwardSpeed(0, 0, false, 0);
             robotForwardSpeed = v;
-            //std::cout << "Hello, zastal som" << std::endl;
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
             if(mapFrame->getShortestDistanceLidar() <= 350.0){
@@ -373,7 +372,6 @@ void MainWindow::connectRobotUiSetup(){
 void MainWindow::recordCamera()
 {
     if(!missionLoaded){
-        // camera robota 14 - 15 fps
         video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
@@ -387,23 +385,20 @@ void MainWindow::recordCamera()
         cameraFrame->setMissionLoaded(true);
         cap.open(s1.toStdString());
 
-        if(!cap.isOpened()){
-            std::cout << "Could not open the video file" << std::endl;
-            //return;
-        }
-
-        while(!isFinishedReplay){
-            if(missionRunning){
-                if(!cap.read(cameraFrame->replayFrame)){
-                    break;
+        if(cap.isOpened()){
+            while(!isFinishedReplay){
+                if(missionRunning){
+                    if(!cap.read(cameraFrame->replayFrame)){
+                        break;
+                    }
+                    cameraFrame->updateCameraPicture=1;
+                    cameraFrame->update();
                 }
-                cameraFrame->updateCameraPicture=1;
-                cameraFrame->update();
             }
+            cap.release();
+            cameraFrame->updateCameraPicture = 0;
+            cameraFrame->update();
         }
-        cap.release();
-        cameraFrame->updateCameraPicture = 0;
-        cameraFrame->update();
     }
 }
 
@@ -419,6 +414,7 @@ void MainWindow::recordMap()
             this_thread::sleep_for(200ms);
             timepassed2 += 200;
         }
+        mapFrame->setNumber2(0);
         mapFile.close();
     }
     else{
@@ -479,6 +475,7 @@ void MainWindow::on_loadMissionButton_clicked()
             func =std::bind(&MainWindow::recordCamera, this);
             worker = std::thread(func);
         }
+
         if(!s2.isEmpty() && !worker2Started){
             isFinishedReplay2 = false;
             worker2Started = true;
