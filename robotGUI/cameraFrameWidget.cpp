@@ -64,6 +64,11 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
+void CameraFrameWidget::setBatteryPercantage(unsigned short newBatteryPercantage)
+{
+    batteryPercantage = newBatteryPercantage;
+}
+
 bool CameraFrameWidget::getRobotOnline() const
 {
     return robotOnline;
@@ -150,6 +155,19 @@ void CameraFrameWidget::setSpeedWidget()
 
 void CameraFrameWidget::setBatteryWidget()
 {
+    if(batteryPercantage == 200){
+        batteryPercantage = 0;
+        batteryFrame->setStyleSheet("background-color: silver; "
+                                         "border-style:outset; "
+                                         "border-radius: 10px;"
+                                         "border-color:black;"
+                                         "border-width:4px;"
+                                         "min-width: 10em;"
+                                         "padding: 5px;"
+                                         );
+        return;
+    }
+
     batteryPercantage = (batteryLevel*100)/255;
 
     if((batteryLevel >= ((255.0/100.0)*80.0))){
@@ -206,7 +224,7 @@ void CameraFrameWidget::setBatteryWidget()
                                          "image:url(:/resource/Baterka/battery1.png)"
                                          );
     }
-    else{
+    else if(batteryLevel == 0){
         batteryFrame->setStyleSheet("background-color: silver; "
                                          "border-style:outset; "
                                          "border-radius: 10px;"
@@ -215,6 +233,16 @@ void CameraFrameWidget::setBatteryWidget()
                                          "min-width: 10em;"
                                          "padding: 5px;"
                                          "image:url(:/resource/Baterka/battery0.png)"
+                                         );
+    }
+    else{
+        batteryFrame->setStyleSheet("background-color: silver; "
+                                         "border-style:outset; "
+                                         "border-radius: 10px;"
+                                         "border-color:black;"
+                                         "border-width:4px;"
+                                         "min-width: 10em;"
+                                         "padding: 5px;"
                                          );
     }
 }

@@ -317,6 +317,11 @@ void MainWindow::on_connectToRobotButton_clicked()
             mapFrame->robotInitialized = false;
             mapFrame->update();
 
+            cameraFrame->setBatteryLevel(0);
+            cameraFrame->setBatteryPercantage(200);
+            cameraFrame->setV(0.0);
+            cameraFrame->setSpeedWidget();
+            cameraFrame->setBatteryWidget();
             cameraFrame->setRobotOnline(false);
             cameraFrame->updateCameraPicture = 0;
             cameraFrame->update();
@@ -531,7 +536,7 @@ void MainWindow::on_replayMissionButton_clicked()
                                                    "10px;border-color:black;border-width:4px;padding: "
                                                     "5px;image:url(:/resource/stop_start/play.png)}"
                                                    );
-           }
+            }
     }
 }
 
@@ -572,9 +577,7 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
         }
     }
     else{
-
         destroyRecordMission();
-
     }
 }
 

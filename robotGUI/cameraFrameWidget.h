@@ -75,6 +75,7 @@ public:
     void setReplayFrame(const cv::Mat &newReplayFrame);
     void setMissionLoaded(bool newMissionLoaded);
     bool getRobotOnline() const;
+    void setBatteryPercantage(unsigned short newBatteryPercantage);
 };
 
 #endif // CAMERAFRAMEWIDGET_H
