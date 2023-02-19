@@ -420,7 +420,7 @@ void MainWindow::recordMap()
                     mapFrame->setStr(str);
                     mapFrame->updateLaserPicture = 1;
                     mapFrame->update();
-                    this_thread::sleep_for(110ms);
+                    this_thread::sleep_for(105ms);
                 }
             }
             replayFile.close();
@@ -492,18 +492,20 @@ void MainWindow::on_loadMissionButton_clicked()
         s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
         s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
 
-        if(!s1.isEmpty() && !workerStarted){
-            isFinishedReplay = false;
-            workerStarted = true;
-            func =std::bind(&MainWindow::recordCamera, this);
-            worker = std::thread(func);
-        }
+        if(!s1.isEmpty() && !s2.isEmpty()){
+            if(!workerStarted){
+                isFinishedReplay = false;
+                workerStarted = true;
+                func =std::bind(&MainWindow::recordCamera, this);
+                worker = std::thread(func);
+            }
 
-        if(!s2.isEmpty() && !worker2Started){
-            isFinishedReplay2 = false;
-            worker2Started = true;
-            func =std::bind(&MainWindow::recordMap, this);
-            worker2 = std::thread(func);
+            if(!worker2Started){
+                isFinishedReplay2 = false;
+                worker2Started = true;
+                func =std::bind(&MainWindow::recordMap, this);
+                worker2 = std::thread(func);
+            }
         }
     }
 }

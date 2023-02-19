@@ -139,24 +139,31 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
                 painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
 
+                pos = temp1.find(",");
+                token = temp1.substr(0, pos);
+                temp1.erase(0, pos + 1);
+                xp = std::stoi(token);
+
+                pos = temp1.find(",");
+                token = temp1.substr(0, pos);
+                temp1.erase(0, pos + 1);
+                yp = std::stoi(token);
 
                 while(pos != std::string::npos){
                       pos = temp1.find(",");
                       token = temp1.substr(0, pos);
                       temp1.erase(0, pos + 1);
-                      xp = std::stoi(token);
+                      xp2 = std::stoi(token);
 
                       pos = temp1.find(",");
                       token = temp1.substr(0, pos);
                       temp1.erase(0, pos + 1);
-                      yp = std::stoi(token);
+                      yp2 = std::stoi(token);
 
-                      if(scale < 1.0){
-                         painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
-                      }
-                      else{
-                         painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
-                      }
+                      painter.drawLine(xp*scale, yp*scale, xp2*scale, yp2*scale);
+
+                      xp = xp2;
+                      yp = yp2;
                 }
 
                 pen.setWidth(3);
