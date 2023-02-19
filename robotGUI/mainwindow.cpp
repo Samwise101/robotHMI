@@ -176,14 +176,14 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
 
-    if(robotForwardSpeed > 0.1){
+    if(robotForwardSpeed >= 0.1){
         radius = robotForwardSpeed/robotRotationalSpeed;
         if(radius == 0)
             robot->setArcSpeed(robotForwardSpeed,0);
         else
             robot->setArcSpeed(robotForwardSpeed,radius);
     }
-    else if((robotForwardSpeed <= 0.05) && ((robotRotationalSpeed >= 0.1) || (robotRotationalSpeed < -0.1))){
+    else if((robotForwardSpeed < 0.05) && ((robotRotationalSpeed >= 0.1) || (robotRotationalSpeed < -0.1))){
         robot->setRotationSpeed(robotRotationalSpeed);
     }
     else if((robotForwardSpeed <= 0.1) && ((robotRotationalSpeed >= -0.1) && (robotRotationalSpeed <= 0.1))){
@@ -306,18 +306,51 @@ void MainWindow::on_startButton_pressed()
 
 void MainWindow::on_connectToRobotButton_clicked()
 {
-    connectRobotUiSetup();
-    if(!setupConnectionToRobot()){
-        std::cout << "Something went wrong, can't connect to robot!" << std::endl;
+    if(!robotConnected){
+        connectRobotUiSetup();
+        if(!setupConnectionToRobot()){
+            std::cout << "Something went wrong, can't connect to robot!" << std::endl;
+        }
+        else{
+            ui->connectToRobotButton->setText("Odpoj sa");
+            std::cout << "Successfully connected to the robot!" << std::endl;
+            cameraFrame->setMissionLoaded(false);
+            cameraFrame->setTempSpeed(robot->getTempSpeed());
+            cameraFrame->speedFrame = ui->speedWidget;
+            cameraFrame->batteryFrame = ui->batteryWidget;
+        }
     }
     else{
-        std::cout << "Successfully connected to the robot!" << std::endl;
-        cameraFrame->setMissionLoaded(false);
-        cameraFrame->setTempSpeed(robot->getTempSpeed());
-        cameraFrame->speedFrame = ui->speedWidget;
-        cameraFrame->batteryFrame = ui->batteryWidget;
-    }
+        if(!robotRunning){
+            if(workerStarted && !isFinished && !missionLoaded){
+                isFinished = true;
+                std::cout << "camera recording thread finished\n";
+                worker.join();
+                delete video;
+            }
 
+            if(worker2Started && !isFinished2 && !missionLoaded){
+                isFinished2 = true;
+                std::cout << "map recording thread finished\n";
+                worker2.join();
+            }
+
+            robot->setInitilize(false);
+            robotConnected = false;
+            delete robot;
+
+            mapFrame->setRobotOnline(false);
+            mapFrame->updateLaserPicture = 0;
+            mapFrame->robotInitialized = false;
+            mapFrame->update();
+
+            cameraFrame->setRobotOnline(false);
+            cameraFrame->updateCameraPicture = 0;
+            cameraFrame->update();
+
+            ui->connectToRobotButton->setText("Pripoj sa");
+        }
+    }
 }
 
 bool MainWindow::setupConnectionToRobot(){
