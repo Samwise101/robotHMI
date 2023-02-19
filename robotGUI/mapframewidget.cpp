@@ -120,12 +120,12 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 pos = temp1.find(",");
                 token = temp1.substr(0, pos);
                 temp1.erase(0, pos + 1);
-                robotImagePos.setX(std::stoi(token));
+                robotImagePos.setX(std::stoi(token)*scale);
 
                 pos = temp1.find(",");
                 token = temp1.substr(0, pos);
                 temp1.erase(0, pos + 1);
-                robotImagePos.setY(std::stoi(token));
+                robotImagePos.setY(std::stoi(token)*scale);
 
                 pos = temp1.find(",");
                 token = temp1.substr(0, pos);
@@ -139,6 +139,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
                 painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
 
+
                 while(pos != std::string::npos){
                       pos = temp1.find(",");
                       token = temp1.substr(0, pos);
@@ -151,10 +152,10 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                       yp = std::stoi(token);
 
                       if(scale < 1.0){
-                         painter.drawEllipse(QPoint(xp, yp),1,1);
+                         painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
                       }
                       else{
-                         painter.drawEllipse(QPoint(xp, yp),2,2);
+                         painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
                       }
                 }
 
@@ -175,10 +176,10 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                       yp = std::stoi(token);
 
                       if(scale < 1.0){
-                         painter.drawEllipse(QPoint(xp, yp),1,1);
+                         painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
                       }
                       else{
-                         painter.drawEllipse(QPoint(xp, yp),2,2);
+                         painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
                       }
                 }
 
