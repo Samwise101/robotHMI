@@ -50,6 +50,8 @@ public:
     int processRobot(TKobukiData robotData);
     void recordCamera();
     void recordMap();
+    void destroyReplayMission();
+    void destroyRecordMission();
 
 private slots:
 

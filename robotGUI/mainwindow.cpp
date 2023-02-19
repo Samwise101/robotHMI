@@ -39,30 +39,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
 MainWindow::~MainWindow()
 {
-    if(workerStarted && !isFinished && !missionLoaded){
-        isFinished = true;
-        std::cout << "camera recording thread finished\n";
-        worker.join();
-        delete video;
-    }
-
-    if(worker2Started && !isFinished2 && !missionLoaded){
-        isFinished2 = true;
-        std::cout << "map recording thread finished\n";
-        worker2.join();
-    }
-
-    if(workerStarted && !isFinishedReplay && missionLoaded){
-        std::cout << "camera replay thread finished\n";
-        isFinishedReplay = true;
-        worker.join();
-    }
-
-    if(worker2Started && !isFinishedReplay2 && missionLoaded){
-        std::cout << "map replay thread finished\n";
-        isFinishedReplay2 = true;
-        worker2.join();
-    }
+    destroyRecordMission();
+    destroyReplayMission();
 
     if(robotConnected)
         delete robot;
@@ -307,7 +285,12 @@ void MainWindow::on_startButton_pressed()
 void MainWindow::on_connectToRobotButton_clicked()
 {
     if(!robotConnected){
+
+        destroyRecordMission();
+        destroyReplayMission();
+
         connectRobotUiSetup();
+
         if(!setupConnectionToRobot()){
             std::cout << "Something went wrong, can't connect to robot!" << std::endl;
         }
@@ -322,18 +305,8 @@ void MainWindow::on_connectToRobotButton_clicked()
     }
     else{
         if(!robotRunning){
-            if(workerStarted && !isFinished && !missionLoaded){
-                isFinished = true;
-                std::cout << "camera recording thread finished\n";
-                worker.join();
-                delete video;
-            }
-
-            if(worker2Started && !isFinished2 && !missionLoaded){
-                isFinished2 = true;
-                std::cout << "map recording thread finished\n";
-                worker2.join();
-            }
+            destroyRecordMission();
+            destroyReplayMission();
 
             robot->setInitilize(false);
             robotConnected = false;
@@ -359,20 +332,6 @@ bool MainWindow::setupConnectionToRobot(){
         omega = 0.0;
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
-
-        if(workerStarted && missionLoaded){
-            missionRunning = false;
-            missionLoaded = false;
-            workerStarted = false;
-            worker.join();
-        }
-
-        if(worker2Started && missionLoaded){
-            missionRunning = false;
-            missionLoaded = false;
-            worker2Started = false;
-            worker2.join();
-        }
 
         robot = new Robot(ipAddress);
         robotConnected = true;
@@ -471,33 +430,64 @@ void MainWindow::recordMap()
     }
 }
 
+void MainWindow::destroyReplayMission()
+{
+    if(missionLoaded){
+        if(workerStarted && !isFinishedReplay){
+            isFinishedReplay = true;
+            workerStarted = false;
+            std::cout << "camera recording thread finished\n";
+            worker.join();
+        }
+
+        if(worker2Started && !isFinishedReplay2){
+            isFinishedReplay2 = true;
+            worker2Started = false;
+            std::cout << "map recording thread finished\n";
+            worker2.join();
+        }
+
+        missionLoaded = false;
+        missionRunning = false;
+    }
+}
+
+void MainWindow::destroyRecordMission()
+{
+    if(!missionLoaded){
+        if(workerStarted && !isFinished){
+            isFinished = true;
+            workerStarted = false;
+            if(videoCreated){
+                 videoCreated = false;
+            }
+            std::cout << "camera recording thread finished\n";
+            worker.join();
+            delete video;
+        }
+
+        if(worker2Started && !isFinished2){
+            isFinished2 = true;
+            worker2Started = false;
+            std::cout << "map recording thread finished\n";
+            worker2.join();
+        }
+    }
+}
+
 
 
 void MainWindow::on_loadMissionButton_clicked()
 {
-    if(workerStarted && missionLoaded){
-        isFinishedReplay = true;
-        missionRunning = false;
-        missionLoaded = false;
-        workerStarted = false;
-        worker.join();
-    }
-
-    if(worker2Started && missionLoaded){
-        isFinishedReplay2 = true;
-        missionRunning = false;
-        missionLoaded = false;
-        worker2Started = false;
-        worker2.join();
-    }
-
-    ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                           "silver;border-style:outset;border-radius: "
-                                           "10px;border-color:black;border-width:4px;padding: "
-                                            "5px;image:url(:/resource/stop_start/play.png)}"
-                                           );
-
     if(!robotConnected){
+        destroyReplayMission();
+
+        ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
+                                               "silver;border-style:outset;border-radius: "
+                                               "10px;border-color:black;border-width:4px;padding: "
+                                                "5px;image:url(:/resource/stop_start/play.png)}"
+                                               );
+
         missionLoaded = true;
         s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
         s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
@@ -580,20 +570,9 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
         }
     }
     else{
-        if(robotConnected && workerStarted && !missionLoaded){
-           if(videoCreated){
-                videoCreated = false;
-           }
-           isFinished = true;
-           workerStarted = false;
-           worker.join();
-           delete video;
-        }
-        if(robotConnected && worker2Started && !missionLoaded){
-           isFinished2 = true;
-           worker2Started = false;
-           worker2.join();
-        }
+
+        destroyRecordMission();
+
     }
 }
 

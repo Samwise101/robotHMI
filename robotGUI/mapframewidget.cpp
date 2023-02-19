@@ -139,11 +139,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
                 painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
 
-                std::cout << str << std::endl;
-
                 while(pos != std::string::npos){
                       pos = temp1.find(",");
-                      std::cout << pos << std::endl;
                       token = temp1.substr(0, pos);
                       temp1.erase(0, pos + 1);
                       xp = std::stoi(token);
@@ -164,11 +161,9 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 pen.setWidth(3);
                 pen.setColor(Qt::green);
                 painter.setPen(pen);
-
                 pos = 0;
 
                 while(pos != std::string::npos){
-
                       pos = temp2.find(",");
                       token = temp2.substr(0, pos);
                       temp2.erase(0, pos + 1);
