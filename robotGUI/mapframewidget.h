@@ -8,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <cstring>
+#include <QVector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -91,6 +92,11 @@ private:
     std::string temp2;
     size_t pos;
 
+    QVector<QLine> lines;
+    QLine line1;
+    QLine line2;
+    QLine line3;
+    QLine line4;
     std::vector<RobotGoal> points;
     int pointType;
     QColor pointColor;

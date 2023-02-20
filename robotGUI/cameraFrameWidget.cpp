@@ -74,16 +74,6 @@ bool CameraFrameWidget::getRobotOnline() const
     return robotOnline;
 }
 
-void CameraFrameWidget::setMissionLoaded(bool newMissionLoaded)
-{
-    missionLoaded = newMissionLoaded;
-}
-
-void CameraFrameWidget::setCap(const cv::VideoCapture &newCap)
-{
-    cap = newCap;
-}
-
 void CameraFrameWidget::setSpeedWidget()
 {
     if(v == 0.0 || v < 0.0){

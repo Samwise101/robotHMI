@@ -43,7 +43,6 @@ public:
     ~MainWindow();
 
     bool getIpAddress();
-    void connectRobotUiSetup();
     bool setupConnectionToRobot();
     int processLidar(LaserMeasurement laserData);
     int processCamera(cv::Mat cameraData);
@@ -85,7 +84,7 @@ private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.14";   // pre realneho robota 8000
+    //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;

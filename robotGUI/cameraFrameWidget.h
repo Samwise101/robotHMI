@@ -71,9 +71,7 @@ public:
     void setRobotStoppedWarning(bool newWarning);
     void setRobotOnline(bool newRobotOnline);
     void setScale(float newScale);
-    void setCap(const cv::VideoCapture &newCap);
     void setReplayFrame(const cv::Mat &newReplayFrame);
-    void setMissionLoaded(bool newMissionLoaded);
     bool getRobotOnline() const;
     void setBatteryPercantage(unsigned short newBatteryPercantage);
 };

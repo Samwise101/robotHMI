@@ -72,7 +72,9 @@ int MainWindow::processRobot(TKobukiData robotData){
         robot->setInitilize(true);
     }
 
-    robot->robotOdometry(robotData);
+    if(robotRunning){
+       robot->robotOdometry(robotData);
+    }
 
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
@@ -81,11 +83,13 @@ int MainWindow::processRobot(TKobukiData robotData){
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
-        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 250.0)){
-            /*
-            if(mapFrame->getShortestDistanceLidar() <= 250.0){
+        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 240.0)){
+
+            if(mapFrame->getShortestDistanceLidar() <= 240.0){
+                cameraFrame->setDispRedWarning(false);
+                cameraFrame->setDispYellowWarning(false);
                 cameraFrame->setRobotStoppedWarning(true);
-            }*/
+            }
            // std::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
             omega = robot->orientationRegulator(0, 0, false);
             robotRotationalSpeed = omega;
@@ -97,7 +101,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                cameraFrame->setDispRedWarning(true);
             }
             else if(mapFrame->getShortestDistanceLidar() <= 450.0){
-                cameraFrame->setRobotStoppedWarning(true);
+                cameraFrame->setDispYellowWarning(true);
             }
 
             if(mapFrame->getShortestDistanceLidar() < 450.0 &&
@@ -190,13 +194,7 @@ void MainWindow::on_actionGo_Offline_triggered()
 
 void MainWindow::on_actionGo_Online_triggered()
 {
-    connectRobotUiSetup();
-    if(!setupConnectionToRobot()){
-        std::cout << "Something went wrong, can't connect to robot!" << std::endl;
-    }
-    else{
-        std::cout << "Successfully connected to the robot!" << std::endl;
-    }
+
 }
 
 
@@ -276,28 +274,31 @@ void MainWindow::on_startButton_pressed()
                                        "image: url(:/resource/stop_start/stop_clicked.png);}"
                                        );
     }
-    else{
-        std::cout << "Robot is not connected!" << std::endl;
-    }
 }
 
 
 void MainWindow::on_connectToRobotButton_clicked()
 {
     if(!robotConnected){
-
         destroyRecordMission();
         destroyReplayMission();
-
-        connectRobotUiSetup();
+/*
+        if(getIpAddress()){
+            std::cout << "Ip address loaded" << std::endl;
+        }
+        else{
+            std::cout << "No ip address loaded!" << std::endl;
+        }*/
 
         if(!setupConnectionToRobot()){
             std::cout << "Something went wrong, can't connect to robot!" << std::endl;
         }
         else{
             ui->connectToRobotButton->setText("Odpoj sa");
+            robotConnected = true;
+            robot->robotStart();
+
             std::cout << "Successfully connected to the robot!" << std::endl;
-            cameraFrame->setMissionLoaded(false);
             cameraFrame->setTempSpeed(robot->getTempSpeed());
             cameraFrame->speedFrame = ui->speedWidget;
             cameraFrame->batteryFrame = ui->batteryWidget;
@@ -339,12 +340,10 @@ bool MainWindow::setupConnectionToRobot(){
         robotRotationalSpeed = 0;
 
         robot = new Robot(ipAddress);
-        robotConnected = true;
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
-        robot->robotStart();
 
         return true;
     }
@@ -352,18 +351,6 @@ bool MainWindow::setupConnectionToRobot(){
         return false;
     }
 
-}
-
-
-
-void MainWindow::connectRobotUiSetup(){
-    if(getIpAddress()){
-        std::cout << "Ip address loaded" << std::endl;
-
-    }
-    else{
-        std::cout << "No ip address loaded!" << std::endl;
-    }
 }
 
 void MainWindow::recordCamera()
@@ -379,7 +366,6 @@ void MainWindow::recordCamera()
         video->release();
     }
     else{
-        cameraFrame->setMissionLoaded(true);
         cap.open(s1.toStdString());
 
         if(cap.isOpened()){
@@ -425,7 +411,7 @@ void MainWindow::recordMap()
                     mapFrame->setStr(str);
                     mapFrame->updateLaserPicture = 1;
                     mapFrame->update();
-                    this_thread::sleep_for(105ms);
+                    this_thread::sleep_for(111ms);
                 }
             }
             replayFile.close();

@@ -32,7 +32,9 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
     painter.drawRect(rectangle);
 
-    //std::cout << "Rect [x,y]=[" << (float)rectangle.width()/100.0 << "," << (float)rectangle.height()/100.0 << "][m]" << std::endl;
+    pen.setWidth(3);
+    pen.setColor(Qt::green);
+    painter.setPen(pen);
 
     if(!robotInitialized){
         robotPosition.setX(rectangle.width()/2);
@@ -44,6 +46,83 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 
     if(updateLaserPicture == 1){
+/*
+        line1.setLine(0+offset/2,471+offset/2,574+offset/2,471+offset/2);
+        line2.setLine(574+offset/2,471+offset/2,574+offset/2,11+offset/2);
+        line3.setLine(574+offset/2,11+offset/2,550+offset/2,11+offset/2);
+        line4.setLine(550+offset/2,11+offset/2,550+offset/2,0+offset/2);
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(550+offset/2,0+offset/2,55+offset/2,0+offset/2);
+        line2.setLine(55+offset/2,0+offset/2,55+offset/2,40+offset/2);
+        line3.setLine(55+offset/2,40+offset/2,0+offset/2,40+offset/2);
+        line4.setLine(0+offset/2,40+offset/2,0+offset/2,471+offset/2);
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(264+offset/2,471+offset/2,264+offset/2,317+offset/2);
+        line2.setLine(264+offset/2,317+offset/2,267+offset/2,317+offset/2);
+        line3.setLine(267+offset/2,317+offset/2,267+offset/2,471+offset/2);
+        lines = {line1, line2, line3};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(264+offset/2,320+offset/2,264+offset/2,317+offset/2);
+        line2.setLine(264+offset/2,317+offset/2,110+offset/2,317+offset/2);
+        line3.setLine(110+offset/2,317+offset/2,110+offset/2,320+offset/2);
+        line4.setLine(110+offset/2,320+offset/2,264+offset/2,320+offset/2);
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(110+offset/2,320+offset/2,110+offset/2,162+offset/2);
+        line2.setLine(110+offset/2,162+offset/2,114+offset/2,162+offset/2);
+        line3.setLine(114+offset/2,162+offset/2,114+offset/2,317+offset/2);
+        lines = {line1, line2, line3};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(574+offset/2,162+offset/2,574+offset/2,159+offset/2);
+        line2.setLine(574+offset/2,159+offset/2,365+offset/2,159+offset/2);
+        line3.setLine(365+offset/2,159+offset/2,365+offset/2,162+offset/2);
+        line4.setLine(365+offset/2,162+offset/2,574+offset/2,162+offset/2);
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(423+offset/2,162+offset/2,423+offset/2,317+offset/2);
+        line2.setLine(423+offset/2,317+offset/2,420+offset/2,317+offset/2);
+        line3.setLine(420+offset/2,317+offset/2,420+offset/2,162+offset/2);
+        lines = {line1, line2, line3};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(365+offset/2,159+offset/2,365+offset/2,105+offset/2);
+        line2.setLine(365+offset/2,105+offset/2,368+offset/2,105+offset/2);
+        line3.setLine(368+offset/2,105+offset/2,368+offset/2,159+offset/2);
+        lines = {line1, line2, line3};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine(423+offset/2,317+offset/2,477+offset/2,317+offset/2);
+        line2.setLine(477+offset/2,317+offset/2,477+offset/2,314+offset/2);
+        line3.setLine(477+offset/2,314+offset/2,423+offset/2,314+offset/2);
+        lines = {line1, line2, line3};
+
+        painter.drawLines(lines);
+        lines.clear();*/
+
         if(robotOnline){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;
@@ -240,7 +319,7 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
         if(rectTest.contains(xp2,yp2)){
-            if((number < copyOfLaserData.numberOfScans) && number%10 == 0){
+            if((number < copyOfLaserData.numberOfScans) && number%8 == 0){
                 if(number == 0){
                    file << xp2 << "," << yp2;
                 }

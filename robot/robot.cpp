@@ -18,10 +18,7 @@ std::function<int(LaserMeasurement)> Robot::do_nothing_laser=[](LaserMeasurement
 
 Robot::~Robot()
 {
-   // this->setRotationSpeed(0);
-   // this->setTranslationSpeed(0);
-   // this->setArcSpeed(0,0);
-
+    closesocket(rob_s);
     ready_promise.set_value();
     robotthreadHandle.join();
     laserthreadHandle.join();
