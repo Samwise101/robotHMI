@@ -135,22 +135,22 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             if(mouseXPos >= 0 && mouseYPos >= 0){
 
                 if((mouseXPos < 50) && (mouseYPos > 50)){
-                   painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                   painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
                 else if((mouseXPos < 50) && (mouseYPos < 50)){
-                   painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                   painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
                 else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
-                   painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                   painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
                 else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
-                    painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                    painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
                 else if(mouseYPos < 50){
-                    painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                    painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
                 else if(mouseXPos > (rectangle.width() - 50)){
-                    painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                    painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
                 }
             }
 
