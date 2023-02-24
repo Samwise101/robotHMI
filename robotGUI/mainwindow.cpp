@@ -411,7 +411,7 @@ void MainWindow::recordMap()
                     mapFrame->setStr(str);
                     mapFrame->updateLaserPicture = 1;
                     mapFrame->update();
-                    this_thread::sleep_for(111ms);
+                    this_thread::sleep_for(200ms);
                 }
             }
             replayFile.close();

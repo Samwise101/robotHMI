@@ -37,8 +37,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     painter.setPen(pen);
 
     if(!robotInitialized){
-        robotPosition.setX(rectangle.width()/2);
-        robotPosition.setY(rectangle.height()/2);
+        robotPosition.setX(59);
+        robotPosition.setY(rectangle.height() - 70);
         realTheta = 0;
         imageWidth = this->size().width() - offset;
         imageHeight = this->size().height() - offset;
@@ -193,8 +193,12 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         else{
             if(!str.empty() && updateLaserPicture == 1){
 
-                temp1 = str.substr(0, str.find(";"));
-                temp2 = str.substr(str.find(";") + 1, str.find("\n"));
+                std::istringstream stream(str);
+                std::getline(stream, temp1,';');
+                std::getline(stream, temp2, ';');
+
+               // temp1 = str.substr(0, str.find(";"));
+               // temp2 = str.substr(str.find(";") + 1, str.find("\n"));
 
                 pos = temp1.find(",");
                 token = temp1.substr(0, pos);
@@ -268,7 +272,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                          painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
                       }
                 }
-
             }
         }
     }
@@ -329,6 +332,18 @@ void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
             }
             number++;
         }
+    }
+    file << ";";
+    if(points.empty()){
+       file << "1";
+    }
+    else{
+       for(int i = 0; i < points.size(); i++){
+            if(i == 0)
+                file << points[i].x() << "," << points[i].y() << "," << points[i].getType();
+            else
+                file << "," << points[i].x() << "," << points[i].y() << "," << points[i].getType();
+       }
     }
     file << "\n";
 }
