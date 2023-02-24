@@ -41,6 +41,11 @@ public:
     bool robotInitialized = false;
 
     void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    bool event(QEvent * event);
+    void hoverLeave(QHoverEvent *event);
+
+
 
     void updateRobotValuesForGUI(double& x, double& y, double& theta);
 
@@ -65,7 +70,7 @@ public:
 
     QPoint robotPosition;
 
-    void createFrameLog(float& timepassed, fstream& file);
+    void createFrameLog(fstream& file);
 
     int imageHeight = 0;
     int imageWidth = 0;
@@ -84,6 +89,10 @@ protected:
 private:
     QPoint robotImagePos;
     double imageTheta = 0.0;
+
+    int mouseXPos = -1;
+    int mouseYPos = -1;
+    QString mouseString;
 
     std::vector<QPoint> robotPositionInTime;
     std::string str;

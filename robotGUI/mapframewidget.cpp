@@ -18,6 +18,9 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     imageWidth = this->size().width() - offset;
     imageHeight = this->size().height() - offset;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    this->setMouseTracking(true);
+    this->setAttribute(Qt::WA_Hover);
+
 }
 
 MapFrameWidget::~MapFrameWidget(){
@@ -124,19 +127,39 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         painter.drawLines(lines);
         lines.clear();*/
 
-        std::cout << robotOnline << std::endl;
-
         if(robotOnline){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;
             };
 
-            sectionsX = rectangle.width()/100;
-            sectionsY = rectangle.height()/100;
+            if(mouseXPos >= 0 && mouseYPos >= 0){
+
+                if((mouseXPos < 50) && (mouseYPos > 50)){
+                   painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+                else if((mouseXPos < 50) && (mouseYPos < 50)){
+                   painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+                else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
+                   painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+                else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
+                    painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+                else if(mouseYPos < 50){
+                    painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+                else if(mouseXPos > (rectangle.width() - 50)){
+                    painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m ," + QString::number(mouseYPos/100.0) + "m]");
+                }
+            }
 
             updateLaserPicture = 0;
 
-             /* pen.setWidth(1);
+             /*
+                sectionsX = rectangle.width()/100;
+                sectionsY = rectangle.height()/100;
+                pen.setWidth(1);
                 pen.setColor(Qt::darkGray);
                 painter.setPen(pen);
 
@@ -145,6 +168,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                     painter.drawLine(offset/2, i*100+offset/2, rectangle.width()+offset/2, i*100+offset/2);
                 }
              */
+
              pen.setWidth(2);
              pen.setColor(Qt::red);
              painter.setPen(pen);
@@ -291,11 +315,9 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
 
                     if(temp3.size() >= 3){
-                        std::cout << "inside if" << std::endl;
                         pos = temp3.find(",");
 
                         while(pos != std::string::npos){
-                            std::cout << "inside while" << std::endl;
                             pos = temp3.find(",");
                             token = temp3.substr(0, pos);
                             temp3.erase(0, pos + 1);
@@ -366,7 +388,7 @@ void MapFrameWidget::setRobotOnline(bool newRobotOnline)
     robotOnline = newRobotOnline;
 }
 
-void MapFrameWidget::createFrameLog(float& timepassed, fstream& file)
+void MapFrameWidget::createFrameLog(fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
 
@@ -428,6 +450,33 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
         if(points.size() < 10){
            points.insert(points.begin(), RobotGoal(event->x(), event->y(), this->pointType, this->pointColor));
         }
+    }
+}
+
+bool MapFrameWidget::event(QEvent * event)
+{
+   if(event->type() == QEvent::HoverLeave){
+      hoverLeave(static_cast<QHoverEvent*>(event));
+      return true;
+   }
+
+   return QWidget::event(event);
+}
+
+
+void MapFrameWidget::hoverLeave(QHoverEvent  * event)
+{
+    mouseXPos = -1;
+    mouseYPos = -1;
+}
+
+void MapFrameWidget::mouseMoveEvent(QMouseEvent *event){
+
+    if (event->type() == QEvent::MouseMove)
+    {
+        mouseXPos = event->x();
+        mouseYPos = event->y();
+        //std::cout << "[x,y]=[" << event->x() << "," << event->y() << "]" << std::endl;
     }
 }
 

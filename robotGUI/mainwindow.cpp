@@ -393,7 +393,7 @@ void MainWindow::recordMap()
         }
 
         while(!isFinished2 && mapFile.is_open()){
-            mapFrame->createFrameLog(timepassed2, mapFile);
+            mapFrame->createFrameLog(mapFile);
             this_thread::sleep_for(200ms);
             timepassed2 += 200;
         }
@@ -411,7 +411,7 @@ void MainWindow::recordMap()
                     mapFrame->setStr(str);
                     mapFrame->updateLaserPicture = 1;
                     mapFrame->update();
-                    this_thread::sleep_for(200ms);
+                    this_thread::sleep_for(115ms);
                 }
             }
             replayFile.close();
