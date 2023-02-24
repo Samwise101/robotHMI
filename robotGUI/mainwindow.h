@@ -80,6 +80,8 @@ private slots:
 
     void on_loadMissionButton_clicked();
 
+    void on_mouseTracking_clicked();
+
 private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
@@ -90,6 +92,12 @@ private:
     Robot* robot;
     float timepassed = 0.0f;
     float timepassed2 = 0.0f;
+
+    int mapFrameWidth;
+    int mapFrameHeight;
+
+    int cameraFrameWidth;
+    int cameraFrameHeight;
 
     fstream mapFile;
     fstream replayFile;

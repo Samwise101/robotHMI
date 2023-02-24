@@ -12,6 +12,9 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     canTriggerEvents = false;
     robotOnline = false;
     placeGoals = true;
+
+    posMouseTrack = true;
+
     pointType = 1;
     number2 = 0;
     pointColor = Qt::yellow;
@@ -132,7 +135,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 canTriggerEvents = 1;
             };
 
-            if(mouseXPos >= 0 && mouseYPos >= 0){
+            if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
 
                 if((mouseXPos < 50) && (mouseYPos > 50)){
                    painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
@@ -368,26 +371,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
-void MapFrameWidget::setNumber2(int newNumber2)
-{
-    number2 = newNumber2;
-}
-
-void MapFrameWidget::setStr(const std::string &newStr)
-{
-    str = newStr;
-}
-
-const std::string &MapFrameWidget::getStr() const
-{
-    return str;
-}
-
-void MapFrameWidget::setRobotOnline(bool newRobotOnline)
-{
-    robotOnline = newRobotOnline;
-}
-
 void MapFrameWidget::createFrameLog(fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
@@ -437,11 +420,6 @@ void MapFrameWidget::createFrameLog(fstream& file)
        }
     }
     file << "\n";
-}
-
-void MapFrameWidget::setScale(float newScale)
-{
-    scale = newScale;
 }
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
@@ -504,6 +482,42 @@ void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta
     robotImagePos.setX(x);
     robotImagePos.setY(y);
     realTheta = theta;
+}
+
+
+bool MapFrameWidget::getPosMouseTrack() const
+{
+    return posMouseTrack;
+}
+
+void MapFrameWidget::setScale(float newScale)
+{
+    scale = newScale;
+}
+
+void MapFrameWidget::setPosMouseTrack(bool newPosMouseTrack)
+{
+    posMouseTrack = newPosMouseTrack;
+}
+
+void MapFrameWidget::setNumber2(int newNumber2)
+{
+    number2 = newNumber2;
+}
+
+void MapFrameWidget::setStr(const std::string &newStr)
+{
+    str = newStr;
+}
+
+const std::string &MapFrameWidget::getStr() const
+{
+    return str;
+}
+
+void MapFrameWidget::setRobotOnline(bool newRobotOnline)
+{
+    robotOnline = newRobotOnline;
 }
 
 void MapFrameWidget::setCanTriggerEvent(bool state){

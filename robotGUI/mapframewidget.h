@@ -45,8 +45,6 @@ public:
     bool event(QEvent * event);
     void hoverLeave(QHoverEvent *event);
 
-
-
     void updateRobotValuesForGUI(double& x, double& y, double& theta);
 
     void setCanTriggerEvent(bool state);
@@ -83,6 +81,10 @@ public:
 
     void setNumber2(int newNumber2);
 
+    void setPosMouseTrack(bool newPosMouseTrack);
+
+    bool getPosMouseTrack() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -92,6 +94,7 @@ private:
 
     int mouseXPos = -1;
     int mouseYPos = -1;
+    bool posMouseTrack;
     QString mouseString;
 
     std::vector<QPoint> robotPositionInTime;

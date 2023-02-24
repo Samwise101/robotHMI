@@ -23,6 +23,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     dataCounter = 0;
     switchIndex = 0;
 
+    cameraFrameWidth = 437;
+    cameraFrameHeight = 360;
+
+    mapFrameWidth = 1148;
+    mapFrameHeight = 942;
+
     workerStarted = false;
     worker2Started = false;
 
@@ -31,9 +37,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->addressField->setMaxLength(20);
 
     cameraFrame = new CameraFrameWidget();
+    cameraFrame->setFixedWidth(cameraFrameWidth);
+    cameraFrame->setFixedHeight(cameraFrameHeight);
+
     ui->cameraWidget->addWidget(cameraFrame, 0, 1);
 
     mapFrame = new MapFrameWidget();
+    mapFrame->setFixedWidth(mapFrameWidth);
+    mapFrame->setFixedHeight(mapFrameHeight);
+
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 }
 
@@ -609,6 +621,12 @@ void MainWindow::on_switchButton_clicked()
     std::cout << "Map widget [width, height]=[" << mapFrame->width() << ", " << mapFrame->height() << "]" << std::endl;
 
     if(switchIndex == 0){
+        cameraFrame->setFixedWidth(mapFrameWidth);
+        cameraFrame->setFixedHeight(mapFrameHeight);
+
+        mapFrame->setFixedWidth(cameraFrameWidth);
+        mapFrame->setFixedHeight(cameraFrameHeight);
+
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
         ui->cameraWidget->addWidget(mapFrame);
@@ -623,6 +641,14 @@ void MainWindow::on_switchButton_clicked()
         ++switchIndex;
     }
     else if(switchIndex == 1){
+
+
+        cameraFrame->setFixedWidth(cameraFrameWidth);
+        cameraFrame->setFixedHeight(cameraFrameHeight);
+
+        mapFrame->setFixedWidth(mapFrameWidth);
+        mapFrame->setFixedHeight(mapFrameHeight);
+
         ui->cameraWidget->removeWidget(mapFrame);
         ui->mapWidgetFrame->removeWidget(cameraFrame);
         ui->cameraWidget->addWidget(cameraFrame);
@@ -632,6 +658,19 @@ void MainWindow::on_switchButton_clicked()
         ui->switchButton->setText("Použi kameru");
         mapFrame->setPlaceGoals(true);
         --switchIndex;
+    }
+}
+
+
+void MainWindow::on_mouseTracking_clicked()
+{
+    if(mapFrame->getPosMouseTrack()){
+        mapFrame->setPosMouseTrack(false);
+        ui->mouseTracking->setText("Zapni ukazovateľ\npozície v mape");
+    }
+    else{
+        mapFrame->setPosMouseTrack(true);
+        ui->mouseTracking->setText("Vypni ukazovateľ\npozície v mape");
     }
 }
 
