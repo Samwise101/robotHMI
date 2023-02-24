@@ -90,6 +90,7 @@ private:
     std::string token;
     std::string temp1;
     std::string temp2;
+    std::string temp3;
     size_t pos;
 
     QVector<QLine> lines;
@@ -111,6 +112,7 @@ private:
 
     int xp = 0;
     int yp = 0;
+    int goalColor = 1;
 
     double realTheta = 0.0;
 
