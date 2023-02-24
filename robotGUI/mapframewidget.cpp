@@ -44,8 +44,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     painter.setPen(pen);
 
     if(!robotInitialized){
-        robotPosition.setX(59);
-        robotPosition.setY(rectangle.height() - 70);
+        rectMiddleX = rectangle.width()/2;
+        rectMiddleY = rectangle.height()/2;
+
+        robotPosition.setX((rectMiddleX/scale));
+        robotPosition.setY((rectMiddleY/scale));
         realTheta = 0;
         imageWidth = this->size().width() - offset;
         imageHeight = this->size().height() - offset;
@@ -53,28 +56,30 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 
     if(updateLaserPicture == 1){
-/*
-        line1.setLine(0+offset/2,471+offset/2,574+offset/2,471+offset/2);
-        line2.setLine(574+offset/2,471+offset/2,574+offset/2,11+offset/2);
-        line3.setLine(574+offset/2,11+offset/2,550+offset/2,11+offset/2);
-        line4.setLine(550+offset/2,11+offset/2,550+offset/2,0+offset/2);
+
+        line1.setLine((rectMiddleX-scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY+scale*235));
+        line2.setLine((rectMiddleX+scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY-scale*225));
+        line3.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*225));
+        line4.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*236));
+        lines = {line1, line2, line3, line4};
+
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*236));
+        line2.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*196));
+        line3.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY-scale*196));
+        line4.setLine((rectMiddleX-scale*287),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY+scale*235));
         lines = {line1, line2, line3, line4};
 
         painter.drawLines(lines);
         lines.clear();
 
-        line1.setLine(550+offset/2,0+offset/2,55+offset/2,0+offset/2);
-        line2.setLine(55+offset/2,0+offset/2,55+offset/2,40+offset/2);
-        line3.setLine(55+offset/2,40+offset/2,0+offset/2,40+offset/2);
-        line4.setLine(0+offset/2,40+offset/2,0+offset/2,471+offset/2);
-        lines = {line1, line2, line3, line4};
 
-        painter.drawLines(lines);
-        lines.clear();
-
-        line1.setLine(264+offset/2,471+offset/2,264+offset/2,317+offset/2);
-        line2.setLine(264+offset/2,317+offset/2,267+offset/2,317+offset/2);
-        line3.setLine(267+offset/2,317+offset/2,267+offset/2,471+offset/2);
+        line1.setLine(rectMiddleX-scale*23,rectMiddleY+scale*235,rectMiddleX-scale*23,rectMiddleY+scale*82);
+        line2.setLine((rectMiddleX-scale*23),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*82);
+        line3.setLine((rectMiddleX-scale*20),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*235);
         lines = {line1, line2, line3};
 
         painter.drawLines(lines);
@@ -84,6 +89,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         line2.setLine(264+offset/2,317+offset/2,110+offset/2,317+offset/2);
         line3.setLine(110+offset/2,317+offset/2,110+offset/2,320+offset/2);
         line4.setLine(110+offset/2,320+offset/2,264+offset/2,320+offset/2);
+
+        line1.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*82));
+        line2.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*82),(rectMiddleX-scale*187),(rectMiddleY+scale*82));
+        line3.setLine((rectMiddleX-scale*187),(rectMiddleY+scale*82),(rectMiddleX-scale*187),(rectMiddleY+scale*85));
+        line4.setLine((rectMiddleX-scale*187),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*85));
         lines = {line1, line2, line3, line4};
 
         painter.drawLines(lines);
@@ -128,34 +138,12 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         lines = {line1, line2, line3};
 
         painter.drawLines(lines);
-        lines.clear();*/
+        lines.clear();
 
         if(robotOnline){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;
             };
-
-            if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
-
-                if((mouseXPos < 50) && (mouseYPos > 50)){
-                   painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-                else if((mouseXPos < 50) && (mouseYPos < 50)){
-                   painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-                else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
-                   painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-                else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
-                    painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-                else if(mouseYPos < 50){
-                    painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-                else if(mouseXPos > (rectangle.width() - 50)){
-                    painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
-                }
-            }
 
             updateLaserPicture = 0;
 
@@ -219,7 +207,34 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                         painter.drawEllipse(points[i].x()*scale, points[i].y()*scale, 10*scale, 10*scale);
                     }
                 }
+
+              pen.setWidth(3*scale);
+              pen.setColor(Qt::green);
+              painter.setPen(pen);
+
+              if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
+
+                  if((mouseXPos < 50) && (mouseYPos > 50)){
+                     painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                  else if((mouseXPos < 50) && (mouseYPos < 50)){
+                     painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                  else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
+                     painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                  else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
+                      painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                  else if(mouseYPos < 50){
+                      painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                  else if(mouseXPos > (rectangle.width() - 50)){
+                      painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                    }
+                }
             }
+
         else{
             if(!str.empty() && updateLaserPicture == 1){
 

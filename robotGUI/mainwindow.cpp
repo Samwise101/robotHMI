@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     mapFrame = new MapFrameWidget();
     mapFrame->setFixedWidth(mapFrameWidth);
     mapFrame->setFixedHeight(mapFrameHeight);
+    mapFrame->setScale(1);
 
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 }

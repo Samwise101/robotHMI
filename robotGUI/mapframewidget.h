@@ -105,6 +105,9 @@ private:
     std::string temp3;
     size_t pos;
 
+    int rectMiddleX = 0;
+    int rectMiddleY = 0;
+
     QVector<QLine> lines;
     QLine line1;
     QLine line2;
