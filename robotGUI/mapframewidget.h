@@ -92,6 +92,9 @@ private:
     QPoint robotImagePos;
     double imageTheta = 0.0;
 
+    int robotXPos;
+    int robotYPos;
+
     int mouseXPos = -1;
     int mouseYPos = -1;
     bool posMouseTrack;

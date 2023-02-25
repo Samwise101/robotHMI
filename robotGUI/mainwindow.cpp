@@ -23,8 +23,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     dataCounter = 0;
     switchIndex = 0;
 
-    cameraFrameWidth = 437;
-    cameraFrameHeight = 360;
+    baseWidth = 574.0f;
+    baseHeight = 471.0f;
+
+    cameraFrameWidth = 430;
+    cameraFrameHeight = 353;
 
     mapFrameWidth = 1148;
     mapFrameHeight = 942;
@@ -39,13 +42,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     cameraFrame = new CameraFrameWidget();
     cameraFrame->setFixedWidth(cameraFrameWidth);
     cameraFrame->setFixedHeight(cameraFrameHeight);
+    cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
     ui->cameraWidget->addWidget(cameraFrame, 0, 1);
 
     mapFrame = new MapFrameWidget();
     mapFrame->setFixedWidth(mapFrameWidth);
     mapFrame->setFixedHeight(mapFrameHeight);
-    mapFrame->setScale(1.9);
+    mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 }
@@ -408,7 +412,6 @@ void MainWindow::recordMap()
         while(!isFinished2 && mapFile.is_open()){
             mapFrame->createFrameLog(mapFile);
             this_thread::sleep_for(200ms);
-            timepassed2 += 200;
         }
         mapFrame->setNumber2(0);
         mapFile.close();
@@ -624,19 +627,17 @@ void MainWindow::on_switchButton_clicked()
     if(switchIndex == 0){
         cameraFrame->setFixedWidth(mapFrameWidth);
         cameraFrame->setFixedHeight(mapFrameHeight);
+        cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
         mapFrame->setFixedWidth(cameraFrameWidth);
         mapFrame->setFixedHeight(cameraFrameHeight);
+        mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
         ui->cameraWidget->addWidget(mapFrame);
         ui->mapWidgetFrame->addWidget(cameraFrame);
 
-        uhloprieckaCamera = std::sqrt(std::pow(cameraFrame->width(),2) + std::pow(cameraFrame->height(),2));
-        uhloprieckaMapa = std::sqrt(std::pow(mapFrame->width(),2) + std::pow(mapFrame->height(),2));
-
-        mapFrame->setScale(uhloprieckaCamera/uhloprieckaMapa);
         ui->switchButton->setText("Použi mapu");
         mapFrame->setPlaceGoals(false);
         ++switchIndex;
@@ -646,16 +647,17 @@ void MainWindow::on_switchButton_clicked()
 
         cameraFrame->setFixedWidth(cameraFrameWidth);
         cameraFrame->setFixedHeight(cameraFrameHeight);
+        cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
         mapFrame->setFixedWidth(mapFrameWidth);
         mapFrame->setFixedHeight(mapFrameHeight);
+        mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
         ui->cameraWidget->removeWidget(mapFrame);
         ui->mapWidgetFrame->removeWidget(cameraFrame);
         ui->cameraWidget->addWidget(cameraFrame);
         ui->mapWidgetFrame->addWidget(mapFrame);
 
-        mapFrame->setScale(1.0);
         ui->switchButton->setText("Použi kameru");
         mapFrame->setPlaceGoals(true);
         --switchIndex;

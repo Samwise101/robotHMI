@@ -34,18 +34,44 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QGridLayout" name="gridLayout" rowstretch="50,0,0,0,0" columnstretch="0,0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="50" columnstretch="0,0">
     <item row="0" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="10,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="10,0,0">
       <item>
        <layout class="QGridLayout" name="mapWidgetFrame"/>
       </item>
       <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0,0,0,0,0">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="100,0">
+         <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="100,0,0">
           <item>
            <layout class="QGridLayout" name="cameraWidget"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">

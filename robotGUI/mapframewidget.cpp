@@ -15,6 +15,9 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 
     posMouseTrack = true;
 
+    robotXPos = 0;
+    robotYPos = 0;
+
     pointType = 1;
     number2 = 0;
     pointColor = Qt::yellow;
@@ -37,6 +40,9 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     pen.setStyle(Qt::SolidLine);
 
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
+    rectMiddleX = rectangle.width()/2;
+    rectMiddleY = rectangle.height()/2;
+
     painter.drawRect(rectangle);
 
     pen.setWidth(3);
@@ -44,18 +50,20 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     painter.setPen(pen);
 
     if(!robotInitialized){
-        rectMiddleX = rectangle.width()/2;
-        rectMiddleY = rectangle.height()/2;
-
-        robotPosition.setX((rectMiddleX/scale));
-        robotPosition.setY((rectMiddleY/scale));
+        robotXPos = rectMiddleX - scale*239;
+        robotYPos = rectMiddleY + 184*scale;
+        robotPosition.setX(robotXPos/scale);
+        robotPosition.setY(robotYPos/scale);
         realTheta = 0;
         imageWidth = this->size().width() - offset;
         imageHeight = this->size().height() - offset;
         robotInitialized = true;
+        //std::cout << "Starting [x,y]=[" << robotXPos << "," << robotYPos  << "]" << std::endl;
     }
 
     if(updateLaserPicture == 1){
+
+        //std::cout << "Scale =" << scale << std::endl;
 
         line1.setLine((rectMiddleX-scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY+scale*235));
         line2.setLine((rectMiddleX+scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY-scale*225));
@@ -157,9 +165,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
              pen.setColor(Qt::red);
              painter.setPen(pen);
 
-             robotPosition.setX(robotPosition.x()*scale);
-             robotPosition.setY(robotPosition.y()*scale);
-
              painter.drawEllipse(robotPosition.x()-15*scale, robotPosition.y()-15*scale, 30*scale, 30*scale);
              painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta)*scale, robotPosition.y()-15*std::sin(realTheta)*scale);
 
@@ -173,7 +178,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                  }
 
                  pen.setWidth(3);
-                 pen.setColor(Qt::green);
+                 pen.setColor(Qt::red);
                  painter.setPen(pen);
 
                  // 1000 mm = 100 bodov
@@ -197,7 +202,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                         pen.setColor(points[i].getColor());
                         painter.setPen(pen);
                         painter.setBrush(points[i].getColor());
-                        painter.drawEllipse(points[i].x()*scale, points[i].y()*scale, 10*scale, 10*scale);
+                        painter.drawEllipse(points[i].x()*scale - 5*scale, points[i].y()*scale - 5*scale, 10*scale, 10*scale);
                     }
                 }
 
@@ -207,23 +212,24 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
               if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
 
+
                   if((mouseXPos < 50) && (mouseYPos > 50)){
-                     painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                     painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                   else if((mouseXPos < 50) && (mouseYPos < 50)){
-                     painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                     painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                   else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
-                     painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                     painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                   else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
-                      painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                      painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                   else if(mouseYPos < 50){
-                      painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                      painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                   else if(mouseXPos > (rectangle.width() - 50)){
-                      painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/100.0) + "m, " + QString::number((rectangle.height() - mouseYPos)/100.0) + "m]");
+                      painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
                     }
                 }
             }
@@ -323,7 +329,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
                 if(!str.empty()){
                     temp3 = str;
-
 
                     if(temp3.size() >= 3){
                         pos = temp3.find(",");
@@ -434,7 +439,7 @@ void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents && placeGoals){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10){
-           points.insert(points.begin(), RobotGoal(event->x(), event->y(), this->pointType, this->pointColor));
+           points.insert(points.begin(), RobotGoal(event->x()/scale, event->y()/scale, this->pointType, this->pointColor));
         }
     }
 }
@@ -485,8 +490,12 @@ void MapFrameWidget::removeAllPoints()
 
 void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta)
 {
-    robotPosition.setX(x);
-    robotPosition.setY(y);
+    robotXPos = x;
+    robotYPos = y;
+    //std::cout << "[x,y]=[" << robotXPos << "," << robotYPos  << "]" << std::endl;
+    robotPosition.setX(robotXPos*scale);
+    robotPosition.setY(robotYPos*scale);
+    //std::cout << "[rx,ry]=[" << robotPosition.x() << "," << robotPosition.y()  << "]" << std::endl;
     robotImagePos.setX(x);
     robotImagePos.setY(y);
     realTheta = theta;

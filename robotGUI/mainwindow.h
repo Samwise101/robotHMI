@@ -90,8 +90,9 @@ private:
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
-    float timepassed = 0.0f;
-    float timepassed2 = 0.0f;
+
+    float baseWidth;
+    float baseHeight;
 
     int mapFrameWidth;
     int mapFrameHeight;
