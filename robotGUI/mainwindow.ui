@@ -45,6 +45,9 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
@@ -54,7 +57,7 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0,0,0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0,0,0,0,0,0">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="100,0,0">
           <item>
@@ -65,9 +68,12 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>20</width>
               <height>20</height>
              </size>
             </property>
@@ -131,42 +137,6 @@ color:black</string>
               </property>
               <property name="text">
                <string>Použi kameru</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="zmazGoal">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">#zmazGoal{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black
-}
-
-#zmazGoal::pressed{
-	background-color: rgb(91, 91, 91);
-	border-style:outset;
-    border-radius: 10px;
-	border-color:#ffffff;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:#ffffff
-}</string>
-              </property>
-              <property name="text">
-               <string>Zmaž cieľové body</string>
               </property>
              </widget>
             </item>
@@ -347,191 +317,17 @@ font: 12pt &quot;Segoe UI&quot;;</string>
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,0,5,5">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,20,0">
-              <item>
-               <widget class="QPushButton" name="loadMissionButton">
-                <property name="styleSheet">
-                 <string notr="true">#loadMissionButton{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black
-}
-
-#loadMissionButton::pressed{
-	background-color: rgb(91, 91, 91);
-	border-style:outset;
-    border-radius: 10px;
-	border-color:#ffffff;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:#ffffff
-}</string>
-                </property>
-                <property name="text">
-                 <string>Otvor nahratú misiu</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="replayMissionButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">#replayMissionButton{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	image:url(:/resource/stop_start/play.png)
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_10">
-                <property name="styleSheet">
-                 <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
-color:black</string>
-                </property>
-                <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Prehraj&lt;/p&gt;&lt;p&gt; misiu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="startButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>280</width>
-              <height>280</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">#startButton{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	image: url(:/resource/stop_start/start.png);
-}</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,2,2">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_8">
-            <item>
-             <widget class="QPushButton" name="zmenTypBoduButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>125</width>
-                <height>0</height>
-               </size>
-              </property>
+             <widget class="QLabel" name="robotState">
               <property name="styleSheet">
-               <string notr="true">#zmenTypBoduButton{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black
-}
-
-##zmenTypBoduButton::pressed{
-	background-color: rgb(91, 91, 91);
-	border-style:outset;
-    border-radius: 10px;
-	border-color:#ffffff;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:#ffffff
-}</string>
-              </property>
-              <property name="text">
-               <string>Prejazdový
- bod</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_11">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>125</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Segoe UI</family>
-                <pointsize>11</pointsize>
-                <italic>false</italic>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;
+               <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
 color:black</string>
               </property>
               <property name="text">
-               <string>Výber cieľového
- bodu misie</string>
+               <string>Robot offline</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -539,19 +335,33 @@ color:black</string>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="label_3">
+              <property name="styleSheet">
+               <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+color:black</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
+              <property name="text">
+               <string>Stav robota</string>
               </property>
-             </spacer>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -732,6 +542,278 @@ color:black</string>
              </widget>
             </item>
            </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <widget class="QPushButton" name="zmazGoal">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#zmazGoal{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+
+#zmazGoal::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
+              </property>
+              <property name="text">
+               <string>Zmaž cieľové
+ body</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="zmenTypBoduButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>125</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#zmenTypBoduButton{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+
+##zmenTypBoduButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
+              </property>
+              <property name="text">
+               <string>Prejazdový
+ bod</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_11">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>125</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Segoe UI</family>
+                <pointsize>12</pointsize>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+color:black</string>
+              </property>
+              <property name="text">
+               <string>Výber cieľového
+ bodu misie</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,20,0,0">
+              <item>
+               <widget class="QPushButton" name="loadMissionButton">
+                <property name="styleSheet">
+                 <string notr="true">#loadMissionButton{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+
+#loadMissionButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
+                </property>
+                <property name="text">
+                 <string>Otvor nahratú
+ misiu</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="replayMissionButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#replayMissionButton{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	image:url(:/resource/stop_start/play.png)
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="styleSheet">
+                 <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+color:black</string>
+                </property>
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Prehraj&lt;/p&gt;&lt;p&gt; misiu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="startButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>270</width>
+              <height>270</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#startButton{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	image: url(:/resource/stop_start/start.png);
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

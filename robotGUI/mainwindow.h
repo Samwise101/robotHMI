@@ -51,6 +51,7 @@ public:
     void recordMap();
     void destroyReplayMission();
     void destroyRecordMission();
+    void robotStateUiSignal();
 
 private slots:
 

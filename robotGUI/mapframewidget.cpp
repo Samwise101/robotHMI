@@ -145,6 +145,34 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         painter.drawLines(lines);
         lines.clear();
 
+        line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
+        line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*74));
+        line3.setLine((rectMiddleX-scale*23),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
+        line4.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*77));
+        line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*77));
+        line3.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*74));
+        line4.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+        line1.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
+        line2.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*19));
+        line3.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*74));
+        line4.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
+        lines = {line1, line2, line3, line4};
+
+        painter.drawLines(lines);
+        lines.clear();
+
+
         if(robotOnline){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;

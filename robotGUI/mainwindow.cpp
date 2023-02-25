@@ -89,6 +89,8 @@ int MainWindow::processRobot(TKobukiData robotData){
         robot->setInitilize(true);
     }
 
+    robotStateUiSignal();
+
     if(robotRunning){
        robot->robotOdometry(robotData);
     }
@@ -100,6 +102,9 @@ int MainWindow::processRobot(TKobukiData robotData){
     ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
+
+        //robotStateUiSignal();
+
         if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 240.0)){
 
             if(mapFrame->getShortestDistanceLidar() <= 240.0){
@@ -152,6 +157,8 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
     }
     else{
+        //robotStateUiSignal();
+
         if(!mapFrame->isGoalVectorEmpty()){
             if(mapFrame->getGoalType() == 2){
                 omega = robot->robotFullTurn(goalAngle);
@@ -344,6 +351,8 @@ void MainWindow::on_connectToRobotButton_clicked()
             cameraFrame->updateCameraPicture = 0;
             cameraFrame->update();
 
+            robotStateUiSignal();
+
             ui->connectToRobotButton->setText("Pripoj sa");
         }
     }
@@ -479,6 +488,43 @@ void MainWindow::destroyRecordMission()
             std::cout << "map recording thread finished\n";
             worker2.join();
         }
+    }
+}
+
+
+void MainWindow::robotStateUiSignal()
+{
+    if(!robotConnected){
+        ui->robotState->setText("Robot offline");
+        return;
+    }
+
+    if(robotRunning){
+       if(!mapFrame->isGoalVectorEmpty()){
+            if(!robot->getAtGoal()){
+                if(mapFrame->getGoalType() == 1){
+                   ui->robotState->setText("Robot sa presúva do\n prejazdového bodu");
+                }
+                else if(mapFrame->getGoalType() == 4){
+                   ui->robotState->setText("Robot sa presúva\ndo cieľového bodu");
+                }
+                else{
+                   ui->robotState->setText("Robot sa presúva\ndo bodu misie");
+                }
+            }
+            else if(mapFrame->getGoalType() == 2){
+                ui->robotState->setText("Robot dosiahol\nzadaný cieľ\nRobot sa otáča\no 360 stupňou");
+            }
+            else if(mapFrame->getGoalType() == 3){
+                ui->robotState->setText("Robot dosiahol\nzadaný cieľ\nRobot čaká\n2 sekundy");
+            }
+       }
+       else{
+            ui->robotState->setText("Robot čaká na\nzadanie misie");
+       }
+    }
+    else{
+        ui->robotState->setText("Robot je neaktívny");
     }
 }
 

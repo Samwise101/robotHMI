@@ -23,6 +23,7 @@ Robot::~Robot()
     robotthreadHandle.join();
     laserthreadHandle.join();
     camerathreadhandle.join();
+
 #ifdef _WIN32
 WSACleanup();
 #endif;
