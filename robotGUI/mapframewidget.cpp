@@ -52,9 +52,13 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     if(!robotInitialized){
         robotXPos = rectMiddleX - scale*239;
         robotYPos = rectMiddleY + 184*scale;
+        realTheta = 0;
+
         robotPosition.setX(robotXPos/scale);
         robotPosition.setY(robotYPos/scale);
-        realTheta = 0;
+        robotImagePos.setX(robotXPos/scale);
+        robotImagePos.setY(robotYPos/scale);
+
         imageWidth = this->size().width() - offset;
         imageHeight = this->size().height() - offset;
         robotInitialized = true;
@@ -148,25 +152,25 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
             updateLaserPicture = 0;
 
-             /*
-                sectionsX = rectangle.width()/100;
-                sectionsY = rectangle.height()/100;
-                pen.setWidth(1);
-                pen.setColor(Qt::darkGray);
-                painter.setPen(pen);
 
-                for(int i = 1; i <= sectionsX; i++){
-                    painter.drawLine(i*100+offset/2, offset/2, i*100+offset/2, rectangle.height()+offset/2);
-                    painter.drawLine(offset/2, i*100+offset/2, rectangle.width()+offset/2, i*100+offset/2);
-                }
-             */
+ /*            sectionsX = rectangle.width()/100;
+             sectionsY = rectangle.height()/100;
+             pen.setWidth(1);
+             pen.setColor(Qt::darkGray);
+             painter.setPen(pen);
+
+             for(int i = 1; i <= sectionsX; i++){
+                painter.drawLine(scale*i*100+offset/2, scale*offset/2, scale*i*100+offset/2, scale*rectangle.height()+offset/2);
+                painter.drawLine(scale*offset/2, scale*i*100+offset/2, scale*rectangle.width()+offset/2, scale*i*100+offset/2);
+             }
+*/
 
              pen.setWidth(2);
              pen.setColor(Qt::red);
              painter.setPen(pen);
 
-             painter.drawEllipse(robotPosition.x()-15*scale, robotPosition.y()-15*scale, 30*scale, 30*scale);
-             painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+15*std::cos(realTheta)*scale, robotPosition.y()-15*std::sin(realTheta)*scale);
+             painter.drawEllipse(robotPosition.x()-20*scale, robotPosition.y()-20*scale, 40*scale, 40*scale);
+             painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+20*std::cos(realTheta)*scale, robotPosition.y()-20*std::sin(realTheta)*scale);
 
              shortestLidarDistance = 10000.0;
              for(int k=0;k<copyOfLaserData.numberOfScans;k++)
@@ -263,8 +267,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                     pen.setColor(Qt::red);
                     painter.setPen(pen);
 
-                    painter.drawEllipse(robotImagePos.x()-15*scale, robotImagePos.y()-15*scale, 30*scale, 30*scale);
-                    painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+15*std::cos(imageTheta)*scale, robotImagePos.y()-15*std::sin(imageTheta)*scale);
+                    painter.drawEllipse(robotImagePos.x()-20*scale, robotImagePos.y()-20*scale, 40*scale, 40*scale);
+                    painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+20*std::cos(imageTheta)*scale, robotImagePos.y()-20*std::sin(imageTheta)*scale);
 
                     pos = temp1.find(",");
                     token = temp1.substr(0, pos);
@@ -303,7 +307,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                     str.erase(0, pos + 1);
 
                     pen.setWidth(3);
-                    pen.setColor(Qt::green);
+                    pen.setColor(Qt::red);
                     painter.setPen(pen);
                     pos = temp2.find(",");
 
@@ -409,7 +413,7 @@ void MapFrameWidget::createFrameLog(fstream& file)
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
         if(rectTest.contains(xp2,yp2)){
-            if((number < copyOfLaserData.numberOfScans) && number%10 == 0){
+            if((number < copyOfLaserData.numberOfScans) && number%7 == 0){
                 if(number == 0){
                    file << xp2 << "," << yp2;
                 }
@@ -496,8 +500,8 @@ void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta
     robotPosition.setX(robotXPos*scale);
     robotPosition.setY(robotYPos*scale);
     //std::cout << "[rx,ry]=[" << robotPosition.x() << "," << robotPosition.y()  << "]" << std::endl;
-    robotImagePos.setX(x);
-    robotImagePos.setY(y);
+    robotImagePos.setX(robotXPos);
+    robotImagePos.setY(robotYPos);
     realTheta = theta;
 }
 
