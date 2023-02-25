@@ -122,7 +122,8 @@ private:
     bool videoCreated = false;
 
     cv::VideoWriter* video;
-    //cv::VideoCapture* cap;
+
+    int buttonPressedCount = 0;
 
     QImage image;
     QString s1;

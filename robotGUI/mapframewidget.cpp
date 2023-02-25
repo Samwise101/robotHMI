@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <math.h>
 #include <cmath>
+#include <QFont>
 
 MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 {
@@ -14,6 +15,8 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     placeGoals = true;
 
     posMouseTrack = true;
+
+    showReplayWarning = false;
 
     robotXPos = 0;
     robotYPos = 0;
@@ -180,6 +183,14 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
             updateLaserPicture = 0;
 
+            if(showReplayWarning){
+                painter.setFont(QFont("Segoe UI",8*scale));
+                pen.setColor(QColor(255,165,0,255));
+                painter.setPen(pen);
+                std::cout << "Hello" << std::endl;
+                painter.drawText(rectMiddleX-250, 100, "Nemožno prehrávať misiu, ak je robot online!");
+            }
+
 
  /*            sectionsX = rectangle.width()/100;
              sectionsY = rectangle.height()/100;
@@ -243,7 +254,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
               painter.setPen(pen);
 
               if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
-
+                  painter.setFont(QFont());
 
                   if((mouseXPos < 50) && (mouseYPos > 50)){
                      painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
@@ -415,6 +426,12 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         }
     }
 }
+
+bool MapFrameWidget::getShowReplayWarning() const
+{
+    return showReplayWarning;
+}
+
 
 void MapFrameWidget::createFrameLog(fstream& file)
 {
@@ -639,5 +656,10 @@ int MapFrameWidget::getGoalType()
 void MapFrameWidget::setPlaceGoals(bool newPlaceGoals)
 {
     placeGoals = newPlaceGoals;
+}
+
+void MapFrameWidget::setShowReplayWarning(bool newShowReplayWarning)
+{
+    showReplayWarning = newShowReplayWarning;
 }
 

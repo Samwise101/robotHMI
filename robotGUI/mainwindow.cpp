@@ -95,6 +95,13 @@ int MainWindow::processRobot(TKobukiData robotData){
        robot->robotOdometry(robotData);
     }
 
+    if(mapFrame->getShowReplayWarning() && buttonPressedCount < 150)
+        buttonPressedCount++;
+    if(buttonPressedCount >= 150){
+        mapFrame->setShowReplayWarning(false);
+        buttonPressedCount = 0;
+    }
+
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
@@ -561,6 +568,13 @@ void MainWindow::on_loadMissionButton_clicked()
             }
         }
     }
+
+    else{
+        if(buttonPressedCount >= 5){
+            mapFrame->setShowReplayWarning(true);
+        }
+        buttonPressedCount++;
+    }
 }
 
 
@@ -585,6 +599,12 @@ void MainWindow::on_replayMissionButton_clicked()
                                                     "5px;image:url(:/resource/stop_start/play.png)}"
                                                    );
             }
+    }
+    if(robotConnected){
+        if(buttonPressedCount >= 5){
+            mapFrame->setShowReplayWarning(true);
+        }
+        buttonPressedCount++;
     }
 }
 

@@ -85,6 +85,10 @@ public:
 
     bool getPosMouseTrack() const;
 
+    void setShowReplayWarning(bool newShowReplayWarning);
+
+    bool getShowReplayWarning() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -94,6 +98,8 @@ private:
 
     int robotXPos;
     int robotYPos;
+
+    bool showReplayWarning = false;
 
     int mouseXPos = -1;
     int mouseYPos = -1;
