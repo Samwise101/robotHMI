@@ -277,6 +277,9 @@ void Robot::robotOdometry(TKobukiData &output)
     nlOld = nlCurr;
     nrOld = nrCurr;
 
+    std::cout << "nlOld=" << nlOld << ", nrOld=" << nrOld << std::endl;
+    std::cout << "nlNew=" << nlCurr << ", nrNew=" << nrCurr << std::endl;
+
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
 
@@ -300,13 +303,24 @@ void Robot::robotOdometry(TKobukiData &output)
         nrDiff = nrCurr - nrOld;
     }
 
+    std::cout << "nlDiff=" << nlDiff << ", nrDiff=" << nrDiff << std::endl;
+
     deltaSl = nlDiff*robot.getReferenceToTickToMeter();
     deltaSr = nrDiff*robot.getReferenceToTickToMeter();
     deltaS = (deltaSr + deltaSl)/2;
-
+/*
     deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
-    theta = theta + deltaTheta;
+    theta = theta + deltaTheta;*/
 
+    if(output.GyroAngle < 0){
+        theta = (360 + output.GyroAngle/100)*PI/180;
+    }
+    else{
+        theta = (output.GyroAngle/100)*PI/180;
+    }
+
+    std::cout << "Theta=" << theta*180/PI << std::endl;
+    std::cout << "Gyro=" << (output.GyroAngle/100.0) << std::endl;
 
     if(deltaS * std::cos(theta) < -1000)
         xdt += 0;

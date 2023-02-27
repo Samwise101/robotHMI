@@ -85,7 +85,7 @@ int MainWindow::processRobot(TKobukiData robotData){
         mapFrame->setRobotOnline(true);
         mapFrame->updateLaserPicture = 1;
 
-        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), 0);
+        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), mapFrame->getRealTheta());
         robot->setInitilize(true);
     }
 
@@ -112,9 +112,9 @@ int MainWindow::processRobot(TKobukiData robotData){
 
         //robotStateUiSignal();
 
-        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() <= 240.0)){
+        if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0)){
 
-            if(mapFrame->getShortestDistanceLidar() <= 240.0){
+            if(mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0){
                 cameraFrame->setDispRedWarning(false);
                 cameraFrame->setDispYellowWarning(false);
                 cameraFrame->setRobotStoppedWarning(true);

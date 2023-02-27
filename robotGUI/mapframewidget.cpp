@@ -53,10 +53,15 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     painter.setPen(pen);
 
     if(!robotInitialized){
-        robotXPos = rectMiddleX - scale*239;
-        robotYPos = rectMiddleY + 184*scale;
-        realTheta = 0;
+        robotXPos = rectMiddleX - scale*239;  // sim -scale*239 //  real  -scale*228
+        robotYPos = rectMiddleY + 184*scale;  //      184*scale //        +165*scale
+        realTheta = 0;                        //      angle = 0 //        0
 
+/*
+        robotXPos = rectMiddleX + scale*(287 - 57);
+        robotYPos = rectMiddleY + scale*(235-250);
+        realTheta = -PI/2;
+*/
         robotPosition.setX(robotXPos/scale);
         robotPosition.setY(robotYPos/scale);
         robotImagePos.setX(robotXPos/scale);
@@ -425,6 +430,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             }
         }
     }
+}
+
+double MapFrameWidget::getRealTheta() const
+{
+    return realTheta;
 }
 
 bool MapFrameWidget::getShowReplayWarning() const

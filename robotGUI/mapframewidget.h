@@ -89,6 +89,8 @@ public:
 
     bool getShowReplayWarning() const;
 
+    double getRealTheta() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 

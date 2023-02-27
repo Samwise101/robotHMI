@@ -29,7 +29,6 @@
 #include <memory>
 #include <limits.h>
 
-
 class ROBOT_EXPORT Robot
 {
 public:
@@ -133,6 +132,7 @@ private:
     // [rad]
     double theta = 0;
     double deltaTheta = 0;
+    double tempTheta = 0;
 
     //[mm]
     double deltaS = 0;
