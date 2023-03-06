@@ -38,6 +38,8 @@ public:
     bool toggleMap();
     bool toggleMouse();
 
+    void paintMap(QPainter* aPainter);
+
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
 

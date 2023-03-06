@@ -710,7 +710,6 @@ void MainWindow::on_switchButton_clicked()
     }
     else if(switchIndex == 1){
 
-
         cameraFrame->setFixedWidth(cameraFrameWidth);
         cameraFrame->setFixedHeight(cameraFrameHeight);
         cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));

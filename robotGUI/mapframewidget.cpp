@@ -77,108 +77,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
 
         if(showMap){
-            line1.setLine((rectMiddleX-scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY+scale*235));
-            line2.setLine((rectMiddleX+scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY-scale*225));
-            line3.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*225));
-            line4.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*236));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*236));
-            line2.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*196));
-            line3.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY-scale*196));
-            line4.setLine((rectMiddleX-scale*287),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY+scale*235));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine(rectMiddleX-scale*23,rectMiddleY+scale*235,rectMiddleX-scale*23,rectMiddleY+scale*82);
-            line2.setLine((rectMiddleX-scale*23),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*82);
-            line3.setLine((rectMiddleX-scale*20),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*235);
-            lines = {line1, line2, line3};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*82));
-            line2.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*82),(rectMiddleX-scale*177),(rectMiddleY+scale*82));
-            line3.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*82),(rectMiddleX-scale*177),(rectMiddleY+scale*85));
-            line4.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*85));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*85),(rectMiddleX-scale*177),(rectMiddleY-scale*74));
-            line2.setLine((rectMiddleX-scale*177),(rectMiddleY-scale*74),(rectMiddleX-scale*173),(rectMiddleY-scale*74));
-            line3.setLine((rectMiddleX-scale*173),(rectMiddleY-scale*74),(rectMiddleX-scale*173),(rectMiddleY+scale*82));
-            lines = {line1, line2, line3};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*74),(rectMiddleX+scale*287),(rectMiddleY-scale*77));
-            line2.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*77));
-            line3.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*74));
-            line4.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*74),(rectMiddleX+scale*287),(rectMiddleY-scale*74));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX+scale*136),(rectMiddleY-scale*74),(rectMiddleX+scale*136),(rectMiddleY+scale*82));
-            line2.setLine((rectMiddleX+scale*136),(rectMiddleY+scale*82),(rectMiddleX+scale*133),(rectMiddleY+scale*82));
-            line3.setLine((rectMiddleX+scale*133),(rectMiddleY+scale*82),(rectMiddleX+scale*133),(rectMiddleY-scale*74));
-            lines = {line1, line2, line3};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*131));
-            line2.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*131),(rectMiddleX+scale*81),(rectMiddleY-scale*131));
-            line3.setLine((rectMiddleX+scale*81),(rectMiddleY-scale*131),(rectMiddleX+scale*81),(rectMiddleY-scale*74));
-            lines = {line1, line2, line3};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX+scale*136),(rectMiddleY+scale*82),(rectMiddleX+scale*190),(rectMiddleY+scale*82));
-            line2.setLine((rectMiddleX+scale*190),(rectMiddleY+scale*82),(rectMiddleX+scale*190),(rectMiddleY+scale*79));
-            line3.setLine((rectMiddleX+scale*190),(rectMiddleY+scale*79),(rectMiddleX+scale*136),(rectMiddleY+scale*79));
-            lines = {line1, line2, line3};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
-            line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*74));
-            line3.setLine((rectMiddleX-scale*23),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
-            line4.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*77));
-            line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*77));
-            line3.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*74));
-            line4.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
-
-            line1.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
-            line2.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*19));
-            line3.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*74));
-            line4.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
-            lines = {line1, line2, line3, line4};
-
-            painter.drawLines(lines);
-            lines.clear();
+            paintMap(&painter);
         }
 
         if(robotOnline){
@@ -432,17 +331,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
-double MapFrameWidget::getRealTheta() const
-{
-    return realTheta;
-}
-
-bool MapFrameWidget::getShowReplayWarning() const
-{
-    return showReplayWarning;
-}
-
-
 void MapFrameWidget::createFrameLog(fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
@@ -559,6 +447,112 @@ void MapFrameWidget::updateRobotValuesForGUI(double& x, double& y, double& theta
     realTheta = theta;
 }
 
+void MapFrameWidget::paintMap(QPainter *aPainter)
+{
+    line1.setLine((rectMiddleX-scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY+scale*235));
+    line2.setLine((rectMiddleX+scale*287),(rectMiddleY+scale*235),(rectMiddleX+scale*287),(rectMiddleY-scale*225));
+    line3.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*225));
+    line4.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*225),(rectMiddleX+scale*263),(rectMiddleY-scale*236));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX+scale*263),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*236));
+    line2.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*236),(rectMiddleX-scale*232),(rectMiddleY-scale*196));
+    line3.setLine((rectMiddleX-scale*232),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY-scale*196));
+    line4.setLine((rectMiddleX-scale*287),(rectMiddleY-scale*196),(rectMiddleX-scale*287),(rectMiddleY+scale*235));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine(rectMiddleX-scale*23,rectMiddleY+scale*235,rectMiddleX-scale*23,rectMiddleY+scale*82);
+    line2.setLine((rectMiddleX-scale*23),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*82);
+    line3.setLine((rectMiddleX-scale*20),rectMiddleY+scale*82,rectMiddleX-scale*20,rectMiddleY+scale*235);
+    lines = {line1, line2, line3};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*82));
+    line2.setLine((rectMiddleX-scale*23),(rectMiddleY+scale*82),(rectMiddleX-scale*177),(rectMiddleY+scale*82));
+    line3.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*82),(rectMiddleX-scale*177),(rectMiddleY+scale*85));
+    line4.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*85),(rectMiddleX-scale*23),(rectMiddleY+scale*85));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX-scale*177),(rectMiddleY+scale*85),(rectMiddleX-scale*177),(rectMiddleY-scale*74));
+    line2.setLine((rectMiddleX-scale*177),(rectMiddleY-scale*74),(rectMiddleX-scale*173),(rectMiddleY-scale*74));
+    line3.setLine((rectMiddleX-scale*173),(rectMiddleY-scale*74),(rectMiddleX-scale*173),(rectMiddleY+scale*82));
+    lines = {line1, line2, line3};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*74),(rectMiddleX+scale*287),(rectMiddleY-scale*77));
+    line2.setLine((rectMiddleX+scale*287),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*77));
+    line3.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*74));
+    line4.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*74),(rectMiddleX+scale*287),(rectMiddleY-scale*74));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX+scale*136),(rectMiddleY-scale*74),(rectMiddleX+scale*136),(rectMiddleY+scale*82));
+    line2.setLine((rectMiddleX+scale*136),(rectMiddleY+scale*82),(rectMiddleX+scale*133),(rectMiddleY+scale*82));
+    line3.setLine((rectMiddleX+scale*133),(rectMiddleY+scale*82),(rectMiddleX+scale*133),(rectMiddleY-scale*74));
+    lines = {line1, line2, line3};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*77),(rectMiddleX+scale*78),(rectMiddleY-scale*131));
+    line2.setLine((rectMiddleX+scale*78),(rectMiddleY-scale*131),(rectMiddleX+scale*81),(rectMiddleY-scale*131));
+    line3.setLine((rectMiddleX+scale*81),(rectMiddleY-scale*131),(rectMiddleX+scale*81),(rectMiddleY-scale*74));
+    lines = {line1, line2, line3};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX+scale*136),(rectMiddleY+scale*82),(rectMiddleX+scale*190),(rectMiddleY+scale*82));
+    line2.setLine((rectMiddleX+scale*190),(rectMiddleY+scale*82),(rectMiddleX+scale*190),(rectMiddleY+scale*79));
+    line3.setLine((rectMiddleX+scale*190),(rectMiddleY+scale*79),(rectMiddleX+scale*136),(rectMiddleY+scale*79));
+    lines = {line1, line2, line3};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
+    line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*74));
+    line3.setLine((rectMiddleX-scale*23),(rectMiddleY-scale*74),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
+    line4.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*19),(rectMiddleX-scale*23),(rectMiddleY-scale*19));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*77));
+    line2.setLine((rectMiddleX-scale*20),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*77));
+    line3.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*77),(rectMiddleX-scale*74),(rectMiddleY-scale*74));
+    line4.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*20),(rectMiddleY-scale*74));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+
+    line1.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*74),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
+    line2.setLine((rectMiddleX-scale*74),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*19));
+    line3.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*71),(rectMiddleY-scale*74));
+    line4.setLine((rectMiddleX-scale*71),(rectMiddleY-scale*19),(rectMiddleX-scale*74),(rectMiddleY-scale*19));
+    lines = {line1, line2, line3, line4};
+
+    aPainter->drawLines(lines);
+    lines.clear();
+}
+
 bool MapFrameWidget::isGoalVectorEmpty()
 {
     if(points.empty()){
@@ -588,6 +582,17 @@ bool MapFrameWidget::toggleMouse()
     }
     return posMouseTrack;
 }
+
+double MapFrameWidget::getRealTheta() const
+{
+    return realTheta;
+}
+
+bool MapFrameWidget::getShowReplayWarning() const
+{
+    return showReplayWarning;
+}
+
 
 double MapFrameWidget::getDistanceToFirstPoint()
 {
