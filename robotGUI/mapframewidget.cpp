@@ -134,7 +134,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                  yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
 
 
-                 if(rectangle.contains(xp,yp)){
+                 if(rectangle.contains(xp,yp) && lidarDist*10/scale <= 3000){
                     if(scale < 1.0){
                        painter.drawEllipse(QPoint(xp, yp),1,1);
                     }
@@ -355,7 +355,7 @@ void MapFrameWidget::createFrameLog(fstream& file)
         xp2 = (robotImagePos.x() + lidarDistImage*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().x());
         yp2 = (robotImagePos.y() + lidarDistImage*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectTest.topLeft().y());
 
-        if(rectTest.contains(xp2,yp2)){
+        if(rectTest.contains(xp2,yp2) && lidarDistImage*10 <= 3000){
             if((number < copyOfLaserData.numberOfScans) && number%7 == 0){
                 if(number == 0){
                    file << xp2 << "," << yp2;
