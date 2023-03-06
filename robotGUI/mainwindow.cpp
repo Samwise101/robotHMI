@@ -733,13 +733,22 @@ void MainWindow::on_switchButton_clicked()
 
 void MainWindow::on_mouseTracking_clicked()
 {
-    if(mapFrame->getPosMouseTrack()){
-        mapFrame->setPosMouseTrack(false);
+    if(mapFrame->toggleMouse()){
         ui->mouseTracking->setText("Zapni ukazovateľ\npozície v mape");
     }
     else{
-        mapFrame->setPosMouseTrack(true);
         ui->mouseTracking->setText("Vypni ukazovateľ\npozície v mape");
+    }
+}
+
+
+void MainWindow::on_useMapButton_clicked()
+{
+    if(mapFrame->toggleMap()){
+        ui->useMapButton->setText("Skri mapu");
+    }
+    else{
+        ui->useMapButton->setText("Zobraz mapu");
     }
 }
 

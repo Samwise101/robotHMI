@@ -34,7 +34,7 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QGridLayout" name="gridLayout" rowstretch="50" columnstretch="0,0,0,0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="50" columnstretch="0,0,0">
     <item row="0" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="10,0,0">
       <item>
@@ -121,6 +121,36 @@ color:black</string>
               </property>
               <property name="text">
                <string>Použi kameru</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="useMapButton">
+              <property name="styleSheet">
+               <string notr="true">#useMapButton{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+
+#useMapButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
+              </property>
+              <property name="text">
+               <string>Skri mapu</string>
               </property>
              </widget>
             </item>

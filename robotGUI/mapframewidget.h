@@ -35,6 +35,9 @@ public:
     double getShortestDistanceLidar();
     double getLidarAngle();
 
+    bool toggleMap();
+    bool toggleMouse();
+
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
 
@@ -81,10 +84,6 @@ public:
 
     void setNumber2(int newNumber2);
 
-    void setPosMouseTrack(bool newPosMouseTrack);
-
-    bool getPosMouseTrack() const;
-
     void setShowReplayWarning(bool newShowReplayWarning);
 
     bool getShowReplayWarning() const;
@@ -102,10 +101,11 @@ private:
     int robotYPos;
 
     bool showReplayWarning = false;
+    bool showMap = true;
+    bool posMouseTrack = true;
 
     int mouseXPos = -1;
     int mouseYPos = -1;
-    bool posMouseTrack;
     QString mouseString;
 
     std::vector<QPoint> robotPositionInTime;

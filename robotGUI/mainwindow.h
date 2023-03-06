@@ -83,6 +83,8 @@ private slots:
 
     void on_mouseTracking_clicked();
 
+    void on_useMapButton_clicked();
+
 private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
