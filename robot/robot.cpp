@@ -272,7 +272,7 @@ double Robot::rampPosFunction(double speed)
     return tempSpeed;
 }
 
-void Robot::robotOdometry(TKobukiData &output)
+void Robot::robotOdometry(TKobukiData &output, bool useGyro)
 {
     nlOld = nlCurr;
     nrOld = nrCurr;
@@ -308,15 +308,18 @@ void Robot::robotOdometry(TKobukiData &output)
     deltaSl = nlDiff*robot.getReferenceToTickToMeter();
     deltaSr = nrDiff*robot.getReferenceToTickToMeter();
     deltaS = (deltaSr + deltaSl)/2;
-/*
-    deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
-    theta = theta + deltaTheta;*/
 
-    if(output.GyroAngle < 0){
-        theta = (360 + output.GyroAngle/100)*PI/180;
+    if(useGyro){
+        if(output.GyroAngle < 0){
+            theta = (360 + output.GyroAngle/100)*PI/180;
+        }
+        else{
+            theta = (output.GyroAngle/100)*PI/180;
+        }
     }
     else{
-        theta = (output.GyroAngle/100)*PI/180;
+        deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
+        theta = theta + deltaTheta;
     }
 
     std::cout << "Theta=" << theta*180/PI << std::endl;

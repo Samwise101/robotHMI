@@ -91,10 +91,6 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     robotStateUiSignal();
 
-    if(robotRunning){
-       robot->robotOdometry(robotData);
-    }
-
     if(mapFrame->getShowReplayWarning() && buttonPressedCount < 150)
         buttonPressedCount++;
     if(buttonPressedCount >= 150){
@@ -110,7 +106,9 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     if(!robot->getAtGoal()){
 
-        //robotStateUiSignal();
+        if(robotRunning){
+           robot->robotOdometry(robotData, true);
+        }
 
         if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0)){
 
@@ -119,7 +117,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 cameraFrame->setDispYellowWarning(false);
                 cameraFrame->setRobotStoppedWarning(true);
             }
-           // std::cout << "Shortest lidar distance: " << mapFrame->getShortestDistanceLidar() << std::endl;
+
             omega = robot->orientationRegulator(0, 0, false);
             robotRotationalSpeed = omega;
             v = robot->regulateForwardSpeed(0, 0, false, 0);
@@ -164,10 +162,12 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
     }
     else{
-        //robotStateUiSignal();
 
         if(!mapFrame->isGoalVectorEmpty()){
             if(mapFrame->getGoalType() == 2){
+                if(robotRunning){
+                   robot->robotOdometry(robotData, false);
+                }
                 omega = robot->robotFullTurn(goalAngle);
                 if(omega > -0.15 && omega < 0.15){
                     mapFrame->removeLastPoint();
