@@ -57,6 +57,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         robotXPos = rectMiddleX - scale*239;  // sim -scale*239 //  real  -scale*228
         robotYPos = rectMiddleY + 184*scale;  //      184*scale //        +165*scale
         realTheta = 0;                        //      angle = 0 //        0
+        std::cout << "Robot pos=" << robotXPos << ", " << robotYPos << std::endl;
 
 /*
         robotXPos = rectMiddleX + scale*(287 - 57);
@@ -96,7 +97,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             }
 
 
- /*            sectionsX = rectangle.width()/100;
+ /*          sectionsX = rectangle.width()/100;
              sectionsY = rectangle.height()/100;
              pen.setWidth(1);
              pen.setColor(Qt::darkGray);
@@ -157,28 +158,9 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
               pen.setColor(Qt::green);
               painter.setPen(pen);
 
-              if(posMouseTrack && (mouseXPos >= 0) && (mouseYPos >= 0)){
-                  painter.setFont(QFont());
-
-                  if((mouseXPos < 50) && (mouseYPos > 50)){
-                     painter.drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                  else if((mouseXPos < 50) && (mouseYPos < 50)){
-                     painter.drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                  else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
-                     painter.drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                  else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
-                      painter.drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                  else if(mouseYPos < 50){
-                      painter.drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                  else if(mouseXPos > (rectangle.width() - 50)){
-                      painter.drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseXPos/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseYPos)/scale/100), 'f', 3) + "m]");
-                    }
-                }
+              if(posMouseTrack){
+                paintMouseCoord(rectangle, &painter);
+              }
             }
 
         else{
@@ -414,6 +396,8 @@ void MapFrameWidget::mouseMoveEvent(QMouseEvent *event){
     {
         mouseXPos = event->x();
         mouseYPos = event->y();
+        mouseToMapX = mouseXPos - 15*scale;
+        mouseToMapY = mouseYPos + 15*scale;
     }
 }
 
@@ -551,6 +535,32 @@ void MapFrameWidget::paintMap(QPainter *aPainter)
 
     aPainter->drawLines(lines);
     lines.clear();
+}
+
+void MapFrameWidget::paintMouseCoord(QRect& rectangle, QPainter *aPainter)
+{
+    if((mouseXPos >= (rectMiddleX-scale*288)) && (mouseYPos >= (rectMiddleY-scale*236)) && (mouseXPos <= (rectMiddleX+scale*288)) && (mouseYPos <= (rectMiddleY+scale*233))){
+        aPainter->setFont(QFont());
+
+        if((mouseXPos < 50) && (mouseYPos > 50)){
+           aPainter->drawText(mouseXPos + 10, mouseYPos, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+        }
+        else if((mouseXPos < 50) && (mouseYPos < 50)){
+           aPainter->drawText(mouseXPos + 10, mouseYPos + 25, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+          }
+        else if((mouseXPos < (rectangle.width() - 50)) && (mouseYPos > 50)){
+           aPainter->drawText(mouseXPos - 45, mouseYPos - 5, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+          }
+        else if((mouseXPos > (rectangle.width() - 50)) && (mouseYPos < 50)){
+            aPainter->drawText(mouseXPos - 100, mouseYPos + 25, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+          }
+        else if(mouseYPos < 50){
+            aPainter->drawText(mouseXPos - 50, mouseYPos + 25, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+          }
+        else if(mouseXPos > (rectangle.width() - 50)){
+            aPainter->drawText(mouseXPos - 100, mouseYPos, "[" + QString::number(mouseToMapX/scale/100, 'f', 3) + "m, " + QString::number(((rectangle.height() - mouseToMapY)/scale/100), 'f', 3) + "m]");
+          }
+    }
 }
 
 bool MapFrameWidget::isGoalVectorEmpty()

@@ -39,6 +39,7 @@ public:
     bool toggleMouse();
 
     void paintMap(QPainter* aPainter);
+    void paintMouseCoord(QRect& rectangle, QPainter* aPainter);
 
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
@@ -108,6 +109,10 @@ private:
 
     int mouseXPos = -1;
     int mouseYPos = -1;
+
+    float mouseToMapX = 0.f;
+    float mouseToMapY = 0.f;
+
     QString mouseString;
 
     std::vector<QPoint> robotPositionInTime;
@@ -144,8 +149,6 @@ private:
 
     double realTheta = 0.0;
 
-    int capFreq = 0;
-
     int xp2 = 0;
     int yp2 = 0;
     int number = 0;
@@ -156,8 +159,8 @@ private:
 
     double shortestLidarDistance = 10000.0;
     double shortestLidarAngle = 0.0;
-    double offset;
-    bool canTriggerEvents;
+    double offset = 0.0;
+    bool canTriggerEvents = false;
 };
 
 #endif // MAPFRAMEWIDGET_H

@@ -76,8 +76,6 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 
 int MainWindow::processRobot(TKobukiData robotData){
 
-    //std::cout << "Gyro angle = "<< robotData.GyroAngle/100 << std::endl; //<-32768, 32767>
-
     if(!robot->getInitilize()){
         cameraFrame->setRobotOnline(true);
         cameraFrame->updateCameraPicture = 1;
@@ -236,9 +234,6 @@ void MainWindow::on_actionExit_triggered()
 }
 
 
-
-
-
 void MainWindow::on_actionAlarms_triggered()
 {
     std::cout << "Hello from alarms!" << std::endl;
@@ -247,8 +242,6 @@ void MainWindow::on_actionAlarms_triggered()
     alarmHelpWindow->setAttribute(Qt::WA_DeleteOnClose);
     alarmHelpWindow->show();
 }
-
-
 
 
 void MainWindow::on_startButton_clicked()
