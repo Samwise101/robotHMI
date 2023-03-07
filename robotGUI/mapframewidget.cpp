@@ -135,7 +135,82 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 paintMouseCoord(rectangle, &painter);
               }
         }
-        else{
+        else if(!robotReplayPos.empty()){
+            if(scale >=1){
+                robotImagePos.setX(robotReplayPos[replayIndex][0]);
+                robotImagePos.setY(robotReplayPos[replayIndex][1]);
+            }
+            else{
+                robotImagePos.setX(robotReplayPos[replayIndex][0]*0.535*scale);
+                robotImagePos.setY(robotReplayPos[replayIndex][1]*0.535*scale);
+            }
+            imageTheta = robotAngle[replayIndex];
+
+            pen.setWidth(2);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+
+            painter.drawEllipse(robotImagePos.x()-20*scale, robotImagePos.y()-20*scale, 40*scale, 40*scale);
+            painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+20*std::cos(imageTheta)*scale, robotImagePos.y()-20*std::sin(imageTheta)*scale);
+
+
+            for(int i = 0; i < robotTrajectory[replayIndex].size(); i++){
+                painter.drawLine(robotTrajectory[replayIndex][i].x1()*scale,robotTrajectory[replayIndex][i].y1()*scale,robotTrajectory[replayIndex][i].x2()*scale,robotTrajectory[replayIndex][i].y2()*scale);
+            }
+
+            painter.setBrush(Qt::red);
+
+            for(int i = 0; i < lidarReplayPos[replayIndex].size(); i++){
+                if(scale < 1.0){
+                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,2,2);
+                }
+                else{
+                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,4,4);
+                }
+            }
+
+            if(replayIndex < missionReplayPoints.size()){
+            for(int i = 0; i < missionReplayPoints[replayIndex].size(); i+=3){
+                xp = missionReplayPoints[replayIndex][i];
+                yp = missionReplayPoints[replayIndex][i+1];
+                goalColor = missionReplayPoints[replayIndex][i+2];
+
+                if(goalColor == 1){
+                   pen.setColor(Qt::yellow);
+                   painter.setBrush(Qt::yellow);
+                   painter.setPen(pen);
+                }
+                else if(goalColor == 2){
+                   pen.setColor(Qt::darkMagenta);
+                   painter.setBrush(Qt::darkMagenta);
+                   painter.setPen(pen);
+                }
+                else if(goalColor == 3){
+                   pen.setColor(Qt::cyan);
+                   painter.setBrush(Qt::cyan);
+                   painter.setPen(pen);
+                }
+                else if(goalColor == 4){
+                   pen.setColor(Qt::gray);
+                   painter.setBrush(Qt::gray);
+                   painter.setPen(pen);
+                }
+
+                if(scale < 1.0){
+                   painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
+                }
+                else{
+                   painter.drawEllipse(QPoint(xp*scale, yp*scale),4,4);
+                }
+            }
+
+            replayIndex++;
+
+            if(replayIndex >= robotReplayPos.size() - 1){
+                replayFinished = true;
+            }
+            }
+
             /*
             if(!str.empty() && updateLaserPicture == 1){
 
@@ -282,8 +357,22 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                     }
                 }*/
             }
-        }
     }
+}
+
+bool MapFrameWidget::getReplayFinished() const
+{
+    return replayFinished;
+}
+
+void MapFrameWidget::setReplayFinished(bool newReplayFinished)
+{
+    replayFinished = newReplayFinished;
+}
+
+void MapFrameWidget::setReplayIndex(int newReplayIndex)
+{
+    replayIndex = newReplayIndex;
 }
 
 void MapFrameWidget::setIsSimulation(bool newIsSimulation)
@@ -731,6 +820,14 @@ bool MapFrameWidget::toggleMouse()
         posMouseTrack = true;
     }
     return posMouseTrack;
+}
+
+void MapFrameWidget::clearVectors()
+{
+    robotReplayPos.clear();
+    lidarReplayPos.clear();
+    robotTrajectory.clear();
+    missionReplayPoints.clear();
 }
 
 double MapFrameWidget::getRealTheta() const

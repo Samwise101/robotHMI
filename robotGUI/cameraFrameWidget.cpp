@@ -9,6 +9,7 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 {
     actIndex=-1;
     offset = 10;
+    canReplay = false;
 
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -56,11 +57,16 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
                  painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
         }
-        else{
+        else if(canReplay){
             image = QImage((uchar*)replayFrame.data, replayFrame.cols, replayFrame.rows, replayFrame.step, QImage::Format_RGB888);
             painter.drawImage(rectangle,image.rgbSwapped());;
         }
     }
+}
+
+void CameraFrameWidget::setCanReplay(bool newCanReplay)
+{
+    canReplay = newCanReplay;
 }
 
 void CameraFrameWidget::setBatteryPercantage(unsigned short newBatteryPercantage)

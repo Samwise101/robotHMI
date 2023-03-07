@@ -58,6 +58,7 @@ private:
     unsigned short batteryLevel = 0;
     float scale = 1.0f;
     bool missionLoaded = false;
+    bool canReplay = false;
 
 public:
 
@@ -74,6 +75,7 @@ public:
     void setReplayFrame(const cv::Mat &newReplayFrame);
     bool getRobotOnline() const;
     void setBatteryPercantage(unsigned short newBatteryPercantage);
+    void setCanReplay(bool newCanReplay);
 };
 
 #endif // CAMERAFRAMEWIDGET_H

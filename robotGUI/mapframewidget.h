@@ -38,6 +38,8 @@ public:
     bool toggleMap();
     bool toggleMouse();
 
+    void clearVectors();
+
     void paintMap(QPainter* aPainter);
     void paintMouseCoord(QRect& rectangle, QPainter* aPainter);
 
@@ -97,6 +99,11 @@ public:
 
     void setIsSimulation(bool newIsSimulation);
 
+    void setReplayIndex(int newReplayIndex);
+
+    bool getReplayFinished() const;
+    void setReplayFinished(bool newReplayFinished);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -116,6 +123,8 @@ private:
     std::vector<std::vector<int>> missionReplayPoints;
     std::vector<int> missionPoints;
     int replayIndex;
+
+    bool replayFinished = false;
 
     int robotXPos;
     int robotYPos;

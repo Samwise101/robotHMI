@@ -69,17 +69,11 @@ MainWindow::~MainWindow()
 
 int MainWindow::processLidar(LaserMeasurement laserData){
     std::memcpy(&(mapFrame->copyOfLaserData), &laserData, sizeof(LaserMeasurement));
-    mapFrame->updateLaserPicture = 1;
-    if(finReplay1 && finReplay2){
-        destroyReplayMission();
-        mapFrame->setRobotOnline(true);
-        cameraFrame->setRobotOnline(true);
-        ui->loadMissionButton->setText("Otvor nahratú\nmisiu");
-        finReplay1 = false;
-        finReplay2 = false;
-    }
-    if(!missionLoaded)
+
+    if(!missionLoaded){
+        mapFrame->updateLaserPicture = 1;
         mapFrame->update();
+    }
     return 0;
 }
 
@@ -312,13 +306,6 @@ void MainWindow::on_connectToRobotButton_clicked()
     if(!robotConnected && !missionLoaded){
         destroyRecordMission();
         destroyReplayMission();
-/*
-        if(getIpAddress()){
-            std::cout << "Ip address loaded" << std::endl;
-        }
-        else{
-            std::cout << "No ip address loaded!" << std::endl;
-        }*/
 
         if(!setupConnectionToRobot()){
             std::cout << "Something went wrong, can't connect to robot!" << std::endl;
@@ -385,7 +372,6 @@ bool MainWindow::setupConnectionToRobot(){
         mapFrame->initializeRobot();
         robot = new Robot(ipAddress);
 
-
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
@@ -414,9 +400,11 @@ void MainWindow::recordCamera()
         cap.open(s1.toStdString());
 
         if(cap.isOpened()){
+            cameraFrame->setCanReplay(true);
             while(!isFinishedReplay){
                 if(missionRunning){
                     if(!cap.read(cameraFrame->replayFrame)){
+                        cameraFrame->setCanReplay(false);
                         break;
                     }
                     cameraFrame->updateCameraPicture=1;
@@ -447,33 +435,33 @@ void MainWindow::recordMap()
         mapFile.close();
     }
     else if(missionLoaded && !recordMission){
-        if(!replayFile.is_open()){
-            replayFile.open(s2.toStdString(), ios::in);
 
-
-            while(!isFinishedReplay2 && replayFile.is_open()){
-                if(missionRunning){
-                    if(!std::getline(replayFile, str)){
-                        break;
-                    }
-                    mapFrame->setStr(str);
-                    mapFrame->updateLaserPicture = 1;
-                    mapFrame->update();
-                    this_thread::sleep_for(115ms);
-                }
+        while(!isFinishedReplay2){
+            if(mapFrame->getReplayFinished()){
+                mapFrame->setReplayFinished(true);
+                mapFrame->setReplayIndex(0);
+                break;
             }
-
-            replayFile.close();
-            mapFrame->updateLaserPicture = 0;
-            mapFrame->update();
-            finReplay2 = true;
+            if(missionRunning){
+                mapFrame->updateLaserPicture = 1;
+                mapFrame->update();
+                this_thread::sleep_for(115ms);
+            }
         }
+
+        mapFrame->updateLaserPicture = 0;
+        mapFrame->update();
+        finReplay2 = true;
     }
 }
 
 void MainWindow::destroyReplayMission()
 {
     if(missionLoaded){
+
+        mapFrame->clearVectors();
+        mapFrame->setReplayIndex(0);
+
         if(workerStarted && !isFinishedReplay){
             isFinishedReplay = true;
             workerStarted = false;
@@ -490,25 +478,15 @@ void MainWindow::destroyReplayMission()
 
         missionLoaded = false;
         missionRunning = false;
-
+        cameraFrame->setCanReplay(false);
         str.clear();
         mapFrame->setStr(str);
-
-        ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                               "silver;border-style:outset;border-radius: "
-                                               "10px;border-color:black;border-width:4px;padding: "
-                                                "5px;image:url(:/resource/stop_start/play.png)}"
-                                               );
     }
 }
 
 void MainWindow::destroyRecordMission()
 {
     if(!missionLoaded){
-        std::cout << "In destroy" << std::endl;
-        std::cout << "Worker started=" << workerStarted << std::endl;
-        std::cout << "isFinished=" << isFinished << std::endl;
-
         if(workerStarted && !isFinished){
             isFinished = true;
             workerStarted = false;
@@ -584,6 +562,20 @@ void MainWindow::on_loadMissionButton_clicked()
 
         if(!s1.isEmpty() && !s2.isEmpty()){
 
+            if(!replayFile.is_open()){
+                replayFile.open(s2.toStdString(), ios::in);
+
+                while(true){
+                    if(!std::getline(replayFile, str)){
+                       break;
+                        }
+                    mapFrame->setStr(str);
+                    mapFrame->parseMapFile();
+                    }
+                }
+                replayFile.close();
+            }
+
             mapFrame->setRobotOnline(false);
             cameraFrame->setRobotOnline(false);
 
@@ -602,7 +594,7 @@ void MainWindow::on_loadMissionButton_clicked()
                 func =std::bind(&MainWindow::recordMap, this);
                 worker2 = std::thread(func);
             }
-        }
+
         else{
             destroyReplayMission();
 
@@ -643,12 +635,6 @@ void MainWindow::on_replayMissionButton_clicked()
                                                    );
             }
     }
-    if(robotConnected){
-        if(buttonPressedCount >= 5){
-            mapFrame->setShowReplayWarning(true);
-        }
-        buttonPressedCount++;
-    }
 }
 
 
@@ -665,7 +651,6 @@ bool MainWindow::getIpAddress()
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-    std::cout << "Arg=" << arg1 << std::endl;
     if(arg1 == 2 && !workerStarted && !worker2Started){
         recordMission = true;
         if(robotConnected && !workerStarted && !missionLoaded){
@@ -688,7 +673,6 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
         }
     }
     else{
-        std::cout << "Hello" << std::endl;
         destroyRecordMission();
         recordMission = false;
     }
