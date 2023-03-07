@@ -77,55 +77,42 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
                 std::cout << "Hello" << std::endl;
-                painter.drawText(rectMiddleX-250, 100, "Nemožno prehrávať misiu, ak je robot online!");
-            }
-
-
- /*          sectionsX = rectangle.width()/100;
-             sectionsY = rectangle.height()/100;
-             pen.setWidth(1);
-             pen.setColor(Qt::darkGray);
-             painter.setPen(pen);
-
-             for(int i = 1; i <= sectionsX; i++){
-                painter.drawLine(scale*i*100+offset/2, scale*offset/2, scale*i*100+offset/2, scale*rectangle.height()+offset/2);
-                painter.drawLine(scale*offset/2, scale*i*100+offset/2, scale*rectangle.width()+offset/2, scale*i*100+offset/2);
+                painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
              }
-*/
 
-             pen.setWidth(2);
-             pen.setColor(Qt::red);
-             painter.setPen(pen);
+            pen.setWidth(2);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
 
-             painter.drawEllipse(robotPosition.x()-20*scale, robotPosition.y()-20*scale, 40*scale, 40*scale);
-             painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+20*std::cos(realTheta)*scale, robotPosition.y()-20*std::sin(realTheta)*scale);
+            painter.drawEllipse(robotPosition.x()-20*scale, robotPosition.y()-20*scale, 40*scale, 40*scale);
+            painter.drawLine(robotPosition.x(), robotPosition.y(), robotPosition.x()+20*std::cos(realTheta)*scale, robotPosition.y()-20*std::sin(realTheta)*scale);
 
-             shortestLidarDistance = 10000.0;
-             for(int k=0;k<copyOfLaserData.numberOfScans;k++)
-             {
-                 lidarDist=copyOfLaserData.Data[k].scanDistance;
-                 if(lidarDist < shortestLidarDistance && lidarDist > 0.0){
-                    shortestLidarDistance = lidarDist;
-                    shortestLidarAngle = copyOfLaserData.Data[k].scanAngle*PI/180;
-                 }
+            shortestLidarDistance = 10000.0;
+            for(int k=0;k<copyOfLaserData.numberOfScans;k++)
+            {
+                lidarDist=copyOfLaserData.Data[k].scanDistance;
+                if(lidarDist < shortestLidarDistance && lidarDist > 0.0){
+                   shortestLidarDistance = lidarDist;
+                   shortestLidarAngle = copyOfLaserData.Data[k].scanAngle*PI/180;
+                }
 
-                 pen.setWidth(3);
-                 pen.setColor(Qt::red);
-                 painter.setPen(pen);
+                pen.setWidth(3);
+                pen.setColor(Qt::red);
+                painter.setPen(pen);
 
                  // 1000 mm = 100 bodov
-                 lidarDist = lidarDist/10*scale;
-                 xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().x());
-                 yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
+                lidarDist = lidarDist/10*scale;
+                xp = (robotPosition.x() + lidarDist*sin((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().x());
+                yp = (robotPosition.y() + lidarDist*cos((360.0-(copyOfLaserData.Data[k].scanAngle)+90)*PI/180+realTheta) + rectangle.topLeft().y());
 
 
-                 if(rectangle.contains(xp,yp) && lidarDist*10/scale <= 3000){
-                    if(scale < 1.0){
-                       painter.drawEllipse(QPoint(xp, yp),1,1);
-                    }
-                    else{
-                       painter.drawEllipse(QPoint(xp, yp),2,2);
-                    }
+                if(rectangle.contains(xp,yp) && lidarDist*10/scale <= 3000){
+                   if(scale < 1.0){
+                      painter.drawEllipse(QPoint(xp, yp),1,1);
+                   }
+                   else{
+                      painter.drawEllipse(QPoint(xp, yp),2,2);
+                   }
                 }
               }
 

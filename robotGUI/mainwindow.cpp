@@ -325,7 +325,10 @@ void MainWindow::on_connectToRobotButton_clicked()
         }
     }
     else{
-        if(!robotRunning){
+        if(robotRunning){
+           mapFrame->setShowReplayWarning(true);
+        }
+        else{
             destroyRecordMission();
             destroyReplayMission();
 
@@ -362,7 +365,7 @@ bool MainWindow::setupConnectionToRobot(){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
 
-        if(ipAddress =="127.0.0.1"){
+        if(ipAddress == "127.0.0.1"){
             mapFrame->setIsSimulation(true);
         }
         else{
@@ -566,13 +569,6 @@ void MainWindow::on_loadMissionButton_clicked()
                 worker2 = std::thread(func);
             }
         }
-    }
-
-    else{
-        if(buttonPressedCount >= 5){
-            mapFrame->setShowReplayWarning(true);
-        }
-        buttonPressedCount++;
     }
 }
 
