@@ -19,6 +19,9 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     showReplayWarning = false;
     showMap = true;
 
+    robotInitialized = false;
+    isSimulation = false;
+
     robotXPos = 0;
     robotYPos = 0;
 
@@ -53,26 +56,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     pen.setColor(Qt::green);
     painter.setPen(pen);
 
-    if(!robotInitialized){
-        robotXPos = rectMiddleX - scale*239;  // sim -scale*239 //  real  -scale*228
-        robotYPos = rectMiddleY + 184*scale;  //      184*scale //        +165*scale
-        realTheta = 0;                        //      angle = 0 //        0
-        std::cout << "Robot pos=" << robotXPos << ", " << robotYPos << std::endl;
-
-/*
-        robotXPos = rectMiddleX + scale*(287 - 57);
-        robotYPos = rectMiddleY + scale*(235-250);
-        realTheta = -PI/2;
-*/
-        robotPosition.setX(robotXPos/scale);
-        robotPosition.setY(robotYPos/scale);
-        robotImagePos.setX(robotXPos/scale);
-        robotImagePos.setY(robotYPos/scale);
-
-        imageWidth = this->size().width() - offset;
-        imageHeight = this->size().height() - offset;
-        robotInitialized = true;
-    }
+    //initializeRobot();
 
     if(updateLaserPicture == 1){
 
@@ -81,7 +65,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             paintMap(&painter);
         }
 
-        if(robotOnline){
+        if(robotOnline && robotInitialized){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;
             };
@@ -313,6 +297,16 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
+void MapFrameWidget::setIsSimulation(bool newIsSimulation)
+{
+    isSimulation = newIsSimulation;
+}
+
+void MapFrameWidget::setRobotInitialized(bool newRobotInitialized)
+{
+    robotInitialized = newRobotInitialized;
+}
+
 void MapFrameWidget::createFrameLog(fstream& file)
 {
     QRect rectTest(offset/2, offset/2, imageWidth, imageHeight);
@@ -408,6 +402,39 @@ bool MapFrameWidget::removeLastPoint()
         return true;
     }
     return false;
+}
+
+void MapFrameWidget::initializeRobot()
+{
+    if(!robotInitialized){
+
+        if(isSimulation){
+            robotXPos = rectMiddleX - scale*239;  // sim -scale*239 //  real  -scale*228
+            robotYPos = rectMiddleY + 184*scale;  //      184*scale //        +165*scale
+            realTheta = 0;                        //      angle = 0 //        0
+        }
+        else{
+            robotXPos = rectMiddleX - scale*228;  // sim -scale*239 //  real  -scale*228
+            robotYPos = rectMiddleY + 165*scale;  //      184*scale //        +165*scale
+            realTheta = 0;                        //      angle = 0 //        0
+        }
+
+        std::cout << "Robot pos=" << robotXPos << ", " << robotYPos << std::endl;
+
+/*
+        robotXPos = rectMiddleX + scale*(287 - 57);
+        robotYPos = rectMiddleY + scale*(235-250);
+        realTheta = -PI/2;
+*/
+        robotPosition.setX(robotXPos/scale);
+        robotPosition.setY(robotYPos/scale);
+        robotImagePos.setX(robotXPos/scale);
+        robotImagePos.setY(robotYPos/scale);
+
+        imageWidth = this->size().width() - offset;
+        imageHeight = this->size().height() - offset;
+        robotInitialized = true;
+    }
 }
 
 void MapFrameWidget::removeAllPoints()

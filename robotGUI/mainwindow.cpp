@@ -146,16 +146,12 @@ int MainWindow::processRobot(TKobukiData robotData){
             robotRotationalSpeed = omega;
             robotForwardSpeed = v;
 
-            if(mapFrame->getGoalType() == 1){
-                if(robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) < 100.0){
-                   robot->setAtGoal(true);
-                }
+            if(mapFrame->getGoalType() == 1 && robot->getDistanceToGoal(mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition()) < 100.0){
+               robot->setAtGoal(true);
             }
-            else{
-                if(v == 0.0 && omega == 0.0){
-                    goalAngle = robot->getTheta() + 2*PI;
-                    robot->setAtGoal(true);
-                }
+            else if(v == 0.0 && omega == 0.0){
+               goalAngle = robot->getTheta() + 2*PI;
+               robot->setAtGoal(true);
             }
         }
     }
@@ -339,7 +335,8 @@ void MainWindow::on_connectToRobotButton_clicked()
 
             mapFrame->setRobotOnline(false);
             mapFrame->updateLaserPicture = 0;
-            mapFrame->robotInitialized = false;
+            mapFrame->setRobotInitialized(false);
+            mapFrame->setIsSimulation(false);
             mapFrame->update();
 
             cameraFrame->setBatteryLevel(0);
@@ -365,7 +362,16 @@ bool MainWindow::setupConnectionToRobot(){
         robotForwardSpeed = 0;
         robotRotationalSpeed = 0;
 
+        if(ipAddress =="127.0.0.1"){
+            mapFrame->setIsSimulation(true);
+        }
+        else{
+           mapFrame->setIsSimulation(false);
+        }
+
+        mapFrame->initializeRobot();
         robot = new Robot(ipAddress);
+
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));

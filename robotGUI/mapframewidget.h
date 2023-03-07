@@ -44,8 +44,6 @@ public:
     LaserMeasurement copyOfLaserData;
     int updateLaserPicture;
 
-    bool robotInitialized = false;
-
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     bool event(QEvent * event);
@@ -61,6 +59,7 @@ public:
     int getGoalType();
     void removeAllPoints();
     bool removeLastPoint();
+    void initializeRobot();
 
     void setOffset(double newOffset);
 
@@ -93,6 +92,10 @@ public:
 
     double getRealTheta() const;
 
+    void setRobotInitialized(bool newRobotInitialized);
+
+    void setIsSimulation(bool newIsSimulation);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -100,12 +103,15 @@ private:
     QPoint robotImagePos;
     double imageTheta = 0.0;
 
+    bool robotInitialized = false;
+
     int robotXPos;
     int robotYPos;
 
     bool showReplayWarning = false;
     bool showMap = true;
     bool posMouseTrack = true;
+    bool isSimulation = false;
 
     int mouseXPos = -1;
     int mouseYPos = -1;
