@@ -123,6 +123,9 @@ private:
     bool alarmSet = false;
     bool videoCreated = false;
 
+    bool finReplay1 = false;
+    bool finReplay2 = false;
+
     cv::VideoWriter* video;
 
     int buttonPressedCount = 0;

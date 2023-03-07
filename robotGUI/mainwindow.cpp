@@ -70,7 +70,16 @@ MainWindow::~MainWindow()
 int MainWindow::processLidar(LaserMeasurement laserData){
     std::memcpy(&(mapFrame->copyOfLaserData), &laserData, sizeof(LaserMeasurement));
     mapFrame->updateLaserPicture = 1;
-    mapFrame->update();
+    if(finReplay1 && finReplay2){
+        destroyReplayMission();
+        mapFrame->setRobotOnline(true);
+        cameraFrame->setRobotOnline(true);
+        ui->loadMissionButton->setText("Otvor nahratú\nmisiu");
+        finReplay1 = false;
+        finReplay2 = false;
+    }
+    if(!missionLoaded)
+        mapFrame->update();
     return 0;
 }
 
@@ -206,7 +215,8 @@ int MainWindow::processCamera(cv::Mat cameraData){
         cameraData.copyTo(cameraFrame->frame[(cameraFrame->actIndex+1)%3]);
         cameraFrame->actIndex=(cameraFrame->actIndex+1)%3;
         cameraFrame->updateCameraPicture=1;
-        cameraFrame->update();
+        if(!missionLoaded)
+            cameraFrame->update();
 
     return 0;
 }
@@ -242,7 +252,7 @@ void MainWindow::on_actionAlarms_triggered()
 
 void MainWindow::on_startButton_clicked()
 {
-    if(robotConnected && !robotRunning){
+    if(robotConnected && !robotRunning && !missionLoaded){
         ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
                                         "border-style:outset;"
@@ -254,7 +264,7 @@ void MainWindow::on_startButton_clicked()
                                         );
         robotRunning = true;
     }
-    else if(robotConnected && robotRunning){
+    else if(robotConnected && robotRunning && !missionLoaded){
          ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver"
                                         ";border-style:outset;"
@@ -271,7 +281,7 @@ void MainWindow::on_startButton_clicked()
 
 void MainWindow::on_startButton_pressed()
 {
-    if(robotConnected && !robotRunning){
+    if(robotConnected && !robotRunning && !missionLoaded){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -283,7 +293,7 @@ void MainWindow::on_startButton_pressed()
                                        );
     }
 
-    else if(robotConnected && robotRunning){
+    else if(robotConnected && robotRunning && !missionLoaded){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -299,7 +309,7 @@ void MainWindow::on_startButton_pressed()
 
 void MainWindow::on_connectToRobotButton_clicked()
 {
-    if(!robotConnected){
+    if(!robotConnected && !missionLoaded){
         destroyRecordMission();
         destroyReplayMission();
 /*
@@ -324,7 +334,7 @@ void MainWindow::on_connectToRobotButton_clicked()
             cameraFrame->batteryFrame = ui->batteryWidget;
         }
     }
-    else{
+    else if(robotConnected){
         if(robotRunning){
            mapFrame->setShowReplayWarning(true);
         }
@@ -390,7 +400,7 @@ bool MainWindow::setupConnectionToRobot(){
 
 void MainWindow::recordCamera()
 {
-    if(!missionLoaded){
+    if(!missionLoaded && recordMission){
         video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
@@ -400,7 +410,7 @@ void MainWindow::recordCamera()
         }
         video->release();
     }
-    else{
+    else if(missionLoaded && !recordMission){
         cap.open(s1.toStdString());
 
         if(cap.isOpened()){
@@ -416,13 +426,15 @@ void MainWindow::recordCamera()
             cap.release();
             cameraFrame->updateCameraPicture = 0;
             cameraFrame->update();
+            finReplay1 = true;
         }
+
     }
 }
 
 void MainWindow::recordMap()
 {
-    if(!missionLoaded){
+    if(!missionLoaded && recordMission){
         if(!mapFile.is_open()){
             mapFile.open("mapLog.txt", ios::out);
         }
@@ -434,9 +446,11 @@ void MainWindow::recordMap()
         mapFrame->setNumber2(0);
         mapFile.close();
     }
-    else{
+    else if(missionLoaded && !recordMission){
         if(!replayFile.is_open()){
             replayFile.open(s2.toStdString(), ios::in);
+
+
             while(!isFinishedReplay2 && replayFile.is_open()){
                 if(missionRunning){
                     if(!std::getline(replayFile, str)){
@@ -448,9 +462,11 @@ void MainWindow::recordMap()
                     this_thread::sleep_for(115ms);
                 }
             }
+
             replayFile.close();
             mapFrame->updateLaserPicture = 0;
             mapFrame->update();
+            finReplay2 = true;
         }
     }
 }
@@ -474,12 +490,25 @@ void MainWindow::destroyReplayMission()
 
         missionLoaded = false;
         missionRunning = false;
+
+        str.clear();
+        mapFrame->setStr(str);
+
+        ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
+                                               "silver;border-style:outset;border-radius: "
+                                               "10px;border-color:black;border-width:4px;padding: "
+                                                "5px;image:url(:/resource/stop_start/play.png)}"
+                                               );
     }
 }
 
 void MainWindow::destroyRecordMission()
 {
     if(!missionLoaded){
+        std::cout << "In destroy" << std::endl;
+        std::cout << "Worker started=" << workerStarted << std::endl;
+        std::cout << "isFinished=" << isFinished << std::endl;
+
         if(workerStarted && !isFinished){
             isFinished = true;
             workerStarted = false;
@@ -541,8 +570,7 @@ void MainWindow::robotStateUiSignal()
 
 void MainWindow::on_loadMissionButton_clicked()
 {
-    if(!robotConnected){
-        destroyReplayMission();
+    if(!robotRunning && !missionLoaded){
 
         ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
                                                "silver;border-style:outset;border-radius: "
@@ -555,6 +583,12 @@ void MainWindow::on_loadMissionButton_clicked()
         s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
 
         if(!s1.isEmpty() && !s2.isEmpty()){
+
+            mapFrame->setRobotOnline(false);
+            cameraFrame->setRobotOnline(false);
+
+            ui->loadMissionButton->setText("Zruš prehrávanie\nmisie");
+
             if(!workerStarted){
                 isFinishedReplay = false;
                 workerStarted = true;
@@ -569,6 +603,20 @@ void MainWindow::on_loadMissionButton_clicked()
                 worker2 = std::thread(func);
             }
         }
+        else{
+            destroyReplayMission();
+
+            mapFrame->setRobotOnline(true);
+            cameraFrame->setRobotOnline(true);
+        }
+    }
+    else if(!robotRunning && missionLoaded){
+        ui->loadMissionButton->setText("Otvor nahratú\nmisiu");
+
+        destroyReplayMission();
+
+        mapFrame->setRobotOnline(true);
+        cameraFrame->setRobotOnline(true);
     }
 }
 
@@ -576,7 +624,7 @@ void MainWindow::on_loadMissionButton_clicked()
 
 void MainWindow::on_replayMissionButton_clicked()
 {
-    if(!robotConnected && missionLoaded){
+    if(!robotRunning && missionLoaded){
         if(!missionRunning){
             missionRunning = true;
             ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
@@ -603,6 +651,7 @@ void MainWindow::on_replayMissionButton_clicked()
     }
 }
 
+
 bool MainWindow::getIpAddress()
 {
     if(!ui->addressField->text().isEmpty() && ipAddress.compare(ui->addressField->text().toStdString())){
@@ -614,12 +663,11 @@ bool MainWindow::getIpAddress()
 }
 
 
-
-
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-    std::cout << "Frame width="  << mapFrame->imageWidth << ", frame height=" <<  mapFrame->imageHeight << std::endl;
-    if(arg1 && cameraFrame->updateCameraPicture == 1){
+    std::cout << "Arg=" << arg1 << std::endl;
+    if(arg1 == 2 && !workerStarted && !worker2Started){
+        recordMission = true;
         if(robotConnected && !workerStarted && !missionLoaded){
            if(isFinished)
                isFinished = false;
@@ -640,7 +688,9 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
         }
     }
     else{
+        std::cout << "Hello" << std::endl;
         destroyRecordMission();
+        recordMission = false;
     }
 }
 

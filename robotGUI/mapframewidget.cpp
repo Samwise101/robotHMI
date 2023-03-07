@@ -132,8 +132,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
               if(posMouseTrack){
                 paintMouseCoord(rectangle, &painter);
               }
-            }
-
+        }
         else{
             if(!str.empty() && updateLaserPicture == 1){
 
@@ -348,7 +347,7 @@ void MapFrameWidget::createFrameLog(fstream& file)
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents && placeGoals){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
-        if(points.size() < 10){
+        if(points.size() < 10 && robotOnline){
            points.insert(points.begin(), RobotGoal(event->x()/scale, event->y()/scale, this->pointType, this->pointColor));
         }
     }

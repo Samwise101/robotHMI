@@ -57,7 +57,6 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
               }
         }
         else{
-            //cv::resize(replayFrame, dest, cv::Size(rectangle.width(), rectangle.height()));
             image = QImage((uchar*)replayFrame.data, replayFrame.cols, replayFrame.rows, replayFrame.step, QImage::Format_RGB888);
             painter.drawImage(rectangle,image.rgbSwapped());;
         }
