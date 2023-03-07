@@ -25,6 +25,8 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     robotXPos = 0;
     robotYPos = 0;
 
+    replayIndex = 0;
+
     pointType = 1;
     number2 = 0;
     pointColor = Qt::yellow;
@@ -134,6 +136,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
               }
         }
         else{
+            /*
             if(!str.empty() && updateLaserPicture == 1){
 
                 pos = str.find(";");
@@ -277,7 +280,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }
@@ -342,6 +345,130 @@ void MapFrameWidget::createFrameLog(fstream& file)
        }
     }
     file << "\n";
+}
+
+
+void MapFrameWidget::parseMapFile()
+{
+    if(!str.empty()){
+
+        pos = str.find(";");
+
+        if(pos != std::string::npos){
+            temp1 = str.substr(0, pos);
+
+            str.erase(0, pos + 1);
+
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            robotPos.push_back(std::stoi(token)*scale);
+
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            robotPos.push_back(std::stoi(token)*scale);
+
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            robotAngle.push_back(std::stod(token));
+
+
+            robotReplayPos.push_back(robotPos);
+            robotPos.clear();
+
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            xp = std::stoi(token);
+
+            pos = temp1.find(",");
+            token = temp1.substr(0, pos);
+            temp1.erase(0, pos + 1);
+            yp = std::stoi(token);
+
+            pos = temp1.find(",");
+
+
+            while(pos != std::string::npos){
+                  pos = temp1.find(",");
+                  token = temp1.substr(0, pos);
+                  temp1.erase(0, pos + 1);
+                  xp2 = std::stoi(token);
+
+                  pos = temp1.find(",");
+                  token = temp1.substr(0, pos);
+                  temp1.erase(0, pos + 1);
+                  yp2 = std::stoi(token);
+
+                  replayTrajectory.push_back(QLine(xp,yp,xp2,yp2));
+
+                  xp = xp2;
+                  yp = yp2;
+            }
+            robotTrajectory.push_back(replayTrajectory);
+            replayTrajectory.clear();
+        }
+
+        pos = str.find(";");
+
+        if(pos != std::string::npos){
+            temp2 = str.substr(0, pos);
+            str.erase(0, pos + 1);
+
+            pos = temp2.find(",");
+
+            while(pos != std::string::npos){
+                  pos = temp2.find(",");
+                  token = temp2.substr(0, pos);
+                  temp2.erase(0, pos + 1);
+                  xp = std::stoi(token);
+
+                  pos = temp2.find(",");
+                  token = temp2.substr(0, pos);
+                  temp2.erase(0, pos + 1);
+                  yp = std::stoi(token);
+
+                  lidarReplayPoints.push_back(QPoint(xp,yp));
+            }
+
+            lidarReplayPos.push_back(lidarReplayPoints);
+            lidarReplayPoints.clear();
+        }
+
+        if(!str.empty()){
+            temp3 = str;
+
+            if(temp3.size() >= 3){
+                pos = temp3.find(",");
+
+                while(pos != std::string::npos){
+                    pos = temp3.find(",");
+                    token = temp3.substr(0, pos);
+                    temp3.erase(0, pos + 1);
+                    xp = std::stoi(token);
+
+                    pos = temp3.find(",");
+                    token = temp3.substr(0, pos);
+                    temp3.erase(0, pos + 1);
+                    yp = std::stoi(token);
+
+                    pos = temp3.find(",");;
+                    token = temp3.substr(0, pos);
+                    temp3.erase(0, pos + 1);
+                    goalColor = std::stoi(token);
+
+                    missionPoints.push_back(xp);
+                    missionPoints.push_back(yp);
+                    missionPoints.push_back(goalColor);
+                }
+
+                missionReplayPoints.push_back(missionPoints);
+                missionPoints.clear();
+            }
+        }
+    }
 }
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){

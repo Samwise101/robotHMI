@@ -60,6 +60,7 @@ public:
     void removeAllPoints();
     bool removeLastPoint();
     void initializeRobot();
+    void parseMapFile();
 
     void setOffset(double newOffset);
 
@@ -104,6 +105,17 @@ private:
     double imageTheta = 0.0;
 
     bool robotInitialized = false;
+
+    std::vector<std::vector<int>>robotReplayPos;
+    std::vector<int>robotPos;
+    std::vector<double>robotAngle;
+    std::vector<std::vector<QPoint>>lidarReplayPos;
+    std::vector<QPoint>lidarReplayPoints;
+    std::vector<std::vector<QLine>>robotTrajectory;
+    std::vector<QLine>replayTrajectory;
+    std::vector<std::vector<int>> missionReplayPoints;
+    std::vector<int> missionPoints;
+    int replayIndex;
 
     int robotXPos;
     int robotYPos;
