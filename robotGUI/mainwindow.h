@@ -7,7 +7,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QFileDialog>
-#include <QP
 
 #include <thread>
 #include <fstream>
@@ -87,6 +86,8 @@ private slots:
 
     void on_useMapButton_clicked();
 
+    void on_actionDocumentation_triggered();
+
 private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
@@ -135,6 +136,9 @@ private:
     QImage image;
     QString s1;
     QString s2;
+
+    QFileDialog docDialog;
+    QString documentation;
 
     cv::Mat frame;
     cv::Mat dest;

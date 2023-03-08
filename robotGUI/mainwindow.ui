@@ -921,6 +921,7 @@ QMenu:selected{
      <string>Help</string>
     </property>
     <addaction name="actionAlarms"/>
+    <addaction name="actionDocumentation"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -956,6 +957,11 @@ QMenu:selected{
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
    </property>
   </action>
  </widget>

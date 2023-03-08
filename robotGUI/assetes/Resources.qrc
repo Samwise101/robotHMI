@@ -25,5 +25,6 @@
         <file>Alarmy/online.png</file>
         <file>stop_start/play.png</file>
         <file>stop_start/stop_play.png</file>
+        <file>Documentation/Documentation.txt</file>
     </qresource>
 </RCC>

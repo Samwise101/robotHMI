@@ -773,3 +773,10 @@ void MainWindow::on_useMapButton_clicked()
     }
 }
 
+
+void MainWindow::on_actionDocumentation_triggered()
+{
+    documentation = docDialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
+    QFile file()
+}
+
