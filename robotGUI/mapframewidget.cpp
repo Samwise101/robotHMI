@@ -170,7 +170,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
             for(int i = 0; i < lidarReplayPos[replayIndex].size(); i++){
                 if(scale < 1.0){
-                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,4,4);
+                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,2,2);
                 }
                 else{
                    painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,6,6);
@@ -205,7 +205,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
 
                 if(scale < 1.0){
-                   painter.drawEllipse(QPoint(xp*scale, yp*scale),4,4);
+                   painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
                 }
                 else{
                    painter.drawEllipse(QPoint(xp*scale, yp*scale),6,6);

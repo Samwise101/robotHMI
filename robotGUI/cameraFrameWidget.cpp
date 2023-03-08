@@ -33,6 +33,10 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
     if(updateCameraPicture == 1){
 
         if(robotOnline){
+              if(frame->empty()){
+                  updateCameraPicture = 0;
+                  return;
+              }
               image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888);
               painter.drawImage(rectangle,image.rgbSwapped());;
               setSpeedWidget();
@@ -58,6 +62,10 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
               }
         }
         else if(canReplay){
+            if(frame->empty()){
+                updateCameraPicture = 0;
+                return;
+            }
             image = QImage((uchar*)replayFrame.data, replayFrame.cols, replayFrame.rows, replayFrame.step, QImage::Format_RGB888);
             painter.drawImage(rectangle,image.rgbSwapped());;
         }

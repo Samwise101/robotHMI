@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QFileDialog>
+#include <QP
+
 #include <thread>
 #include <fstream>
 #include <iostream>
