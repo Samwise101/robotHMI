@@ -21,6 +21,9 @@ CameraFrameWidget::~CameraFrameWidget(){
         delete batteryFrame;
         delete speedFrame;
     }
+
+
+
 }
 
 void CameraFrameWidget::paintEvent(QPaintEvent*){
