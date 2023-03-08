@@ -10,8 +10,6 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
 
-    std::cout << "Main window opened" << std::endl;
-
     missionLoaded = false;
     missionRunning = false;
 
@@ -229,14 +227,12 @@ void MainWindow::on_actionGo_Online_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
-    std::cout << "Hello from exit!" << std::endl;
     QApplication::quit();
 }
 
 
 void MainWindow::on_actionAlarms_triggered()
 {
-    std::cout << "Hello from alarms!" << std::endl;
     alarmHelpWindow = new AlarmDialog(this);
     alarmHelpWindow->setWindowTitle("Help");
     alarmHelpWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -307,10 +303,7 @@ void MainWindow::on_connectToRobotButton_clicked()
         destroyRecordMission();
         destroyReplayMission();
 
-        if(!setupConnectionToRobot()){
-            std::cout << "Something went wrong, can't connect to robot!" << std::endl;
-        }
-        else{
+        if(setupConnectionToRobot()){
             ui->connectToRobotButton->setText("Odpoj sa");
             robotConnected = true;
             robot->robotStart();

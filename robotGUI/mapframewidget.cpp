@@ -138,6 +138,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
               }
         }
         else if(!robotReplayPos.empty()){
+
             if(scale >=1){
                 robotImagePos.setX(robotReplayPos[replayIndex][0]);
                 robotImagePos.setY(robotReplayPos[replayIndex][1]);
@@ -147,6 +148,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 robotImagePos.setY(robotReplayPos[replayIndex][1]*0.535*scale);
             }
             imageTheta = robotAngle[replayIndex];
+
+            if(replayIndex == 0){
+                startLocation.setX(robotImagePos.x() - 28*scale);
+                startLocation.setY(robotImagePos.y() - 28*scale);
+            }
 
             pen.setWidth(2);
             pen.setColor(Qt::red);
@@ -164,10 +170,10 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
             for(int i = 0; i < lidarReplayPos[replayIndex].size(); i++){
                 if(scale < 1.0){
-                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,2,2);
+                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,4,4);
                 }
                 else{
-                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,4,4);
+                   painter.drawEllipse(lidarReplayPos[replayIndex][i].x()*scale, lidarReplayPos[replayIndex][i].y()*scale,6,6);
                 }
             }
 
@@ -199,10 +205,10 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
 
                 if(scale < 1.0){
-                   painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
+                   painter.drawEllipse(QPoint(xp*scale, yp*scale),4,4);
                 }
                 else{
-                   painter.drawEllipse(QPoint(xp*scale, yp*scale),4,4);
+                   painter.drawEllipse(QPoint(xp*scale, yp*scale),6,6);
                 }
             }
 
@@ -211,154 +217,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             if(replayIndex >= robotReplayPos.size() - 1){
                 replayFinished = true;
             }
-            }
-
-            /*
-            if(!str.empty() && updateLaserPicture == 1){
-
-                pos = str.find(";");
-
-                if(pos != std::string::npos){
-                    temp1 = str.substr(0, pos);
-
-                    str.erase(0, pos + 1);
-
-                    pos = temp1.find(",");
-                    token = temp1.substr(0, pos);
-                    temp1.erase(0, pos + 1);
-                    robotImagePos.setX(std::stoi(token)*scale);
-
-                    pos = temp1.find(",");
-                    token = temp1.substr(0, pos);
-                    temp1.erase(0, pos + 1);
-                    robotImagePos.setY(std::stoi(token)*scale);
-
-                    pos = temp1.find(",");
-                    token = temp1.substr(0, pos);
-                    temp1.erase(0, pos + 1);
-                    imageTheta = std::stod(token);
-
-                    pen.setWidth(2);
-                    pen.setColor(Qt::red);
-                    painter.setPen(pen);
-
-                    painter.drawEllipse(robotImagePos.x()-20*scale, robotImagePos.y()-20*scale, 40*scale, 40*scale);
-                    painter.drawLine(robotImagePos.x(), robotImagePos.y(), robotImagePos.x()+20*std::cos(imageTheta)*scale, robotImagePos.y()-20*std::sin(imageTheta)*scale);
-
-                    pos = temp1.find(",");
-                    token = temp1.substr(0, pos);
-                    temp1.erase(0, pos + 1);
-                    xp = std::stoi(token);
-
-                    pos = temp1.find(",");
-                    token = temp1.substr(0, pos);
-                    temp1.erase(0, pos + 1);
-                    yp = std::stoi(token);
-
-                    pos = temp1.find(",");
-
-                    while(pos != std::string::npos){
-                          pos = temp1.find(",");
-                          token = temp1.substr(0, pos);
-                          temp1.erase(0, pos + 1);
-                          xp2 = std::stoi(token);
-
-                          pos = temp1.find(",");
-                          token = temp1.substr(0, pos);
-                          temp1.erase(0, pos + 1);
-                          yp2 = std::stoi(token);
-
-                          painter.drawLine(xp*scale, yp*scale, xp2*scale, yp2*scale);
-
-                          xp = xp2;
-                          yp = yp2;
-                    }
-                }
-
-                pos = str.find(";");
-
-                if(pos != std::string::npos){
-                    temp2 = str.substr(0, pos);
-                    str.erase(0, pos + 1);
-
-                    pen.setWidth(3);
-                    pen.setColor(Qt::red);
-                    painter.setPen(pen);
-                    pos = temp2.find(",");
-
-                    while(pos != std::string::npos){
-                          pos = temp2.find(",");
-                          token = temp2.substr(0, pos);
-                          temp2.erase(0, pos + 1);
-                          xp = std::stoi(token);
-
-                          pos = temp2.find(",");
-                          token = temp2.substr(0, pos);
-                          temp2.erase(0, pos + 1);
-                          yp = std::stoi(token);
-
-                          if(scale < 1.0){
-                             painter.drawEllipse(QPoint(xp*scale, yp*scale),1,1);
-                          }
-                          else{
-                             painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
-                          }
-                    }
-                }
-
-                if(!str.empty()){
-                    temp3 = str;
-
-                    if(temp3.size() >= 3){
-                        pos = temp3.find(",");
-
-                        while(pos != std::string::npos){
-                            pos = temp3.find(",");
-                            token = temp3.substr(0, pos);
-                            temp3.erase(0, pos + 1);
-                            xp = std::stoi(token);
-
-                            pos = temp3.find(",");
-                            token = temp3.substr(0, pos);
-                            temp3.erase(0, pos + 1);
-                            yp = std::stoi(token);
-
-                            pos = temp3.find(",");;
-                            token = temp3.substr(0, pos);
-                            temp3.erase(0, pos + 1);
-                            goalColor = std::stoi(token);
-
-                            if(goalColor == 1){
-                               pen.setColor(Qt::yellow);
-                               painter.setBrush(Qt::yellow);
-                               painter.setPen(pen);
-                            }
-                            else if(goalColor == 2){
-                               pen.setColor(Qt::darkMagenta);
-                               painter.setBrush(Qt::darkMagenta);
-                               painter.setPen(pen);
-                            }
-                            else if(goalColor == 3){
-                               pen.setColor(Qt::cyan);
-                               painter.setBrush(Qt::cyan);
-                               painter.setPen(pen);
-                            }
-                            else if(goalColor == 4){
-                               pen.setColor(Qt::gray);
-                               painter.setBrush(Qt::gray);
-                               painter.setPen(pen);
-                            }
-
-                            if(scale < 1.0){
-                               painter.drawEllipse(QPoint(xp*scale, yp*scale),2,2);
-                            }
-                            else{
-                               painter.drawEllipse(QPoint(xp*scale, yp*scale),4,4);
-                            }
-                        }
-                    }
-                }*/
-            }
+        }
+        }
     }
 }
 
