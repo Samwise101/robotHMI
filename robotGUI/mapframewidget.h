@@ -158,6 +158,8 @@ private:
     QLine line2;
     QLine line3;
     QLine line4;
+    QPoint startLocation;
+
     std::vector<RobotGoal> points;
     int pointType;
     QColor pointColor;

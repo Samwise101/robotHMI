@@ -58,13 +58,15 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     pen.setColor(Qt::green);
     painter.setPen(pen);
 
-    //initializeRobot();
-
     if(updateLaserPicture == 1){
-
 
         if(showMap){
             paintMap(&painter);
+            painter.drawEllipse(startLocation.x(), startLocation.y(), 100, 100);
+            painter.drawLine(startLocation.x()+10, startLocation.y()+50 , startLocation.x()-20, startLocation.y()+50);
+            painter.drawLine(startLocation.x()+90, startLocation.y()+50 , startLocation.x()+120, startLocation.y()+50);
+            painter.drawLine(startLocation.x()+50, startLocation.y()+90 , startLocation.x()+50, startLocation.y()+120);
+            painter.drawLine(startLocation.x()+50, startLocation.y()-20 , startLocation.x()+50, startLocation.y()+10);
         }
 
         if(robotOnline && robotInitialized){
@@ -611,17 +613,20 @@ void MapFrameWidget::initializeRobot()
     if(!robotInitialized){
 
         if(isSimulation){
-            robotXPos = rectMiddleX - scale*239;  // sim -scale*239 //  real  -scale*228
-            robotYPos = rectMiddleY + 184*scale;  //      184*scale //        +165*scale
-            realTheta = 0;                        //      angle = 0 //        0
+            // simulacia
+            robotXPos = rectMiddleX - scale*239;
+            robotYPos = rectMiddleY + 184*scale;
+            realTheta = 0;
         }
         else{
-            robotXPos = rectMiddleX - scale*228;  // sim -scale*239 //  real  -scale*228
-            robotYPos = rectMiddleY + 165*scale;  //      184*scale //        +165*scale
-            realTheta = 0;                        //      angle = 0 //        0
+            // real
+            robotXPos = rectMiddleX - scale*228;
+            robotYPos = rectMiddleY + 165*scale;
+            realTheta = 0;
         }
 
-        std::cout << "Robot pos=" << robotXPos << ", " << robotYPos << std::endl;
+        startLocation.setX(robotXPos - 28*scale);
+        startLocation.setY(robotYPos - 28*scale);
 
 /*
         robotXPos = rectMiddleX + scale*(287 - 57);

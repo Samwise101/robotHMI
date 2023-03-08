@@ -277,9 +277,6 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
     nlOld = nlCurr;
     nrOld = nrCurr;
 
-    std::cout << "nlOld=" << nlOld << ", nrOld=" << nrOld << std::endl;
-    std::cout << "nlNew=" << nlCurr << ", nrNew=" << nrCurr << std::endl;
-
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
 
@@ -303,8 +300,6 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
         nrDiff = nrCurr - nrOld;
     }
 
-    std::cout << "nlDiff=" << nlDiff << ", nrDiff=" << nrDiff << std::endl;
-
     deltaSl = nlDiff*robot.getReferenceToTickToMeter();
     deltaSr = nrDiff*robot.getReferenceToTickToMeter();
     deltaS = (deltaSr + deltaSl)/2;
@@ -321,9 +316,6 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
         deltaTheta = (deltaSr - deltaSl)/(robot.getReferenceToB());
         theta = theta + deltaTheta;
     }
-
-    std::cout << "Theta=" << theta*180/PI << std::endl;
-    std::cout << "Gyro=" << (output.GyroAngle/100.0) << std::endl;
 
     if(deltaS * std::cos(theta) < -1000)
         xdt += 0;
@@ -458,8 +450,7 @@ double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     else{
         w = 0.0;
     }
-
-    /*
+/*
     std::cout << "Got angle=" << angleToObst << std::endl;
     if(angleToObst >= 0.0 && angleToObst <= 90){
        eThetaToObst = angleToObst*PI/180 + PI/2;
