@@ -70,8 +70,9 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 
     if(!missionLoaded){
         mapFrame->updateLaserPicture = 1;
-        mapFrame->update();
     }
+
+    mapFrame->update();
     return 0;
 }
 
@@ -407,7 +408,6 @@ void MainWindow::recordCamera()
             cap.release();
             cameraFrame->updateCameraPicture = 0;
             cameraFrame->update();
-            finReplay1 = true;
         }
 
     }
@@ -438,13 +438,12 @@ void MainWindow::recordMap()
             if(missionRunning){
                 mapFrame->updateLaserPicture = 1;
                 mapFrame->update();
-                this_thread::sleep_for(115ms);
+                this_thread::sleep_for(130ms);
             }
         }
 
         mapFrame->updateLaserPicture = 0;
         mapFrame->update();
-        finReplay2 = true;
     }
 }
 
@@ -776,7 +775,9 @@ void MainWindow::on_useMapButton_clicked()
 
 void MainWindow::on_actionDocumentation_triggered()
 {
-    documentation = docDialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
-    QFile file()
+    QFile file(":/resource/Documentation.txt");
+    if(!file.open(QIODevice::ReadOnly)){
+        QMessageBox::information(0, "info", file.errorString());
+    }
 }
 

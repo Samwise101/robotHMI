@@ -65,7 +65,7 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
               }
         }
         else if(canReplay){
-            if(frame->empty()){
+            if(replayFrame.empty()){
                 updateCameraPicture = 0;
                 return;
             }
