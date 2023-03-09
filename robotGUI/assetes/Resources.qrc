@@ -27,6 +27,7 @@
         <file>stop_start/stop_play.png</file>
         <file>Documentation.txt</file>
         <file>Alarmy/warning_orange.png</file>
+        <file>Docs/page1.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
