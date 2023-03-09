@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
-    <height>729</height>
+    <width>928</width>
+    <height>881</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,15 +20,15 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(200, 200, 200);</string>
+   <string notr="true">background-color:rgb(255, 255, 255);</string>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>701</width>
-     <height>711</height>
+     <width>911</width>
+     <height>861</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,10,0,1">
@@ -37,7 +37,7 @@
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>12</pointsize>
+        <pointsize>16</pointsize>
         <italic>false</italic>
         <bold>true</bold>
        </font>
@@ -47,7 +47,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">color:rgb(0, 0, 0);
-font: 700 12pt &quot;Segoe UI&quot;;</string>
+font: 700 16pt &quot;Segoe UI&quot;;</string>
       </property>
       <property name="text">
        <string>Dokumentácia</string>
@@ -100,7 +100,7 @@ font: 700 12pt &quot;Segoe UI&quot;;</string>
        <widget class="QPushButton" name="pageDown">
         <property name="minimumSize">
          <size>
-          <width>180</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -113,22 +113,34 @@ font: 700 12pt &quot;Segoe UI&quot;;</string>
 	border-width:4px;
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black
+	color:black;
+	image:url(:/pages/pageDOWN.png);
 </string>
         </property>
         <property name="text">
-         <string>Predošlá strana</string>
+         <string/>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLabel" name="pages">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="styleSheet">
-         <string notr="true">color:rgb(0, 0, 0);
-background-color: rgb(255, 255, 255);</string>
+         <string notr="true">color:rgb(0, 0, 0);</string>
         </property>
         <property name="text">
-         <string>0/0</string>
+         <string>1/5</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -139,7 +151,7 @@ background-color: rgb(255, 255, 255);</string>
        <widget class="QPushButton" name="pageUp">
         <property name="minimumSize">
          <size>
-          <width>180</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -151,10 +163,11 @@ background-color: rgb(255, 255, 255);</string>
 	border-width:4px;
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black</string>
+	color:black;
+	image:url(:/pages/pageUP.png);</string>
         </property>
         <property name="text">
-         <string>Nasledujúca strana</string>
+         <string/>
         </property>
        </widget>
       </item>

@@ -28,5 +28,19 @@
         <file>Documentation.txt</file>
         <file>Alarmy/warning_orange.png</file>
     </qresource>
-    <qresource prefix="/"/>
+    <qresource prefix="/pages">
+        <file>page3.png</file>
+        <file>page4.png</file>
+        <file>page5.png</file>
+        <file>page1.png</file>
+        <file>page2.png</file>
+        <file>pageDOWN.png</file>
+        <file>pageUP.png</file>
+        <file>page6.png</file>
+        <file>page7.png</file>
+        <file>page8.png</file>
+        <file>page9.png</file>
+        <file>page10.png</file>
+        <file>page11.png</file>
+    </qresource>
 </RCC>

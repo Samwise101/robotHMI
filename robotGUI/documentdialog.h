@@ -31,6 +31,9 @@ private slots:
 
 private:
     Ui::DocumentDialog *ui;
+    int docLength;
+    int currentPage = 1;
+    std::string path;
 };
 
 #endif // DOCUMENTDIALOG_H

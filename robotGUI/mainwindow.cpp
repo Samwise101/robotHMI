@@ -323,6 +323,7 @@ void MainWindow::on_connectToRobotButton_clicked()
            mapFrame->setShowDisconnectWarning(true);
         }
         else{
+            ipAddress.clear();
             destroyRecordMission();
             destroyReplayMission();
 
@@ -353,6 +354,9 @@ void MainWindow::on_connectToRobotButton_clicked()
 }
 
 bool MainWindow::setupConnectionToRobot(){
+
+    getIpAddress();
+
     if(!ipAddress.empty()){
         v = 0.0;
         omega = 0.0;

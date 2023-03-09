@@ -352,8 +352,26 @@ font: 12pt &quot;Segoe UI&quot;;</string>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <widget class="QLabel" name="robotState">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>220</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="styleSheet">
-               <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+               <string notr="true">	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+font: 700 12pt &quot;Segoe UI&quot;;
 color:black</string>
               </property>
               <property name="text">
@@ -385,9 +403,12 @@ color:black</string>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>10</width>
               <height>20</height>
              </size>
             </property>
@@ -627,8 +648,8 @@ color:black</string>
 }</string>
               </property>
               <property name="text">
-               <string>Zmaž cieľové
- body</string>
+               <string>Zmaž  body
+ misie</string>
               </property>
              </widget>
             </item>
