@@ -54,6 +54,7 @@ win32 {
 SOURCES += \
     alarmdialog.cpp \
     cameraFrameWidget.cpp \
+    documnetdialog.cpp \
     main.cpp \
     mainwindow.cpp \
     mapframewidget.cpp \
@@ -62,12 +63,14 @@ SOURCES += \
 HEADERS += \
     alarmdialog.h \
     cameraFrameWidget.h \
+    documnetdialog.h \
     mainwindow.h \
     mapframewidget.h \
     robotgoal.h
 
 FORMS += \
     alarmdialog.ui \
+    documnetdialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

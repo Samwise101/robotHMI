@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     recordMission = false;
 
+    buttonPressedCount = 0;
+    buttonPressedCount2 = 0;
+
     dataCounter = 0;
     switchIndex = 0;
 
@@ -91,11 +94,20 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     robotStateUiSignal();
 
-    if(mapFrame->getShowReplayWarning() && buttonPressedCount < 150)
+    if(mapFrame->getShowReplayWarning() && buttonPressedCount < 150){
         buttonPressedCount++;
-    if(buttonPressedCount >= 150){
+    }
+    else if(mapFrame->getShowReplayWarning() && buttonPressedCount >= 150){
         mapFrame->setShowReplayWarning(false);
         buttonPressedCount = 0;
+    }
+
+    if(mapFrame->getShowDisconnectWarning() && buttonPressedCount2 < 150){
+        buttonPressedCount2++;
+    }
+    else if(mapFrame->getShowDisconnectWarning() && buttonPressedCount2 >= 150){
+        mapFrame->setShowDisconnectWarning(false);
+        buttonPressedCount2 = 0;
     }
 
     cameraFrame->setBatteryLevel(robotData.Battery);
@@ -317,7 +329,8 @@ void MainWindow::on_connectToRobotButton_clicked()
     }
     else if(robotConnected){
         if(robotRunning){
-           mapFrame->setShowReplayWarning(true);
+           mapFrame->setShowReplayWarning(false);
+           mapFrame->setShowDisconnectWarning(true);
         }
         else{
             destroyRecordMission();
@@ -540,6 +553,10 @@ void MainWindow::robotStateUiSignal()
 
 void MainWindow::on_loadMissionButton_clicked()
 {
+    if(robotRunning && !missionLoaded){
+        mapFrame->setShowDisconnectWarning(false);
+        mapFrame->setShowReplayWarning(true);
+    }
     if(!robotRunning && !missionLoaded){
 
         ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "

@@ -17,6 +17,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     posMouseTrack = true;
 
     showReplayWarning = false;
+    showDisconnectWarning = false;
     showMap = true;
 
     robotInitialized = false;
@@ -63,26 +64,34 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         if(showMap){
             paintMap(&painter);
             painter.drawEllipse(startLocation.x(), startLocation.y(), 100, 100);
-            painter.drawLine(startLocation.x()+10, startLocation.y()+50 , startLocation.x()-20, startLocation.y()+50);
-            painter.drawLine(startLocation.x()+90, startLocation.y()+50 , startLocation.x()+120, startLocation.y()+50);
-            painter.drawLine(startLocation.x()+50, startLocation.y()+90 , startLocation.x()+50, startLocation.y()+120);
-            painter.drawLine(startLocation.x()+50, startLocation.y()-20 , startLocation.x()+50, startLocation.y()+10);
+            painter.drawLine(startLocation.x(), startLocation.y()+50 , startLocation.x()+20, startLocation.y()+50);
+            painter.drawLine(startLocation.x()+80, startLocation.y()+50 , startLocation.x()+100, startLocation.y()+50);
+            painter.drawLine(startLocation.x()+50, startLocation.y()+80 , startLocation.x()+50, startLocation.y()+100);
+            painter.drawLine(startLocation.x()+50, startLocation.y(), startLocation.x()+50, startLocation.y()+20);
         }
 
         if(robotOnline && robotInitialized){
             if(canTriggerEvents == 0 && copyOfLaserData.numberOfScans > 0){
                 canTriggerEvents = 1;
-            };
+            }
 
             updateLaserPicture = 0;
+
+            if(showDisconnectWarning){
+                painter.setFont(QFont("Segoe UI",8*scale));
+                pen.setColor(QColor(255,165,0,255));
+                painter.setPen(pen);
+                std::cout << "Hello" << std::endl;
+                painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
+            }
 
             if(showReplayWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
                 std::cout << "Hello" << std::endl;
-                painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
-             }
+                painter.drawText(rectMiddleX-350, 100, "Pre zapnutie prehrávania najprv prepnite robot do režimu STOP!");
+            }
 
             pen.setWidth(2);
             pen.setColor(Qt::red);
@@ -222,30 +231,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
-bool MapFrameWidget::getReplayFinished() const
-{
-    return replayFinished;
-}
-
-void MapFrameWidget::setReplayFinished(bool newReplayFinished)
-{
-    replayFinished = newReplayFinished;
-}
-
-void MapFrameWidget::setReplayIndex(int newReplayIndex)
-{
-    replayIndex = newReplayIndex;
-}
-
-void MapFrameWidget::setIsSimulation(bool newIsSimulation)
-{
-    isSimulation = newIsSimulation;
-}
-
-void MapFrameWidget::setRobotInitialized(bool newRobotInitialized)
-{
-    robotInitialized = newRobotInitialized;
-}
 
 void MapFrameWidget::createFrameLog(fstream& file)
 {
@@ -693,6 +678,41 @@ void MapFrameWidget::clearVectors()
     lidarReplayPos.clear();
     robotTrajectory.clear();
     missionReplayPoints.clear();
+}
+
+bool MapFrameWidget::getShowDisconnectWarning() const
+{
+    return showDisconnectWarning;
+}
+
+void MapFrameWidget::setShowDisconnectWarning(bool newShowDisconnectWarning)
+{
+    showDisconnectWarning = newShowDisconnectWarning;
+}
+
+bool MapFrameWidget::getReplayFinished() const
+{
+    return replayFinished;
+}
+
+void MapFrameWidget::setReplayFinished(bool newReplayFinished)
+{
+    replayFinished = newReplayFinished;
+}
+
+void MapFrameWidget::setReplayIndex(int newReplayIndex)
+{
+    replayIndex = newReplayIndex;
+}
+
+void MapFrameWidget::setIsSimulation(bool newIsSimulation)
+{
+    isSimulation = newIsSimulation;
+}
+
+void MapFrameWidget::setRobotInitialized(bool newRobotInitialized)
+{
+    robotInitialized = newRobotInitialized;
 }
 
 double MapFrameWidget::getRealTheta() const

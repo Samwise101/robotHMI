@@ -94,7 +94,7 @@ private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
+    //std::string ipAddress = "192.168.1.11";   // pre realneho robota 8000
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
     Robot* robot;
@@ -134,6 +134,7 @@ private:
     cv::VideoWriter* video;
 
     int buttonPressedCount = 0;
+    int buttonPressedCount2 = 0;
 
     QImage image;
     QString s1;

@@ -104,6 +104,10 @@ public:
     bool getReplayFinished() const;
     void setReplayFinished(bool newReplayFinished);
 
+    void setShowDisconnectWarning(bool newShowDisconnectWarning);
+
+    bool getShowDisconnectWarning() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -130,6 +134,7 @@ private:
     int robotYPos;
 
     bool showReplayWarning = false;
+    bool showDisconnectWarning = false;
     bool showMap = true;
     bool posMouseTrack = true;
     bool isSimulation = false;
