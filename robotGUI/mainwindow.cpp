@@ -125,7 +125,7 @@ int MainWindow::processRobot(TKobukiData robotData){
         if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0)){
 
             if(mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0){
-                cameraFrame->setDispRedWarning(false);
+                cameraFrame->setDispOrangeWarning(false);
                 cameraFrame->setDispYellowWarning(false);
                 cameraFrame->setRobotStoppedWarning(true);
             }
@@ -137,7 +137,7 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
         else if(robotRunning && !mapFrame->isGoalVectorEmpty()){
             if(mapFrame->getShortestDistanceLidar() <= 350.0){
-               cameraFrame->setDispRedWarning(true);
+               cameraFrame->setDispOrangeWarning(true);
             }
             else if(mapFrame->getShortestDistanceLidar() <= 450.0){
                 cameraFrame->setDispYellowWarning(true);
@@ -242,16 +242,6 @@ void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
 }
-
-
-void MainWindow::on_actionAlarms_triggered()
-{
-    alarmHelpWindow = new AlarmDialog(this);
-    alarmHelpWindow->setWindowTitle("Help");
-    alarmHelpWindow->setAttribute(Qt::WA_DeleteOnClose);
-    alarmHelpWindow->show();
-}
-
 
 void MainWindow::on_startButton_clicked()
 {
@@ -796,5 +786,17 @@ void MainWindow::on_actionDocumentation_triggered()
     if(!file.open(QIODevice::ReadOnly)){
         QMessageBox::information(0, "info", file.errorString());
     }
+
+    QTextStream in(&file);
+
+    docReader = new DocumentDialog(this);
+    docReader->setWindowTitle("Documentation");
+    docReader->show();
+}
+
+void MainWindow::on_actionAlarms_triggered()
+{
+    alarmHelpWindow.setWindowTitle("Help");
+    alarmHelpWindow.show();
 }
 

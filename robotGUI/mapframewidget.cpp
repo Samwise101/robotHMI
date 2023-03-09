@@ -427,7 +427,7 @@ bool MapFrameWidget::event(QEvent * event)
 }
 
 
-void MapFrameWidget::hoverLeave(QHoverEvent  * event)
+void MapFrameWidget::hoverLeave(QHoverEvent  *event)
 {
     mouseXPos = -1;
     mouseYPos = -1;

@@ -10,6 +10,9 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
     actIndex=-1;
     offset = 10;
     canReplay = false;
+    dispOrangeWarning = false;
+    dispYellowWarning = false;
+    dispRobotStopped = false;
 
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -48,19 +51,19 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
               if(robotOnline){
                  painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
               }
-              if(dispRedWarning){
+              if(dispOrangeWarning){
                  dispYellowWarning = false;
-                 imageDistanceWarn = QImage(":/resource/Alarmy/warning_red.png");
+                 imageDistanceWarn = QImage(":/resource/Alarmy/warning_orange.png");
                  painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
               else if(dispYellowWarning){
-                 dispRedWarning = false;
+                 dispOrangeWarning = false;
                  imageDistanceWarn = QImage(":/resource/Alarmy/warning_yellow.png");
                  painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
               else if(dispRobotStopped){
                  dispRobotStopped = false;
-                 imageDistanceWarn = QImage(":/resource/Alarmy/Alarm3.png");
+                 imageDistanceWarn = QImage(":/resource/Alarmy/warning_red.png");
                  painter.drawImage(QPoint(60,10), imageDistanceWarn.scaled(100,100, Qt::KeepAspectRatio));
               }
         }
@@ -264,9 +267,9 @@ void CameraFrameWidget::setRobotOnline(bool newRobotOnline)
     robotOnline = newRobotOnline;
 }
 
-void CameraFrameWidget::setDispRedWarning(bool newDispRedWarning)
+void CameraFrameWidget::setDispOrangeWarning(bool newDispOrangeWarning)
 {
-    dispRedWarning = newDispRedWarning;
+    dispOrangeWarning = newDispOrangeWarning;
 }
 
 void CameraFrameWidget::setRobotStoppedWarning(bool newWarning)
@@ -287,7 +290,7 @@ unsigned short CameraFrameWidget::getBatteryPercantage() const
 
 void CameraFrameWidget::resetWarnings()
 {
-    dispRedWarning = dispYellowWarning = false;
+    dispOrangeWarning = dispYellowWarning = false;
 }
 
 void CameraFrameWidget::setBatteryLevel(const unsigned char newBatteryLevel)

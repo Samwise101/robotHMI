@@ -51,7 +51,7 @@ private:
     double v = 0.0;
     bool robotOnline = false;
     bool dispYellowWarning = false;
-    bool dispRedWarning = false;
+    bool dispOrangeWarning = false;
     bool dispRobotStopped = false;
     unsigned short batteryPercantage = 0;
     double tempSpeed = 0.0;
@@ -68,7 +68,7 @@ public:
     unsigned short getBatteryPercantage() const;
     void resetWarnings();
     void setDispYellowWarning(bool newDispYellowWarning);
-    void setDispRedWarning(bool newDispRedWarning);
+    void setDispOrangeWarning(bool newDispOrangeWarning);
     void setRobotStoppedWarning(bool newWarning);
     void setRobotOnline(bool newRobotOnline);
     void setScale(float newScale);

@@ -1,1 +1,3 @@
-test
+Toto je test vizualizacie dokumentacie.
+Druhy riadok.
+Treti riadok.
