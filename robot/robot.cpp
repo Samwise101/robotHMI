@@ -414,7 +414,15 @@ double Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int 
             v = 0.0;
         }
     }
-    else if(Kp2*eDist > tempSpeed){
+    else if(v <= 20 && eDist >= 20 && eDist <= 50){
+        if(v == 0){
+            v = 5;
+        }
+        else{
+            v += Kp2*v;
+        }
+    }
+    else if(eDist > tempSpeed){
         v = rampPosFunction(v);
     }
     else if(goalType == 1){
@@ -440,8 +448,6 @@ double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     eThetaToObst = theta - thetaToObst;
     eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
 
-   // std::cout << "Angle=" << eThetaToObst*180/PI << std::endl;
-
     if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
            w = eThetaToObst + PI/2;
     }
@@ -451,22 +457,7 @@ double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     else{
         w = 0.0;
     }
-/*
-    std::cout << "Got angle=" << angleToObst << std::endl;
-    if(angleToObst >= 0.0 && angleToObst <= 90){
-       eThetaToObst = angleToObst*PI/180 + PI/2;
-       std::cout << "Hello 1" << std::endl;
-       w = Kp3*eThetaToObst;
-    }
-    else if(angleToObst >= 270 && angleToObst <= 360){
-       eThetaToObst = angleToObst*PI/180 - PI/2;
-       std::cout << "Hello 2" << std::endl;
-       w = Kp3*eThetaToObst;
-    }
-    else{
-       w = 0;
-    }
-*/
+
     if(w > 2.0){
         w = 2.0;
     }
@@ -610,4 +601,9 @@ void Robot::setAtGoal(bool newAtGoal)
 double Robot::getTempSpeed() const
 {
     return tempSpeed;
+}
+
+void Robot::setRobotStarting(bool newRobotStarting)
+{
+    robotStarting = newRobotStarting;
 }

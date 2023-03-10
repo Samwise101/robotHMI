@@ -361,7 +361,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
               <property name="minimumSize">
                <size>
                 <width>220</width>
-                <height>0</height>
+                <height>150</height>
                </size>
               </property>
               <property name="styleSheet">
@@ -880,7 +880,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1850</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
