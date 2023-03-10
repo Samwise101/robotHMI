@@ -15,6 +15,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
     placeGoals = true;
 
     posMouseTrack = true;
+    robotControlOn = true;
 
     showReplayWarning = false;
     showDisconnectWarning = false;
@@ -173,7 +174,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             }
 
             pen.setWidth(2);
-            pen.setColor(Qt::red);
+            pen.setColor(QColor(255,223,0));
             painter.setPen(pen);
 
             painter.drawEllipse(robotImagePos.x()-20*scale, robotImagePos.y()-20*scale, 40*scale, 40*scale);
@@ -184,7 +185,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.drawLine(robotTrajectory[replayIndex][i].x1()*scale,robotTrajectory[replayIndex][i].y1()*scale,robotTrajectory[replayIndex][i].x2()*scale,robotTrajectory[replayIndex][i].y2()*scale);
             }
 
-            painter.setBrush(Qt::red);
+            painter.setBrush(QColor(255,223,0));
 
             for(int i = 0; i < lidarReplayPos[replayIndex].size(); i++){
                 if(scale < 1.0){
@@ -202,13 +203,13 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 goalColor = missionReplayPoints[replayIndex][i+2];
 
                 if(goalColor == 1){
-                   pen.setColor(Qt::yellow);
-                   painter.setBrush(Qt::yellow);
+                   pen.setColor(QColor(20,255,20));
+                   painter.setBrush(QColor(20,255,20));
                    painter.setPen(pen);
                 }
                 else if(goalColor == 2){
-                   pen.setColor(Qt::darkMagenta);
-                   painter.setBrush(Qt::darkMagenta);
+                   pen.setColor(Qt::magenta);
+                   painter.setBrush(Qt::magenta);
                    painter.setPen(pen);
                 }
                 else if(goalColor == 3){
@@ -217,8 +218,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                    painter.setPen(pen);
                 }
                 else if(goalColor == 4){
-                   pen.setColor(Qt::gray);
-                   painter.setBrush(Qt::gray);
+                   pen.setColor(QColor(192,192,192));
+                   painter.setBrush(QColor(192,192,192));
                    painter.setPen(pen);
                 }
 
@@ -238,6 +239,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         }
         }
     }
+}
+
+void MapFrameWidget::setRobotControlOn(bool newRobotControlOn)
+{
+    robotControlOn = newRobotControlOn;
 }
 
 bool MapFrameWidget::getShowRobotStopped() const
@@ -429,7 +435,7 @@ void MapFrameWidget::parseMapFile()
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents && placeGoals){
         std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
-        if(points.size() < 10 && robotOnline){
+        if(points.size() < 10 && robotOnline && robotControlOn){
            points.insert(points.begin(), RobotGoal(event->x()/scale, event->y()/scale, this->pointType, this->pointColor));
         }
     }

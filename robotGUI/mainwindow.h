@@ -65,8 +65,6 @@ private slots:
 
     void on_startButton_clicked();
 
-    void on_replayMissionButton_clicked();
-
     void on_startButton_pressed();
 
     void on_checkBox_stateChanged(int arg1);
@@ -76,8 +74,6 @@ private slots:
     void on_zmenTypBoduButton_clicked();
 
     void on_switchButton_clicked();
-
-    void on_loadMissionButton_clicked();
 
     void on_mouseTracking_clicked();
 
@@ -128,6 +124,7 @@ private:
     cv::VideoCapture cap;
 
     QFileDialog dialog;
+    QString path;
 
     std::thread worker;
     bool workerStarted;

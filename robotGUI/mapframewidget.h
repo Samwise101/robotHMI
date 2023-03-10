@@ -112,6 +112,8 @@ public:
 
     bool getShowRobotStopped() const;
 
+    void setRobotControlOn(bool newRobotControlOn);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -120,6 +122,7 @@ private:
     double imageTheta = 0.0;
 
     bool robotInitialized = false;
+    bool robotControlOn = true;
 
     std::vector<std::vector<int>>robotReplayPos;
     std::vector<int>robotPos;

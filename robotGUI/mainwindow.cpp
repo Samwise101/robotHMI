@@ -247,7 +247,7 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_startButton_clicked()
 {
-    if(robotConnected && !robotRunning && !missionLoaded){
+    if(robotControlMode && robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
                                         "border-style:outset;"
@@ -259,7 +259,7 @@ void MainWindow::on_startButton_clicked()
                                         );
         robotRunning = true;
     }
-    else if(robotConnected && robotRunning && !missionLoaded){
+    else if(robotControlMode && robotConnected && robotRunning){
          ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver"
                                         ";border-style:outset;"
@@ -276,7 +276,7 @@ void MainWindow::on_startButton_clicked()
 
 void MainWindow::on_startButton_pressed()
 {
-    if(robotConnected && !robotRunning && !missionLoaded){
+    if(robotControlMode && robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -288,7 +288,7 @@ void MainWindow::on_startButton_pressed()
                                        );
     }
 
-    else if(robotConnected && robotRunning && !missionLoaded){
+    else if(robotControlMode && robotConnected && robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                        "background-color: silver;"
                                        "border-style:outset;"
@@ -336,7 +336,7 @@ bool MainWindow::setupConnectionToRobot(){
 void MainWindow::recordCamera()
 {
     if(!missionLoaded && recordMission){
-        video->open("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+        video->open(path.toStdString() + "/camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
             frame = cameraFrame->getCameraFrame();
@@ -372,7 +372,7 @@ void MainWindow::recordMap()
 {
     if(!missionLoaded && recordMission){
         if(!mapFile.is_open()){
-            mapFile.open("mapLog.txt", ios::out);
+            mapFile.open(path.toStdString() + "/mapLog.txt", ios::out);
         }
 
         while(!isFinished2 && mapFile.is_open()){
@@ -491,104 +491,6 @@ void MainWindow::robotStateUiSignal()
     }
 }
 
-
-
-void MainWindow::on_loadMissionButton_clicked()
-{
-    if(robotRunning && !missionLoaded){
-        mapFrame->setShowDisconnectWarning(false);
-        mapFrame->setShowReplayWarning(true);
-    }
-    if(!robotRunning && !missionLoaded){
-
-        ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                               "silver;border-style:outset;border-radius: "
-                                               "10px;border-color:black;border-width:4px;padding: "
-                                                "5px;image:url(:/resource/stop_start/play.png)}"
-                                               );
-
-        missionLoaded = true;
-        s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
-        s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
-
-        if(!s1.isEmpty() && !s2.isEmpty()){
-
-            if(!replayFile.is_open()){
-                replayFile.open(s2.toStdString(), ios::in);
-
-                while(true){
-                    if(!std::getline(replayFile, str)){
-                       break;
-                        }
-                    mapFrame->setStr(str);
-                    mapFrame->parseMapFile();
-                    }
-                }
-                replayFile.close();
-            }
-
-            mapFrame->setRobotOnline(false);
-            cameraFrame->setRobotOnline(false);
-
-            ui->loadMissionButton->setText("Zruš prehrávanie\nmisie");
-
-            if(!workerStarted){
-                isFinishedReplay = false;
-                workerStarted = true;
-                func =std::bind(&MainWindow::recordCamera, this);
-                worker = std::thread(func);
-            }
-
-            if(!worker2Started){
-                isFinishedReplay2 = false;
-                worker2Started = true;
-                func =std::bind(&MainWindow::recordMap, this);
-                worker2 = std::thread(func);
-            }
-
-        else{
-            destroyReplayMission();
-
-            mapFrame->setRobotOnline(true);
-            cameraFrame->setRobotOnline(true);
-        }
-    }
-    else if(!robotRunning && missionLoaded){
-        ui->loadMissionButton->setText("Otvor nahratú\nmisiu");
-
-        destroyReplayMission();
-
-        mapFrame->setRobotOnline(true);
-        cameraFrame->setRobotOnline(true);
-    }
-}
-
-
-
-void MainWindow::on_replayMissionButton_clicked()
-{
-    if(!robotRunning && missionLoaded){
-        if(!missionRunning){
-            missionRunning = true;
-            ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                                   "silver;border-style:outset;border-radius: "
-                                                   "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/stop_play.png)}"
-                                                   );
-
-            }
-        else{
-            missionRunning = false;
-            ui->replayMissionButton->setStyleSheet("#replayMissionButton{background-color: "
-                                                   "silver;border-style:outset;border-radius: "
-                                                   "10px;border-color:black;border-width:4px;padding: "
-                                                    "5px;image:url(:/resource/stop_start/play.png)}"
-                                                   );
-            }
-    }
-}
-
-
 bool MainWindow::getIpAddress()
 {
     if(!addressField.getAdressFieldIP().isEmpty() && ipAddress.compare(addressField.getAdressFieldIP().toStdString())){
@@ -602,65 +504,166 @@ bool MainWindow::getIpAddress()
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
-    if(arg1 == 2 && !workerStarted && !worker2Started){
-        recordMission = true;
-        if(robotConnected && !workerStarted && !missionLoaded){
-           if(isFinished)
-               isFinished = false;
-           workerStarted = true;
-           if(!videoCreated){
-                video = new cv::VideoWriter("camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
-                videoCreated = true;
-           }
-           func =std::bind(&MainWindow::recordCamera, this);
-           worker = std::thread(func);
+    if(robotControlMode && robotConnected){
+        if(arg1 == 2 && !workerStarted && !worker2Started){
+            path = dialog.getExistingDirectory(this, "Vyberte priečinok:", QDir::homePath(), QFileDialog::ShowDirsOnly);
+            if(!path.isEmpty()){
+                std::cout << path.toStdString() << std::endl;
+                recordMission = true;
+                if(robotConnected && !workerStarted && !missionLoaded){
+                   if(isFinished)
+                       isFinished = false;
+                   workerStarted = true;
+                   if(!videoCreated){
+                        video = new cv::VideoWriter(path.toStdString() + "/camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+                        videoCreated = true;
+                   }
+                   func =std::bind(&MainWindow::recordCamera, this);
+                   worker = std::thread(func);
+                }
+                if(robotConnected && !worker2Started && !missionLoaded){
+                    if(isFinished2)
+                        isFinished2 = false;
+                    worker2Started = true;
+                    func =std::bind(&MainWindow::recordMap, this);
+                    worker2 = std::thread(func);
+                }
+            }
         }
-        if(robotConnected && !worker2Started && !missionLoaded){
-            if(isFinished2)
-                isFinished2 = false;
-            worker2Started = true;
-            func =std::bind(&MainWindow::recordMap, this);
-            worker2 = std::thread(func);
+        else{
+            destroyRecordMission();
+            recordMission = false;
         }
-    }
-    else{
-        destroyRecordMission();
-        recordMission = false;
     }
 }
 
 
 void MainWindow::on_zmazGoal_clicked()
 {
-  mapFrame->removeAllPoints();
+    if(robotControlMode){
+       mapFrame->removeAllPoints();
+    }
+    else if(missionReplayMode){
+        if(robotRunning && !missionLoaded){
+            mapFrame->setShowDisconnectWarning(false);
+            mapFrame->setShowReplayWarning(true);
+        }
+        if(missionReplayMode){
+            if(!robotRunning && !missionLoaded){
+
+                ui->zmenTypBoduButton->setStyleSheet("background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;min-height: 60px;image:url(:/resource/stop_start/play.png);"
+                                                       );
+
+                missionLoaded = true;
+                s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
+                s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
+
+                if(!s1.isEmpty() && !s2.isEmpty()){
+
+                    if(!replayFile.is_open()){
+                        replayFile.open(s2.toStdString(), ios::in);
+
+                        while(true){
+                            if(!std::getline(replayFile, str)){
+                               break;
+                                }
+                            mapFrame->setStr(str);
+                            mapFrame->parseMapFile();
+                            }
+                        }
+                        replayFile.close();
+                    }
+
+                    mapFrame->setRobotOnline(false);
+                    cameraFrame->setRobotOnline(false);
+
+                    ui->zmazGoal->setText("Zruš prehrávanie\nmisie");
+
+                    if(!workerStarted){
+                        isFinishedReplay = false;
+                        workerStarted = true;
+                        func =std::bind(&MainWindow::recordCamera, this);
+                        worker = std::thread(func);
+                    }
+
+                    if(!worker2Started){
+                        isFinishedReplay2 = false;
+                        worker2Started = true;
+                        func =std::bind(&MainWindow::recordMap, this);
+                        worker2 = std::thread(func);
+                    }
+
+                else{
+                    destroyReplayMission();
+
+                    mapFrame->setRobotOnline(true);
+                    cameraFrame->setRobotOnline(true);
+                }
+            }
+            else if(!robotRunning && missionLoaded){
+                ui->zmazGoal->setText("Otvor nahratú\nmisiu");
+
+                destroyReplayMission();
+
+                mapFrame->setRobotOnline(true);
+                cameraFrame->setRobotOnline(true);
+            }
+        }
+    }
 }
 
 void MainWindow::on_zmenTypBoduButton_clicked()
 {
-    goalIndex++;
-    if(goalIndex > 4){
-        goalIndex = 1;
-    }
+    if(missionReplayMode){
+        if(!robotRunning && missionLoaded){
+            if(!missionRunning){
+                missionRunning = true;
+                ui->zmenTypBoduButton->setStyleSheet("background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;min-height: 60px;image:url(:/resource/stop_start/stop_play.png);"
+                                                       );
 
-    if(goalIndex%4 == 1){
-        ui->zmenTypBoduButton->setText("Prejazdový\n bod");
-        mapFrame->setPointColor(QColor(20,255,20));
-        mapFrame->setPointType(1);
+                }
+            else{
+                missionRunning = false;
+                ui->zmenTypBoduButton->setStyleSheet("background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;min-height: 60px;min-height: 60px;image:url(:/resource/stop_start/play.png);"
+                                                       );
+                }
+        }
     }
-    else if(goalIndex%4 == 2){
-        ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
-        mapFrame->setPointColor(Qt::magenta);
-        mapFrame->setPointType(2);
-    }
-    else if(goalIndex%4 == 3){
-        ui->zmenTypBoduButton->setText("Čakaj\n 2 sekundy");
-        mapFrame->setPointColor(Qt::cyan);
-        mapFrame->setPointType(3);
-    }
-    else{
-        ui->zmenTypBoduButton->setText("Cieľový\n bod");
-        mapFrame->setPointColor(QColor(192,192,192));
-        mapFrame->setPointType(4);
+    else if(robotControlMode){
+        goalIndex++;
+        if(goalIndex > 4){
+            goalIndex = 1;
+        }
+
+        if(goalIndex%4 == 1){
+            ui->zmenTypBoduButton->setText("Prejazdový\n bod");
+            mapFrame->setPointColor(QColor(20,255,20));
+            mapFrame->setPointType(1);
+        }
+        else if(goalIndex%4 == 2){
+            ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
+            mapFrame->setPointColor(Qt::magenta);
+            mapFrame->setPointType(2);
+        }
+        else if(goalIndex%4 == 3){
+            ui->zmenTypBoduButton->setText("Čakaj\n 2 sekundy");
+            mapFrame->setPointColor(Qt::cyan);
+            mapFrame->setPointType(3);
+        }
+        else{
+            ui->zmenTypBoduButton->setText("Cieľový\n bod");
+            mapFrame->setPointColor(QColor(192,192,192));
+            mapFrame->setPointType(4);
+        }
     }
 }
 
@@ -809,6 +812,20 @@ void MainWindow::on_actionM_d_prehr_vania_triggered()
 {
     robotControlMode = false;
     missionReplayMode = true;
+    mapFrame->setRobotControlOn(false);
+
+    ui->modeLabel->setText("Mód prehrávania\naktívny");
+    ui->zmazGoal->setText("Otvor nahratú\n misiu");
+    ui->switchingLabel->setText("Prehraj\n misiu");
+    ui->zmenTypBoduButton->setText("");
+    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;"
+                                         "border-style:outset;"
+                                         "border-radius: 10px;"
+                                         "border-color:black;"
+                                         "border-width:4px;"
+                                         "padding: 5px;"
+                                         "min-height: 60px;"
+                                         "image:url(:/resource/stop_start/play.png)");
 }
 
 
@@ -816,5 +833,12 @@ void MainWindow::on_actionM_d_riadenia_triggered()
 {
     missionReplayMode = false;
     robotControlMode = true;
+    mapFrame->setRobotControlOn(true);
+
+    ui->modeLabel->setText("Mód riadenia\naktívny");
+    ui->switchingLabel->setText("Výber cieľového\n bodu misie");
+    ui->zmazGoal->setText("Zmaž body\n misie");
+    ui->zmenTypBoduButton->setText("Prejazdový\n bod");
+    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
 }
 
