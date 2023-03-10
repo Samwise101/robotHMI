@@ -833,6 +833,9 @@ QMenu:selected{
     <addaction name="separator"/>
     <addaction name="actionPripoj_sa"/>
     <addaction name="actionOdpoj_sa"/>
+    <addaction name="separator"/>
+    <addaction name="actionM_d_riadenia"/>
+    <addaction name="actionM_d_prehr_vania"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -893,6 +896,16 @@ QMenu:selected{
   <action name="actionOdpoj_sa">
    <property name="text">
     <string>Odpoj sa</string>
+   </property>
+  </action>
+  <action name="actionM_d_riadenia">
+   <property name="text">
+    <string>Mód riadenia</string>
+   </property>
+  </action>
+  <action name="actionM_d_prehr_vania">
+   <property name="text">
+    <string>Mód prehrávania</string>
    </property>
   </action>
  </widget>

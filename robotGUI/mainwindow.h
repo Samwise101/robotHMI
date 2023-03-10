@@ -91,6 +91,10 @@ private slots:
 
     void on_actionOdpoj_sa_triggered();
 
+    void on_actionM_d_prehr_vania_triggered();
+
+    void on_actionM_d_riadenia_triggered();
+
 private:
     //std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu

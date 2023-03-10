@@ -61,6 +61,7 @@ MainWindow::~MainWindow()
     alarmHelpWindow.close();
     addressField.close();
     docReader.close();
+
     destroyRecordMission();
     destroyReplayMission();
 
@@ -801,5 +802,19 @@ void MainWindow::on_actionOdpoj_sa_triggered()
             robotStateUiSignal();
         }
     }
+}
+
+
+void MainWindow::on_actionM_d_prehr_vania_triggered()
+{
+    robotControlMode = false;
+    missionReplayMode = true;
+}
+
+
+void MainWindow::on_actionM_d_riadenia_triggered()
+{
+    missionReplayMode = false;
+    robotControlMode = true;
 }
 
