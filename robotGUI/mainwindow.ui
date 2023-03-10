@@ -277,42 +277,6 @@ font: 12pt &quot;Segoe UI&quot;;</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="connectToRobotButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">#connectToRobotButton{
-	background-color: silver;
-	border-style:outset;
-    border-radius: 10px;
-	border-color:black;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black
-}
-
-#connectToRobotButton::pressed{
-	background-color: rgb(91, 91, 91);
-	border-style:outset;
-    border-radius: 10px;
-	border-color:#ffffff;
-	border-width:4px;
-    padding: 5px;
-	font: 700 12pt &quot;Segoe UI&quot;;
-	color:#ffffff
-}</string>
-            </property>
-            <property name="text">
-             <string>Pripoj sa</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -880,7 +844,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1850</width>
-     <height>28</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="font">
@@ -922,8 +886,6 @@ QMenu:pressed{
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionGo_Offline"/>
-    <addaction name="actionGo_Online"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -944,8 +906,22 @@ QMenu:selected{
     <addaction name="actionAlarms"/>
     <addaction name="actionDocumentation"/>
    </widget>
+   <widget class="QMenu" name="menuRobot">
+    <property name="styleSheet">
+     <string notr="true">color:white;</string>
+    </property>
+    <property name="title">
+     <string>Robot</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionIP_adresa"/>
+    <addaction name="separator"/>
+    <addaction name="actionPripoj_sa"/>
+    <addaction name="actionOdpoj_sa"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuRobot"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionGo_Offline">
@@ -974,7 +950,7 @@ QMenu:selected{
      <normaloff>:/resource/Alarmy/warning_yellow.png</normaloff>:/resource/Alarmy/warning_yellow.png</iconset>
    </property>
    <property name="text">
-    <string>Alarms</string>
+    <string>Alarmy</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -982,7 +958,22 @@ QMenu:selected{
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>Documentation</string>
+    <string>Návod</string>
+   </property>
+  </action>
+  <action name="actionIP_adresa">
+   <property name="text">
+    <string>Zadaj IP adresu</string>
+   </property>
+  </action>
+  <action name="actionPripoj_sa">
+   <property name="text">
+    <string>Pripoj sa</string>
+   </property>
+  </action>
+  <action name="actionOdpoj_sa">
+   <property name="text">
+    <string>Odpoj sa</string>
    </property>
   </action>
  </widget>

@@ -235,18 +235,6 @@ int MainWindow::processCamera(cv::Mat cameraData){
     return 0;
 }
 
-void MainWindow::on_actionGo_Offline_triggered()
-{
-
-}
-
-
-void MainWindow::on_actionGo_Online_triggered()
-{
-
-}
-
-
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
@@ -305,61 +293,6 @@ void MainWindow::on_startButton_pressed()
                                        "padding: 5px;"
                                        "image: url(:/resource/stop_start/stop_clicked.png);}"
                                        );
-    }
-}
-
-
-void MainWindow::on_connectToRobotButton_clicked()
-{
-    if(!robotConnected && !missionLoaded){
-        destroyRecordMission();
-        destroyReplayMission();
-
-        if(setupConnectionToRobot()){
-            ui->connectToRobotButton->setText("Odpoj sa");
-            robotConnected = true;
-            robot->robotStart();
-
-            std::cout << "Successfully connected to the robot!" << std::endl;
-            cameraFrame->setTempSpeed(robot->getTempSpeed());
-            cameraFrame->speedFrame = ui->speedWidget;
-            cameraFrame->batteryFrame = ui->batteryWidget;
-        }
-    }
-    else if(robotConnected){
-        if(robotRunning){
-           mapFrame->setShowReplayWarning(false);
-           mapFrame->setShowDisconnectWarning(true);
-        }
-        else{
-            //ipAddress.clear();
-            destroyRecordMission();
-            destroyReplayMission();
-
-            mapFrame->removeAllPoints();
-            robot->setInitilize(false);
-            robotConnected = false;
-            delete robot;
-
-            mapFrame->setRobotOnline(false);
-            mapFrame->updateLaserPicture = 0;
-            mapFrame->setRobotInitialized(false);
-            mapFrame->setIsSimulation(false);
-            mapFrame->update();
-
-            cameraFrame->setBatteryLevel(0);
-            cameraFrame->setBatteryPercantage(200);
-            cameraFrame->setV(0.0);
-            cameraFrame->setSpeedWidget();
-            cameraFrame->setBatteryWidget();
-            cameraFrame->setRobotOnline(false);
-            cameraFrame->updateCameraPicture = 0;
-            cameraFrame->update();
-
-            robotStateUiSignal();
-
-            ui->connectToRobotButton->setText("Pripoj sa");
-        }
     }
 }
 
@@ -796,21 +729,72 @@ void MainWindow::on_useMapButton_clicked()
 
 void MainWindow::on_actionDocumentation_triggered()
 {
-    QFile file(":/resource/Documentation.txt");
-    if(!file.open(QIODevice::ReadOnly)){
-        QMessageBox::information(0, "info", file.errorString());
-    }
-
-    QTextStream in(&file);
-
-    docReader = new DocumentDialog(this);
-    docReader->setWindowTitle("Documentation");
-    docReader->show();
+    docReader.setWindowTitle("Documentation");
+    docReader.show();
 }
 
 void MainWindow::on_actionAlarms_triggered()
 {
     alarmHelpWindow.setWindowTitle("Help");
     alarmHelpWindow.show();
+}
+
+void MainWindow::on_actionIP_adresa_triggered()
+{
+
+}
+
+void MainWindow::on_actionPripoj_sa_triggered()
+{
+    if(!robotConnected && !missionLoaded){
+        destroyRecordMission();
+        destroyReplayMission();
+
+        if(setupConnectionToRobot()){
+            robotConnected = true;
+            robot->robotStart();
+            cameraFrame->setTempSpeed(robot->getTempSpeed());
+            cameraFrame->speedFrame = ui->speedWidget;
+            cameraFrame->batteryFrame = ui->batteryWidget;
+        }
+    }
+}
+
+
+void MainWindow::on_actionOdpoj_sa_triggered()
+{
+    if(robotConnected){
+        if(robotRunning){
+           mapFrame->setShowReplayWarning(false);
+           mapFrame->setShowDisconnectWarning(true);
+        }
+        else{
+            ipAddress.clear();
+            destroyRecordMission();
+            destroyReplayMission();
+
+            mapFrame->removeAllPoints();
+            robot->setInitilize(false);
+            robotConnected = false;
+            delete robot;
+
+            mapFrame->setRobotOnline(false);
+            mapFrame->updateLaserPicture = 0;
+            mapFrame->setRobotInitialized(false);
+            mapFrame->setIsSimulation(false);
+            mapFrame->update();
+
+            cameraFrame->setBatteryLevel(0);
+            cameraFrame->setBatteryPercantage(200);
+            cameraFrame->setV(0.0);
+            cameraFrame->setSpeedWidget();
+            cameraFrame->setBatteryWidget();
+            cameraFrame->setRobotOnline(false);
+            cameraFrame->updateCameraPicture = 0;
+            cameraFrame->update();
+
+            robotStateUiSignal();
+        }
+    }
 }
 

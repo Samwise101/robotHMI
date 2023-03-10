@@ -29,6 +29,18 @@ private slots:
 
     void on_pageUp_released();
 
+    void on_pageLast_clicked();
+
+    void on_pageLast_pressed();
+
+    void on_pageLast_released();
+
+    void on_pageFirst_clicked();
+
+    void on_pageFirst_pressed();
+
+    void on_pageFirst_released();
+
 private:
     Ui::DocumentDialog *ui;
     int docLength;

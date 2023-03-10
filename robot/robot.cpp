@@ -602,8 +602,3 @@ double Robot::getTempSpeed() const
 {
     return tempSpeed;
 }
-
-void Robot::setRobotStarting(bool newRobotStarting)
-{
-    robotStarting = newRobotStarting;
-}

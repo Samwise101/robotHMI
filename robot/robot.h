@@ -111,8 +111,6 @@ public:
 
     double getTempSpeed() const;
 
-    void setRobotStarting(bool newRobotStarting);
-
 private:
 
     float Kp3 = 0.6f;

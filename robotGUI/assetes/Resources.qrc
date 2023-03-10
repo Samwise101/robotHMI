@@ -42,5 +42,9 @@
         <file>page9.png</file>
         <file>page10.png</file>
         <file>page11.png</file>
+        <file>pageDOWN2.png</file>
+        <file>pageFIRST.png</file>
+        <file>pageLAST.png</file>
+        <file>pageUP2.png</file>
     </qresource>
 </RCC>

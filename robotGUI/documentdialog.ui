@@ -50,7 +50,7 @@
 font: 700 16pt &quot;Segoe UI&quot;;</string>
       </property>
       <property name="text">
-       <string>Dokumentácia</string>
+       <string>Návod</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -97,10 +97,10 @@ font: 700 16pt &quot;Segoe UI&quot;;</string>
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pageDown">
+       <widget class="QPushButton" name="pageFirst">
         <property name="minimumSize">
          <size>
-          <width>150</width>
+          <width>50</width>
           <height>0</height>
          </size>
         </property>
@@ -114,7 +114,48 @@ font: 700 16pt &quot;Segoe UI&quot;;</string>
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
 	color:black;
-	image:url(:/pages/pageDOWN.png);
+	image:url(:/pages/pageFIRST.png);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pageDown">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black;
+	image:url(:/pages/pageDOWN2.png);
 </string>
         </property>
         <property name="text">
@@ -151,7 +192,7 @@ font: 700 16pt &quot;Segoe UI&quot;;</string>
        <widget class="QPushButton" name="pageUp">
         <property name="minimumSize">
          <size>
-          <width>150</width>
+          <width>100</width>
           <height>0</height>
          </size>
         </property>
@@ -164,7 +205,47 @@ font: 700 16pt &quot;Segoe UI&quot;;</string>
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
 	color:black;
-	image:url(:/pages/pageUP.png);</string>
+	image:url(:/pages/pageUP2.png);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pageLast">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black;
+	image:url(:/pages/pageLAST.png);</string>
         </property>
         <property name="text">
          <string/>

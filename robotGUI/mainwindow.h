@@ -59,18 +59,11 @@ public:
     void robotStateUiSignal();
 
 private slots:
-
-    void on_actionGo_Offline_triggered();
-
-    void on_actionGo_Online_triggered();
-
     void on_actionExit_triggered();
 
     void on_actionAlarms_triggered();
 
     void on_startButton_clicked();
-
-    void on_connectToRobotButton_clicked();
 
     void on_replayMissionButton_clicked();
 
@@ -91,6 +84,12 @@ private slots:
     void on_useMapButton_clicked();
 
     void on_actionDocumentation_triggered();
+
+    void on_actionPripoj_sa_triggered();
+
+    void on_actionIP_adresa_triggered();
+
+    void on_actionOdpoj_sa_triggered();
 
 private:
     std::string ipAddress = "127.0.0.1";    // pre simulaciu
@@ -180,7 +179,7 @@ private:
 
     Ui::MainWindow* ui;
     AlarmDialog alarmHelpWindow;
-    DocumentDialog* docReader;
+    DocumentDialog docReader;
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
