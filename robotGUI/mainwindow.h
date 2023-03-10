@@ -100,6 +100,9 @@ private:
 
     std::string ipAddress = "";
 
+    bool robotControlMode = true;
+    bool missionReplayMode = false;
+
     Robot* robot;
 
     float baseWidth;

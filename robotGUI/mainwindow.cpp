@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     robotConnected = false;
     robotRunning = false;
 
+    robotControlMode = true;
+    missionReplayMode = false;
+
     recordMission = false;
 
     buttonPressedCount = 0;
@@ -663,9 +666,6 @@ void MainWindow::on_zmenTypBoduButton_clicked()
 
 void MainWindow::on_switchButton_clicked()
 {
-    std::cout << "Camera widget [width, height]=[" << cameraFrame->width() << ", " << cameraFrame->height() << "]" << std::endl;
-    std::cout << "Map widget [width, height]=[" << mapFrame->width() << ", " << mapFrame->height() << "]" << std::endl;
-
     if(switchIndex == 0){
         cameraFrame->setFixedWidth(mapFrameWidth);
         cameraFrame->setFixedHeight(mapFrameHeight);
@@ -771,6 +771,9 @@ void MainWindow::on_actionOdpoj_sa_triggered()
            mapFrame->setShowDisconnectWarning(true);
         }
         else{
+            robotControlMode = true;
+            missionReplayMode = false;
+
             ipAddress.clear();
             destroyRecordMission();
             destroyReplayMission();
