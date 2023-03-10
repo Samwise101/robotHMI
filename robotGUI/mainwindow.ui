@@ -73,7 +73,7 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0,0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="50,0,0,0,0">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="100,0">
           <item>
@@ -226,7 +226,7 @@ pozície v mape</string>
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,0,5,5">
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,5,5">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
@@ -276,22 +276,6 @@ color:black</string>
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>10</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -546,8 +530,8 @@ color:black</string>
 color:black</string>
               </property>
               <property name="text">
-               <string>Mód riadenia
-aktívny </string>
+               <string>Mód plánovania
+ misie aktívny </string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>

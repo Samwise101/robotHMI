@@ -835,7 +835,7 @@ void MainWindow::on_actionM_d_riadenia_triggered()
     robotControlMode = true;
     mapFrame->setRobotControlOn(true);
 
-    ui->modeLabel->setText("Mód riadenia\naktívny");
+    ui->modeLabel->setText("Mód plánovania\nmisie aktívny ");
     ui->switchingLabel->setText("Výber cieľového\n bodu misie");
     ui->zmazGoal->setText("Zmaž body\n misie");
     ui->zmenTypBoduButton->setText("Prejazdový\n bod");
