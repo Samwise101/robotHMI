@@ -336,6 +336,7 @@ void MainWindow::on_connectToRobotButton_clicked()
             destroyRecordMission();
             destroyReplayMission();
 
+            mapFrame->removeAllPoints();
             robot->setInitilize(false);
             robotConnected = false;
             delete robot;

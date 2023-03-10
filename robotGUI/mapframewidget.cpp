@@ -148,7 +148,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
 
               pen.setWidth(3*scale);
-              pen.setColor(QColor(30,144,255));
+              pen.setColor(QColor(255,223,0));
               painter.setPen(pen);
 
               if(posMouseTrack){
