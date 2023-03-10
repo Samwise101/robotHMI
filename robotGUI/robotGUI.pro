@@ -52,6 +52,7 @@ win32 {
 }
 
 SOURCES += \
+    addressdialog.cpp \
     alarmdialog.cpp \
     cameraFrameWidget.cpp \
     documentdialog.cpp \
@@ -61,6 +62,7 @@ SOURCES += \
     robotgoal.cpp
 
 HEADERS += \
+    addressdialog.h \
     alarmdialog.h \
     cameraFrameWidget.h \
     documentdialog.h \
@@ -69,6 +71,7 @@ HEADERS += \
     robotgoal.h
 
 FORMS += \
+    addressdialog.ui \
     alarmdialog.ui \
     documentdialog.ui \
     mainwindow.ui

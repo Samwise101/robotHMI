@@ -25,10 +25,10 @@
 
 #include "alarmdialog.h"
 #include "documentdialog.h"
+#include "addressdialog.h"
 #include "cameraFrameWidget.h"
 #include "mapframewidget.h"
 #include "robot.h"
-#include <QTextBrowser>
 
 static bool isFinished = false;
 static bool isFinished2 = false;
@@ -92,13 +92,13 @@ private slots:
     void on_actionOdpoj_sa_triggered();
 
 private:
-    std::string ipAddress = "127.0.0.1";    // pre simulaciu
+    //std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
 
     //std::string ipAddress = "192.168.1.11";   // pre realneho robota 8000
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
-    //std::string ipAddress;
+    std::string ipAddress = "";
 
     Robot* robot;
 
@@ -144,9 +144,6 @@ private:
     QString s1;
     QString s2;
 
-    QFileDialog docDialog;
-    QString documentation;
-
     cv::Mat frame;
     cv::Mat dest;
 
@@ -180,6 +177,7 @@ private:
     Ui::MainWindow* ui;
     AlarmDialog alarmHelpWindow;
     DocumentDialog docReader;
+    AddressDialog addressField;
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;

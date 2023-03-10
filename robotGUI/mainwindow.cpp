@@ -38,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     ui->setupUi(this);
 
-    ui->addressField->setMaxLength(20);
-
     cameraFrame = new CameraFrameWidget();
     cameraFrame->setFixedWidth(cameraFrameWidth);
     cameraFrame->setFixedHeight(cameraFrameHeight);
@@ -57,6 +55,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
 MainWindow::~MainWindow()
 {
+    alarmHelpWindow.close();
+    addressField.close();
+    docReader.close();
     destroyRecordMission();
     destroyReplayMission();
 
@@ -586,8 +587,8 @@ void MainWindow::on_replayMissionButton_clicked()
 
 bool MainWindow::getIpAddress()
 {
-    if(!ui->addressField->text().isEmpty() && ipAddress.compare(ui->addressField->text().toStdString())){
-        ipAddress = ui->addressField->text().toStdString();
+    if(!addressField.getAdressFieldIP().isEmpty() && ipAddress.compare(addressField.getAdressFieldIP().toStdString())){
+        ipAddress = addressField.getAdressFieldIP().toStdString();
         std::cout << ipAddress << std::endl;
         return 1;
     }
@@ -729,19 +730,20 @@ void MainWindow::on_useMapButton_clicked()
 
 void MainWindow::on_actionDocumentation_triggered()
 {
-    docReader.setWindowTitle("Documentation");
+    docReader.setWindowTitle("Návod");
     docReader.show();
 }
 
 void MainWindow::on_actionAlarms_triggered()
 {
-    alarmHelpWindow.setWindowTitle("Help");
+    alarmHelpWindow.setWindowTitle("Alarmy");
     alarmHelpWindow.show();
 }
 
 void MainWindow::on_actionIP_adresa_triggered()
 {
-
+    addressField.setWindowTitle("Target IP");
+    addressField.show();
 }
 
 void MainWindow::on_actionPripoj_sa_triggered()
