@@ -20,7 +20,7 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(255, 255, 255);</string>
+   <string notr="true">background-color:DimGrey;</string>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
@@ -46,7 +46,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="styleSheet">
-       <string notr="true">color:rgb(0, 0, 0);
+       <string notr="true">color:rgb(255, 255, 255);
 font: 700 16pt &quot;Segoe UI&quot;;</string>
       </property>
       <property name="text">

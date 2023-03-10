@@ -71,13 +71,13 @@ void DocumentDialog::on_pageUp_clicked()
 
 void DocumentDialog::on_pageDown_pressed()
 {
-    ui->pageDown->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:#ffffff;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#fffff;image:url(:/pages/pageDOWN.png);");
+    ui->pageDown->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#fffff;image:url(:/pages/pageDOWN.png);");
 }
 
 
 void DocumentDialog::on_pageUp_pressed()
 {
-    ui->pageUp->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:#ffffff;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#ffffff;image:url(:/pages/pageUP.png);");
+    ui->pageUp->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#ffffff;image:url(:/pages/pageUP.png);");
 }
 
 

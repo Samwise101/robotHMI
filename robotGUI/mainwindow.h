@@ -93,13 +93,13 @@ private slots:
     void on_actionDocumentation_triggered();
 
 private:
-    //std::string ipAddress = "127.0.0.1";    // pre simulaciu
+    std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "8889";        // pre simulaciu
 
     //std::string ipAddress = "192.168.1.11";   // pre realneho robota 8000
     //std::string cameraPort = "8000";          // pre realneho robota 8000
 
-    std::string ipAddress;
+    //std::string ipAddress;
 
     Robot* robot;
 
@@ -139,6 +139,7 @@ private:
 
     int buttonPressedCount = 0;
     int buttonPressedCount2 = 0;
+    int buttonPressedCount3 = 0;
 
     QImage image;
     QString s1;

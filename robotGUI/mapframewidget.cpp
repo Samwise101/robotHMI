@@ -18,6 +18,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 
     showReplayWarning = false;
     showDisconnectWarning = false;
+    showRobotStopped = false;
     showMap = true;
 
     robotInitialized = false;
@@ -30,7 +31,7 @@ MapFrameWidget::MapFrameWidget(QWidget *parent):QWidget{parent}
 
     pointType = 1;
     number2 = 0;
-    pointColor = Qt::yellow;
+    pointColor = QColor(20,255,20);
     imageWidth = this->size().width() - offset;
     imageHeight = this->size().height() - offset;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -56,7 +57,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     painter.drawRect(rectangle);
 
     pen.setWidth(3);
-    pen.setColor(Qt::green);
+    pen.setColor(QColor(30,144,255));
     painter.setPen(pen);
 
     if(updateLaserPicture == 1){
@@ -77,7 +78,15 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
             updateLaserPicture = 0;
 
-            if(showDisconnectWarning){
+            if(showRobotStopped){
+                painter.setFont(QFont("Segoe UI",8*scale));
+                pen.setColor(QColor(255,165,0,255));
+                painter.setPen(pen);
+                std::cout << "Hello" << std::endl;
+                painter.drawText(rectMiddleX-250, 100, "Robot predišiel zrážke a núdzovo zastal!");
+            }
+
+            if(!showRobotStopped && showDisconnectWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
@@ -85,7 +94,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
             }
 
-            if(showReplayWarning){
+            if(!showRobotStopped && showReplayWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
@@ -94,7 +103,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
             }
 
             pen.setWidth(2);
-            pen.setColor(Qt::red);
+            pen.setColor(QColor(255,223,0));
             painter.setPen(pen);
 
             painter.drawEllipse(robotPosition.x()-20*scale, robotPosition.y()-20*scale, 40*scale, 40*scale);
@@ -110,7 +119,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
 
                 pen.setWidth(3);
-                pen.setColor(Qt::red);
+                pen.setColor(QColor(255,223,0));
                 painter.setPen(pen);
 
                  // 1000 mm = 100 bodov
@@ -139,7 +148,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
 
               pen.setWidth(3*scale);
-              pen.setColor(Qt::green);
+              pen.setColor(QColor(30,144,255));
               painter.setPen(pen);
 
               if(posMouseTrack){
@@ -229,6 +238,16 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         }
         }
     }
+}
+
+bool MapFrameWidget::getShowRobotStopped() const
+{
+    return showRobotStopped;
+}
+
+void MapFrameWidget::setShowRobotStopped(bool newShowRobotStopped)
+{
+    showRobotStopped = newShowRobotStopped;
 }
 
 

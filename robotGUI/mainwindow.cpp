@@ -102,6 +102,14 @@ int MainWindow::processRobot(TKobukiData robotData){
         buttonPressedCount = 0;
     }
 
+    if(mapFrame->getShowRobotStopped() && buttonPressedCount3 < 150){
+        buttonPressedCount3++;
+    }
+    else if(mapFrame->getShowRobotStopped() && buttonPressedCount3 >= 150){
+        mapFrame->setShowRobotStopped(false);
+        buttonPressedCount3 = 0;
+    }
+
     if(mapFrame->getShowDisconnectWarning() && buttonPressedCount2 < 150){
         buttonPressedCount2++;
     }
@@ -128,6 +136,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 cameraFrame->setDispOrangeWarning(false);
                 cameraFrame->setDispYellowWarning(false);
                 cameraFrame->setRobotStoppedWarning(true);
+                mapFrame->setShowRobotStopped(true);
             }
 
             omega = robot->orientationRegulator(0, 0, false);
@@ -323,7 +332,7 @@ void MainWindow::on_connectToRobotButton_clicked()
            mapFrame->setShowDisconnectWarning(true);
         }
         else{
-            ipAddress.clear();
+            //ipAddress.clear();
             destroyRecordMission();
             destroyReplayMission();
 
@@ -696,12 +705,12 @@ void MainWindow::on_zmenTypBoduButton_clicked()
 
     if(goalIndex%4 == 1){
         ui->zmenTypBoduButton->setText("Prejazdový\n bod");
-        mapFrame->setPointColor(Qt::yellow);
+        mapFrame->setPointColor(QColor(20,255,20));
         mapFrame->setPointType(1);
     }
     else if(goalIndex%4 == 2){
         ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
-        mapFrame->setPointColor(Qt::darkMagenta);
+        mapFrame->setPointColor(Qt::magenta);
         mapFrame->setPointType(2);
     }
     else if(goalIndex%4 == 3){
@@ -711,7 +720,7 @@ void MainWindow::on_zmenTypBoduButton_clicked()
     }
     else{
         ui->zmenTypBoduButton->setText("Cieľový\n bod");
-        mapFrame->setPointColor(Qt::gray);
+        mapFrame->setPointColor(QColor(192,192,192));
         mapFrame->setPointType(4);
     }
 }

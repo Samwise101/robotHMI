@@ -108,6 +108,10 @@ public:
 
     bool getShowDisconnectWarning() const;
 
+    void setShowRobotStopped(bool newShowRobotStopped);
+
+    bool getShowRobotStopped() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -135,6 +139,7 @@ private:
 
     bool showReplayWarning = false;
     bool showDisconnectWarning = false;
+    bool showRobotStopped = false;
     bool showMap = true;
     bool posMouseTrack = true;
     bool isSimulation = false;
