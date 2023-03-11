@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     baseWidth = 574.0f;
     baseHeight = 471.0f;
 
-    cameraFrameWidth = 430;
-    cameraFrameHeight = 353;
+    cameraFrameWidth = 480;
+    cameraFrameHeight = 393;
 
     mapFrameWidth = 1148;
     mapFrameHeight = 942;
@@ -58,10 +58,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
 MainWindow::~MainWindow()
 {
-    alarmHelpWindow.close();
-    addressField.close();
-    docReader.close();
-
     destroyRecordMission();
     destroyReplayMission();
 
@@ -561,6 +557,7 @@ void MainWindow::on_zmazGoal_clicked()
                 s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
                 s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
 
+                std::cout << s1.toStdString() << std::endl;
                 if(!s1.isEmpty() && !s2.isEmpty()){
 
                     if(!replayFile.is_open()){
@@ -580,7 +577,7 @@ void MainWindow::on_zmazGoal_clicked()
                     mapFrame->setRobotOnline(false);
                     cameraFrame->setRobotOnline(false);
 
-                    ui->zmazGoal->setText("Zruš prehrávanie\nmisie");
+                    ui->zmazGoal->setText("Zruš\nprehrávanie");
 
                     if(!workerStarted){
                         isFinishedReplay = false;
@@ -633,12 +630,13 @@ void MainWindow::on_zmenTypBoduButton_clicked()
                 ui->zmenTypBoduButton->setStyleSheet("background-color: "
                                                        "silver;border-style:outset;border-radius: "
                                                        "10px;border-color:black;border-width:4px;padding: "
-                                                        "5px;min-height: 60px;min-height: 60px;image:url(:/resource/stop_start/play.png);"
+                                                        "5px;min-height: 60px;image:url(:/resource/stop_start/play.png);"
                                                        );
                 }
         }
     }
     else if(robotControlMode){
+
         goalIndex++;
         if(goalIndex > 4){
             goalIndex = 1;
@@ -735,18 +733,21 @@ void MainWindow::on_useMapButton_clicked()
 void MainWindow::on_actionDocumentation_triggered()
 {
     docReader.setWindowTitle("Návod");
+    docReader.setParent(this);
     docReader.show();
 }
 
 void MainWindow::on_actionAlarms_triggered()
 {
     alarmHelpWindow.setWindowTitle("Alarmy");
+    alarmHelpWindow.setParent(this);
     alarmHelpWindow.show();
 }
 
 void MainWindow::on_actionIP_adresa_triggered()
 {
     addressField.setWindowTitle("Target IP");
+    addressField.setParent(this);
     addressField.show();
 }
 
@@ -839,6 +840,6 @@ void MainWindow::on_actionM_d_riadenia_triggered()
     ui->switchingLabel->setText("Výber cieľového\n bodu misie");
     ui->zmazGoal->setText("Zmaž body\n misie");
     ui->zmenTypBoduButton->setText("Prejazdový\n bod");
-    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
+    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
 }
 

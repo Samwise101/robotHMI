@@ -29,22 +29,23 @@
         <file>Alarmy/warning_orange.png</file>
     </qresource>
     <qresource prefix="/pages">
+        <file>pageDOWN2.png</file>
+        <file>pageFIRST.png</file>
+        <file>pageLAST.png</file>
+        <file>pageUP2.png</file>
+        <file>page1.png</file>
+        <file>page2.png</file>
         <file>page3.png</file>
         <file>page4.png</file>
         <file>page5.png</file>
-        <file>page1.png</file>
-        <file>page2.png</file>
-        <file>pageDOWN.png</file>
-        <file>pageUP.png</file>
         <file>page6.png</file>
         <file>page7.png</file>
         <file>page8.png</file>
         <file>page9.png</file>
         <file>page10.png</file>
         <file>page11.png</file>
-        <file>pageDOWN2.png</file>
-        <file>pageFIRST.png</file>
-        <file>pageLAST.png</file>
-        <file>pageUP2.png</file>
+        <file>page12.png</file>
+        <file>page13.png</file>
+        <file>page14.png</file>
     </qresource>
 </RCC>

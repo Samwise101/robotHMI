@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>501</height>
+    <height>467</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,7 +28,7 @@
      <x>0</x>
      <y>0</y>
      <width>371</width>
-     <height>502</height>
+     <height>461</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -47,6 +47,18 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_8">
+      <property name="styleSheet">
+       <string notr="true">font: 700 14pt &quot;Segoe UI&quot;;
+color:#ffffff;
+</string>
+      </property>
+      <property name="text">
+       <string>Význam alarmov:</string>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
      <widget class="QFrame" name="frame">
@@ -114,6 +126,36 @@ color:#ffffff;</string>
       </property>
      </widget>
     </item>
+    <item row="4" column="0">
+     <widget class="QFrame" name="frame_6">
+      <property name="minimumSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">image: url(:/resource/Alarmy/warning_red.png);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="label_6">
+      <property name="styleSheet">
+       <string notr="true">font: 12pt &quot;Segoe UI&quot;;
+color:#ffffff;</string>
+      </property>
+      <property name="text">
+       <string>- Robot stojí / predišiel narazeniu</string>
+      </property>
+     </widget>
+    </item>
     <item row="6" column="0">
      <widget class="QFrame" name="frame_2">
       <property name="minimumSize">
@@ -171,108 +213,6 @@ color:#ffffff;</string>
       </property>
       <property name="text">
        <string>- Robot blízko prekážky</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QFrame" name="frame_4">
-      <property name="minimumSize">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">image: url(:/resource/Alarmy/Alarm1.png);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="1">
-     <widget class="QLabel" name="label_4">
-      <property name="styleSheet">
-       <string notr="true">font: 12pt &quot;Segoe UI&quot;;
-color:#ffffff;</string>
-      </property>
-      <property name="text">
-       <string>- Alarm 1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QFrame" name="frame_5">
-      <property name="minimumSize">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">image: url(:/resource/Alarmy/Alarm2.png);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="1">
-     <widget class="QLabel" name="label_5">
-      <property name="styleSheet">
-       <string notr="true">font: 12pt &quot;Segoe UI&quot;;
-color:#ffffff;</string>
-      </property>
-      <property name="text">
-       <string>- Alarm 2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLabel" name="label_6">
-      <property name="styleSheet">
-       <string notr="true">font: 12pt &quot;Segoe UI&quot;;
-color:#ffffff;</string>
-      </property>
-      <property name="text">
-       <string>- Robot stojí / predišiel narazeniu</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QFrame" name="frame_6">
-      <property name="minimumSize">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">image: url(:/resource/Alarmy/warning_red.png);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_8">
-      <property name="styleSheet">
-       <string notr="true">font: 700 14pt &quot;Segoe UI&quot;;
-color:#ffffff;
-</string>
-      </property>
-      <property name="text">
-       <string>Význam alarmov:</string>
       </property>
      </widget>
     </item>

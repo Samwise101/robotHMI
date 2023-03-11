@@ -50,7 +50,7 @@
 font: 700 16pt &quot;Segoe UI&quot;;</string>
       </property>
       <property name="text">
-       <string>Návod</string>
+       <string>Manuál</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
