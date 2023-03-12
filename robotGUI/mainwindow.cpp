@@ -571,8 +571,7 @@ void MainWindow::on_zmazGoal_clicked()
                             mapFrame->parseMapFile();
                             }
                         }
-                        replayFile.close();
-                    }
+                    replayFile.close();
 
                     mapFrame->setRobotOnline(false);
                     cameraFrame->setRobotOnline(false);
@@ -592,15 +591,16 @@ void MainWindow::on_zmazGoal_clicked()
                         func =std::bind(&MainWindow::recordMap, this);
                         worker2 = std::thread(func);
                     }
-
+                }
                 else{
+                    std::cout << "HELLO" << std::endl;
                     destroyReplayMission();
-
+                    missionLoaded = false;
                     mapFrame->setRobotOnline(true);
                     cameraFrame->setRobotOnline(true);
                 }
             }
-            else if(!robotRunning && missionLoaded){
+            else{
                 ui->zmazGoal->setText("Otvor nahratú\nmisiu");
 
                 destroyReplayMission();
