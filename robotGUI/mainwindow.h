@@ -95,10 +95,8 @@ private:
     //std::string cameraPort = "8889";        // pre simulaciu
 
     //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
-    std::string cameraPort = "8000";          // pre realneho robota 8000
 
-    std::string ipAddress = "";
-
+    std::string ipAddress;
     QDate date;
     QTime timeOfDay;
 

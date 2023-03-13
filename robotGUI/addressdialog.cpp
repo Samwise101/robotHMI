@@ -1,11 +1,9 @@
 #include "addressdialog.h"
 #include "ui_addressdialog.h"
 
-AddressDialog::AddressDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AddressDialog)
-{
-    QString ipAddress = "127.0.0.1";
+AddressDialog::AddressDialog(std::string* str, QWidget *parent) :QDialog(parent), ui(new Ui::AddressDialog){
+    ipAddress = str;
+    *ipAddress = "127.0.0.1";
     ui->setupUi(this);
     ui->robotAddressField->setMaxLength(20);
     this->setFixedSize(this->width(),this->height());
@@ -19,7 +17,7 @@ AddressDialog::~AddressDialog()
 
 bool AddressDialog::isAdressFieldEmpty()
 {
-    if(ui->robotAddressField->text().isEmpty()){
+    if(ipAddress->empty()){
         return true;
     }
     else{
@@ -27,21 +25,16 @@ bool AddressDialog::isAdressFieldEmpty()
     }
 }
 
-QString AddressDialog::getAdressFieldIP()
-{
-    return ipAddress;
-}
-
 void AddressDialog::on_robotAddressField_returnPressed()
 {
-    ipAddress = ui->robotAddressField->text();
+    *ipAddress = ui->robotAddressField->text().toStdString();
     this->close();
 }
 
 
 void AddressDialog::on_pushButton_clicked()
 {
-    ipAddress = ui->robotAddressField->text();
+    *ipAddress = ui->robotAddressField->text().toStdString();
     this->close();
 }
 

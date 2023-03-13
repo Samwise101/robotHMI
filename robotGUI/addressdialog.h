@@ -12,7 +12,7 @@ class AddressDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddressDialog(QWidget *parent = nullptr);
+    explicit AddressDialog(std::string* str, QWidget *parent = nullptr);
     ~AddressDialog();
     bool isAdressFieldEmpty();
     QString getAdressFieldIP();
@@ -24,7 +24,7 @@ private slots:
 
 private:
     Ui::AddressDialog *ui;
-    QString ipAddress = "127.0.0.1";
+    std::string* ipAddress;
 };
 
 #endif // ADDRESSDIALOG_H

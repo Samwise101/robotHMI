@@ -309,9 +309,11 @@ bool MainWindow::setupConnectionToRobot(){
 
         if(ipAddress == "127.0.0.1"){
             mapFrame->setIsSimulation(true);
+            cameraPort = "8999";
         }
         else{
            mapFrame->setIsSimulation(false);
+           cameraPort = "8000";
         }
 
         mapFrame->initializeRobot();
@@ -489,11 +491,10 @@ void MainWindow::robotStateUiSignal()
 
 bool MainWindow::getIpAddress()
 {
-    if(!addressField->getAdressFieldIP().isEmpty() && ipAddress.compare(addressField->getAdressFieldIP().toStdString())){
-        ipAddress = addressField->getAdressFieldIP().toStdString();
-        std::cout << ipAddress << std::endl;
-        return 1;
+    if(ipAddress.empty()){
+       //ipAddress = "127.0.0.1";
     }
+
     return 0;
 }
 
@@ -746,7 +747,7 @@ void MainWindow::on_actionAlarms_triggered()
 
 void MainWindow::on_actionIP_adresa_triggered()
 {
-    addressField = new AddressDialog(this);
+    addressField = new AddressDialog(&ipAddress,this);
     addressField->setWindowTitle("Target IP");
     addressField->show();
 }
