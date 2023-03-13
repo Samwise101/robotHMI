@@ -17,6 +17,7 @@ DocumentDialog::DocumentDialog(QWidget *parent) :QDialog(parent),ui(new Ui::Docu
                                      "image:url(:/pages/page1.png)"
                                      );
     this->setFixedSize(this->width(),this->height());
+    this->setAttribute(Qt::WA_DeleteOnClose);
 
     ui->pages->setText(QString::number(currentPage) + "/" + QString::number(docLength));
 }

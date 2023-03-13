@@ -7,8 +7,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QFileDialog>
-#include <QTextStream>
-#include <QMessageBox>
+#include <QDateTime>
 
 #include <thread>
 #include <fstream>
@@ -93,12 +92,15 @@ private slots:
 
 private:
     //std::string ipAddress = "127.0.0.1";    // pre simulaciu
-    std::string cameraPort = "8889";        // pre simulaciu
+    //std::string cameraPort = "8889";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.11";   // pre realneho robota 8000
-    //std::string cameraPort = "8000";          // pre realneho robota 8000
+    //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
+    std::string cameraPort = "8000";          // pre realneho robota 8000
 
     std::string ipAddress = "";
+
+    QDate date;
+    QTime timeOfDay;
 
     bool robotControlMode = true;
     bool missionReplayMode = false;
@@ -179,9 +181,9 @@ private:
     double batteryLevel;
 
     Ui::MainWindow* ui;
-    AlarmDialog alarmHelpWindow;
-    DocumentDialog docReader;
-    AddressDialog addressField;
+    AlarmDialog* alarmHelpWindow;
+    DocumentDialog* docReader;
+    AddressDialog* addressField;
 
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;

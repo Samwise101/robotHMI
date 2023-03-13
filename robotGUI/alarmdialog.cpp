@@ -6,6 +6,7 @@ AlarmDialog::AlarmDialog(QWidget *parent) :
     ui(new Ui::AlarmDialog)
 {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 AlarmDialog::~AlarmDialog()

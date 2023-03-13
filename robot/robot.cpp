@@ -278,8 +278,11 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
     nlOld = nlCurr;
     nrOld = nrCurr;
 
+    std::cout << "[nlOld, nrOld]=[" <<  nlOld << "," << nrOld << "]" << std::endl;
+
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
+    std::cout << "[nlCurr, nrCurr]=[" <<  nlOld << "," << nrOld << "]" << std::endl;
 
     if((nlOld - nlCurr) < -(UINT16_MAX/2)){
         nlDiff = (nlCurr - nlOld) - UINT16_MAX;

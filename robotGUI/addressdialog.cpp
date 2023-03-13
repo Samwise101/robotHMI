@@ -9,6 +9,7 @@ AddressDialog::AddressDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->robotAddressField->setMaxLength(20);
     this->setFixedSize(this->width(),this->height());
+   // this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 AddressDialog::~AddressDialog()

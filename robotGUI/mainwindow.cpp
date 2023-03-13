@@ -332,7 +332,7 @@ bool MainWindow::setupConnectionToRobot(){
 void MainWindow::recordCamera()
 {
     if(!missionLoaded && recordMission){
-        video->open(path.toStdString() + "/camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+        video->open("camera_" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
             frame = cameraFrame->getCameraFrame();
@@ -368,7 +368,7 @@ void MainWindow::recordMap()
 {
     if(!missionLoaded && recordMission){
         if(!mapFile.is_open()){
-            mapFile.open(path.toStdString() + "/mapLog.txt", ios::out);
+            mapFile.open(path.toStdString() + "/mapLog" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".txt", ios::out);
         }
 
         while(!isFinished2 && mapFile.is_open()){
@@ -489,8 +489,8 @@ void MainWindow::robotStateUiSignal()
 
 bool MainWindow::getIpAddress()
 {
-    if(!addressField.getAdressFieldIP().isEmpty() && ipAddress.compare(addressField.getAdressFieldIP().toStdString())){
-        ipAddress = addressField.getAdressFieldIP().toStdString();
+    if(!addressField->getAdressFieldIP().isEmpty() && ipAddress.compare(addressField->getAdressFieldIP().toStdString())){
+        ipAddress = addressField->getAdressFieldIP().toStdString();
         std::cout << ipAddress << std::endl;
         return 1;
     }
@@ -511,7 +511,7 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
                        isFinished = false;
                    workerStarted = true;
                    if(!videoCreated){
-                        video = new cv::VideoWriter(path.toStdString() + "/camera_1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+                        video = new cv::VideoWriter("camera_" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
                         videoCreated = true;
                    }
                    func =std::bind(&MainWindow::recordCamera, this);
@@ -732,23 +732,23 @@ void MainWindow::on_useMapButton_clicked()
 
 void MainWindow::on_actionDocumentation_triggered()
 {
-    docReader.setWindowTitle("Návod");
-    docReader.setParent(this);
-    docReader.show();
+    docReader = new DocumentDialog(this);
+    docReader->setWindowTitle("Návod");
+    docReader->show();
 }
 
 void MainWindow::on_actionAlarms_triggered()
 {
-    alarmHelpWindow.setWindowTitle("Alarmy");
-    alarmHelpWindow.setParent(this);
-    alarmHelpWindow.show();
+    alarmHelpWindow = new AlarmDialog(this);
+    alarmHelpWindow->setWindowTitle("Alarmy");
+    alarmHelpWindow->show();
 }
 
 void MainWindow::on_actionIP_adresa_triggered()
 {
-    addressField.setWindowTitle("Target IP");
-    addressField.setParent(this);
-    addressField.show();
+    addressField = new AddressDialog(this);
+    addressField->setWindowTitle("Target IP");
+    addressField->show();
 }
 
 void MainWindow::on_actionPripoj_sa_triggered()
