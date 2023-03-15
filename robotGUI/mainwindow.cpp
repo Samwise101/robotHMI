@@ -74,9 +74,9 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 
     if(!missionLoaded){
         mapFrame->updateLaserPicture = 1;
+        mapFrame->update();
     }
 
-    mapFrame->update();
     return 0;
 }
 
@@ -309,7 +309,7 @@ bool MainWindow::setupConnectionToRobot(){
 
         if(ipAddress == "127.0.0.1"){
             mapFrame->setIsSimulation(true);
-            cameraPort = "8999";
+            cameraPort = "8889";
         }
         else{
            mapFrame->setIsSimulation(false);
@@ -334,7 +334,7 @@ bool MainWindow::setupConnectionToRobot(){
 void MainWindow::recordCamera()
 {
     if(!missionLoaded && recordMission){
-        video->open("camera_" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+        video->open(path.toStdString() + "/camera_" + timeOfDay.currentTime().toString("hh_mm_ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
 
         while(!isFinished && video->isOpened()){
             frame = cameraFrame->getCameraFrame();
@@ -370,7 +370,7 @@ void MainWindow::recordMap()
 {
     if(!missionLoaded && recordMission){
         if(!mapFile.is_open()){
-            mapFile.open(path.toStdString() + "/mapLog" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".txt", ios::out);
+            mapFile.open(path.toStdString() + "/mapLog_" + timeOfDay.currentTime().toString("hh_mm_ss").toStdString() + ".txt", ios::out);
         }
 
         while(!isFinished2 && mapFile.is_open()){
@@ -391,7 +391,7 @@ void MainWindow::recordMap()
             if(missionRunning){
                 mapFrame->updateLaserPicture = 1;
                 mapFrame->update();
-                this_thread::sleep_for(130ms);
+                this_thread::sleep_for(110ms);
             }
         }
 
@@ -426,6 +426,8 @@ void MainWindow::destroyReplayMission()
         cameraFrame->setCanReplay(false);
         str.clear();
         mapFrame->setStr(str);
+        mapFrame->updateLaserPicture = 1;
+        mapFrame->update();
     }
 }
 
@@ -512,7 +514,7 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
                        isFinished = false;
                    workerStarted = true;
                    if(!videoCreated){
-                        video = new cv::VideoWriter("camera_" + timeOfDay.currentTime().toString("hh:mm:ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
+                        video = new cv::VideoWriter(path.toStdString() + "/camera_" + timeOfDay.currentTime().toString("hh_mm_ss").toStdString() + ".avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, cv::Size(mapFrame->imageWidth,mapFrame->imageHeight), true);
                         videoCreated = true;
                    }
                    func =std::bind(&MainWindow::recordCamera, this);
@@ -777,8 +779,17 @@ void MainWindow::on_actionOdpoj_sa_triggered()
            mapFrame->setShowDisconnectWarning(true);
         }
         else{
-            robotControlMode = true;
-            missionReplayMode = false;
+            if(missionReplayMode){
+                missionReplayMode = false;
+                robotControlMode = true;
+                mapFrame->setRobotControlOn(true);
+
+                ui->modeLabel->setText("Mód plánovania\nmisie aktívny ");
+                ui->switchingLabel->setText("Výber cieľového\n bodu misie");
+                ui->zmazGoal->setText("Zmaž body\n misie");
+                ui->zmenTypBoduButton->setText("Prejazdový\n bod");
+                ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
+            }
 
             ipAddress.clear();
             destroyRecordMission();
