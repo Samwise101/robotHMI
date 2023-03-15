@@ -46,8 +46,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    bool getIpAddress();
-    bool setupConnectionToRobot();
+    void setupConnectionToRobot();
     int processLidar(LaserMeasurement laserData);
     int processCamera(cv::Mat cameraData);
     int processRobot(TKobukiData robotData);
@@ -92,7 +91,7 @@ private slots:
 
 private:
     //std::string ipAddress = "127.0.0.1";    // pre simulaciu
-    std::string cameraPort = "8889";        // pre simulaciu
+    std::string cameraPort = "";        // pre simulaciu
 
     //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
 

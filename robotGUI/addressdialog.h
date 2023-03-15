@@ -16,6 +16,7 @@ public:
     ~AddressDialog();
     bool isAdressFieldEmpty();
     QString getAdressFieldIP();
+    void setFunction(std::function<void()> func);
 
 private slots:
     void on_robotAddressField_returnPressed();
@@ -25,6 +26,7 @@ private slots:
 private:
     Ui::AddressDialog *ui;
     std::string* ipAddress;
+    std::function<void()> func;
 };
 
 #endif // ADDRESSDIALOG_H

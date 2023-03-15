@@ -194,7 +194,7 @@ int MainWindow::processRobot(TKobukiData robotData){
                 robotRotationalSpeed = omega;
             }
             else if(mapFrame->getGoalType() == 3){
-                this_thread::sleep_for(2000ms);
+                std::this_thread::sleep_for(2000ms);
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
             }
@@ -297,9 +297,7 @@ void MainWindow::on_startButton_pressed()
     }
 }
 
-bool MainWindow::setupConnectionToRobot(){
-
-    getIpAddress();
+void MainWindow::setupConnectionToRobot(){
 
     if(!ipAddress.empty()){
         v = 0.0;
@@ -323,12 +321,12 @@ bool MainWindow::setupConnectionToRobot(){
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
 
-        return true;
+        robotConnected = true;
+        robot->robotStart();
+        cameraFrame->setTempSpeed(robot->getTempSpeed());
+        cameraFrame->speedFrame = ui->speedWidget;
+        cameraFrame->batteryFrame = ui->batteryWidget;
     }
-    else{
-        return false;
-    }
-
 }
 
 void MainWindow::recordCamera()
@@ -375,7 +373,7 @@ void MainWindow::recordMap()
 
         while(!isFinished2 && mapFile.is_open()){
             mapFrame->createFrameLog(mapFile);
-            this_thread::sleep_for(200ms);
+            std::this_thread::sleep_for(70ms);
         }
         mapFrame->setNumber2(0);
         mapFile.close();
@@ -391,7 +389,7 @@ void MainWindow::recordMap()
             if(missionRunning){
                 mapFrame->updateLaserPicture = 1;
                 mapFrame->update();
-                this_thread::sleep_for(110ms);
+                std::this_thread::sleep_for(33ms);
             }
         }
 
@@ -491,15 +489,6 @@ void MainWindow::robotStateUiSignal()
     }
 }
 
-bool MainWindow::getIpAddress()
-{
-    if(ipAddress.empty()){
-       //ipAddress = "127.0.0.1";
-    }
-
-    return 0;
-}
-
 
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
@@ -584,7 +573,7 @@ void MainWindow::on_zmazGoal_clicked()
                     if(!workerStarted){
                         isFinishedReplay = false;
                         workerStarted = true;
-                        func =std::bind(&MainWindow::recordCamera, this);
+                        func = std::bind(&MainWindow::recordCamera, this);
                         worker = std::thread(func);
                     }
 
@@ -750,6 +739,8 @@ void MainWindow::on_actionAlarms_triggered()
 void MainWindow::on_actionIP_adresa_triggered()
 {
     addressField = new AddressDialog(&ipAddress,this);
+    std::function<void(void)> test = std::bind(&MainWindow::setupConnectionToRobot, this);
+    addressField->setFunction(test);
     addressField->setWindowTitle("Target IP");
     addressField->show();
 }
@@ -759,14 +750,7 @@ void MainWindow::on_actionPripoj_sa_triggered()
     if(!robotConnected && !missionLoaded){
         destroyRecordMission();
         destroyReplayMission();
-
-        if(setupConnectionToRobot()){
-            robotConnected = true;
-            robot->robotStart();
-            cameraFrame->setTempSpeed(robot->getTempSpeed());
-            cameraFrame->speedFrame = ui->speedWidget;
-            cameraFrame->batteryFrame = ui->batteryWidget;
-        }
+        setupConnectionToRobot();
     }
 }
 
@@ -823,22 +807,27 @@ void MainWindow::on_actionOdpoj_sa_triggered()
 
 void MainWindow::on_actionM_d_prehr_vania_triggered()
 {
-    robotControlMode = false;
-    missionReplayMode = true;
-    mapFrame->setRobotControlOn(false);
+    if(!robotRunning){
+        robotControlMode = false;
+        missionReplayMode = true;
+        mapFrame->setRobotControlOn(false);
 
-    ui->modeLabel->setText("Mód prehrávania\naktívny");
-    ui->zmazGoal->setText("Otvor nahratú\n misiu");
-    ui->switchingLabel->setText("Prehraj\n misiu");
-    ui->zmenTypBoduButton->setText("");
-    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;"
-                                         "border-style:outset;"
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "padding: 5px;"
-                                         "min-height: 60px;"
-                                         "image:url(:/resource/stop_start/play.png)");
+        ui->modeLabel->setText("Mód prehrávania\naktívny");
+        ui->zmazGoal->setText("Otvor nahratú\n misiu");
+        ui->switchingLabel->setText("Prehraj\n misiu");
+        ui->zmenTypBoduButton->setText("");
+        ui->zmenTypBoduButton->setStyleSheet("background-color: silver;"
+                                             "border-style:outset;"
+                                             "border-radius: 10px;"
+                                             "border-color:black;"
+                                             "border-width:4px;"
+                                             "padding: 5px;"
+                                             "min-height: 60px;"
+                                             "image:url(:/resource/stop_start/play.png)");
+    }
+    else{
+        mapFrame->setShowReplayWarning(true);
+    }
 }
 
 

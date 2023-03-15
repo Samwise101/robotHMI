@@ -143,7 +143,7 @@ font: 12pt &quot;Segoe UI&quot;;</string>
 	color:black</string>
         </property>
         <property name="text">
-         <string>Potvrď</string>
+         <string>Pripoj sa</string>
         </property>
        </widget>
       </item>
