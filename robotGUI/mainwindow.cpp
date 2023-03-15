@@ -652,7 +652,7 @@ void MainWindow::on_zmenTypBoduButton_clicked()
         }
         else if(goalIndex%4 == 2){
             ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
-            mapFrame->setPointColor(Qt::magenta);
+            mapFrame->setPointColor(Qt::darkMagenta);
             mapFrame->setPointType(2);
         }
         else if(goalIndex%4 == 3){
@@ -736,7 +736,7 @@ void MainWindow::on_useMapButton_clicked()
 void MainWindow::on_actionDocumentation_triggered()
 {
     docReader = new DocumentDialog(this);
-    docReader->setWindowTitle("Návod");
+    docReader->setWindowTitle("Manuál");
     docReader->show();
 }
 

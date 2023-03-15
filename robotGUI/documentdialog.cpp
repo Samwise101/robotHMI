@@ -72,13 +72,13 @@ void DocumentDialog::on_pageUp_clicked()
 
 void DocumentDialog::on_pageDown_pressed()
 {
-    ui->pageDown->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#fffff;image:url(:/pages/pageDOWN2.png);");
+    ui->pageDown->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:white;image:url(:/pages/pageDOWN2.png);");
 }
 
 
 void DocumentDialog::on_pageUp_pressed()
 {
-    ui->pageUp->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#ffffff;image:url(:/pages/pageUP2.png);");
+    ui->pageUp->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:white;image:url(:/pages/pageUP2.png);");
 }
 
 
@@ -112,7 +112,7 @@ void DocumentDialog::on_pageLast_clicked()
 
 void DocumentDialog::on_pageLast_pressed()
 {
-    ui->pageLast->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#fffff;image:url(:/pages/pageLAST.png);");
+    ui->pageLast->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:white;image:url(:/pages/pageLAST.png);");
 }
 
 
@@ -141,7 +141,7 @@ void DocumentDialog::on_pageFirst_clicked()
 
 void DocumentDialog::on_pageFirst_pressed()
 {
-     ui->pageFirst->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:#fffff;image:url(:/pages/pageFIRST.png);");
+     ui->pageFirst->setStyleSheet("background-color: rgb(91, 91, 91);border-style:outset;border-radius: 10px;border-color:white;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:white;image:url(:/pages/pageFIRST.png);");
 }
 
 

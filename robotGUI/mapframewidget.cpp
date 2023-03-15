@@ -208,8 +208,8 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                    painter.setPen(pen);
                 }
                 else if(goalColor == 2){
-                   pen.setColor(Qt::magenta);
-                   painter.setBrush(Qt::magenta);
+                   pen.setColor(Qt::darkMagenta);
+                   painter.setBrush(Qt::darkMagenta);
                    painter.setPen(pen);
                 }
                 else if(goalColor == 3){
