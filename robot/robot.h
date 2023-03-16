@@ -75,6 +75,7 @@ public:
     double rampPosFunction(double speed);
 
     void robotOdometry(TKobukiData &output, bool useGyro);
+    void overWriteOldEncValues(TKobukiData &output);
     double orientationRegulator(int xGoal, int yGoal, bool robotRunning);
     double regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int goalType);
     double avoidObstacleRegulator(double distToObsr, double angleToObst);

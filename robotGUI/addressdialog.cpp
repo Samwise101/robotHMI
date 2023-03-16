@@ -32,6 +32,7 @@ void AddressDialog::setFunction(std::function<void()> func)
 void AddressDialog::on_robotAddressField_returnPressed()
 {
     *ipAddress = ui->robotAddressField->text().toStdString();
+    func();
     this->close();
 }
 

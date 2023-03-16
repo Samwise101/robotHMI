@@ -340,6 +340,18 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
 
 }
 
+void Robot::overWriteOldEncValues(TKobukiData &output)
+{
+    nlOld = output.EncoderLeft;
+    nrOld = output.EncoderRight;
+
+    nlCurr = output.EncoderLeft;
+    nrCurr = output.EncoderRight;
+
+    std::cout << "Old vals = [" << nlOld << ", " << nrOld << "]" << std::endl;
+    std::cout << "New vals = [" << nlCurr << ", " << nrCurr << "]" << std::endl;
+}
+
 double Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
 {
     if(!robotRunning){

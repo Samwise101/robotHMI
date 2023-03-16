@@ -83,6 +83,9 @@ int MainWindow::processLidar(LaserMeasurement laserData){
 int MainWindow::processRobot(TKobukiData robotData){
 
     if(!robot->getInitilize()){
+
+        robot->overWriteOldEncValues(robotData);
+
         cameraFrame->setRobotOnline(true);
         cameraFrame->updateCameraPicture = 1;
 
@@ -775,7 +778,7 @@ void MainWindow::on_actionOdpoj_sa_triggered()
                 ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
             }
 
-            ipAddress.clear();
+            //ipAddress.clear();
             destroyRecordMission();
             destroyReplayMission();
 
