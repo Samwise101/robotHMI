@@ -20,12 +20,6 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 }
 
 CameraFrameWidget::~CameraFrameWidget(){
-    if(robotOnline){
-        delete batteryFrame;
-        delete speedFrame;
-    }
-
-
 
 }
 
@@ -45,8 +39,8 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
               }
               image = QImage((uchar*)frame[actIndex].data, frame[actIndex].cols, frame[actIndex].rows, frame[actIndex].step, QImage::Format_RGB888);
               painter.drawImage(rectangle,image.rgbSwapped());;
-              setSpeedWidget();
-              setBatteryWidget();
+              setSpeedWidget(&painter, rectangle.width());
+              setBatteryWidget(&painter, rectangle.width());
 
               if(robotOnline){
                  painter.drawImage(QPoint(10,10), imageOnline.scaled(50, 50, Qt::KeepAspectRatio));
@@ -93,166 +87,82 @@ bool CameraFrameWidget::getRobotOnline() const
     return robotOnline;
 }
 
-void CameraFrameWidget::setSpeedWidget()
+void CameraFrameWidget::setSpeedWidget(QPainter* aPainter, int frameWidth)
 {
     if(v == 0.0 || v < 0.0){
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         );
+        aPainter->drawText(QPoint(frameWidth-130,75),"");
+        return;
     }
-    else if(v > 0.0 && v <= ((tempSpeed/100)*20)){
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/speed_indicator/speed1.png)"
-                                         );
+
+    if(v > 0.0 && v <= ((tempSpeed/100)*20)){
+        speedImage = QImage(":/resource/speed_indicator/speed1.png");
+        aPainter->drawImage(QPoint(frameWidth-120,10), speedImage.scaled(50,50, Qt::KeepAspectRatio));
+
     }
     else if(v > ((tempSpeed/100)*20) && v <= ((tempSpeed/100)*40)){
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/speed_indicator/speed2.png)"
-                                         );
+        speedImage = QImage(":/resource/speed_indicator/speed2.png");
+        aPainter->drawImage(QPoint(frameWidth-120,10), speedImage.scaled(50,50, Qt::KeepAspectRatio));
+
     }
     else if(v > ((tempSpeed/100)*40) && v <= ((tempSpeed/100)*60)){
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/speed_indicator/speed3.png)"
-                                         );
+        speedImage = QImage(":/resource/speed_indicator/speed3.png");
+        aPainter->drawImage(QPoint(frameWidth-120,10), speedImage.scaled(50,50, Qt::KeepAspectRatio));
+
     }
     else if(v > ((tempSpeed/100)*60) && v <= ((tempSpeed/100)*80)){
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/speed_indicator/speed4.png)"
-                                         );
+        speedImage = QImage(":/resource/speed_indicator/speed4.png");
+        aPainter->drawImage(QPoint(frameWidth-120,10), speedImage.scaled(50,50, Qt::KeepAspectRatio));
+
     }
     else{
-        speedFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/speed_indicator/speed5.png)"
-                                         );
+        speedImage = QImage(":/resource/speed_indicator/speed5.png");
+        aPainter->drawImage(QPoint(frameWidth-120,10), speedImage.scaled(50,50, Qt::KeepAspectRatio));
     }
+
+    aPainter->setFont(QFont("Segoe UI",10,450));
+    aPainter->drawText(QPoint(frameWidth-130,75),QString::number(v) + "mm/s");
 }
 
-void CameraFrameWidget::setBatteryWidget()
+void CameraFrameWidget::setBatteryWidget(QPainter* aPainter,int frameWidth)
 {
     if(batteryPercantage == 200){
         batteryPercantage = 0;
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         );
         return;
     }
 
     batteryPercantage = (batteryLevel*100)/255;
 
+    aPainter->setFont(QFont("Segoe UI",10,450));
+    aPainter->drawText(QPoint(frameWidth-40,35),QString::number(batteryPercantage) + "%");
+
     if((batteryLevel >= ((255.0/100.0)*80.0))){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery5.png)"
-                                         );
+        batteryImage = QImage(":/pages/battery5NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
+
     }
     else if((batteryLevel < ((255.0/100.0)*80.0)) && (batteryLevel >= ((255.0/100.0)*60.0))){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery4.png)"
-                                         );
+        batteryImage = QImage(":/pages/battery4NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
+
     }
     else if((batteryLevel < ((255.0/100.0)*60.0)) && (batteryLevel >= ((255.0/100.0)*40.0))){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery3.png)"
-                                         );
+        batteryImage = QImage(":/pages/battery3NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
+
     }
     else if((batteryLevel < ((255.0/100.0)*40.0)) && (batteryLevel >= ((255.0/100.0)*20.0))){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery2.png)");
+        batteryImage = QImage(":/pages/battery2NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
+
     }
     else if(batteryLevel > 0 && (batteryLevel < ((255.0/100.0)*20.0))){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery1.png)"
-                                         );
+        batteryImage = QImage(":/pages/battery1NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
+
     }
     else if(batteryLevel == 0){
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         "image:url(:/resource/Baterka/battery0.png)"
-                                         );
-    }
-    else{
-        batteryFrame->setStyleSheet("background-color: silver; "
-                                         "border-style:outset; "
-                                         "border-radius: 10px;"
-                                         "border-color:black;"
-                                         "border-width:4px;"
-                                         "min-width: 10em;"
-                                         "padding: 5px;"
-                                         );
+        batteryImage = QImage(":/pages/battery0NEW.png");
+        aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
     }
 }
 

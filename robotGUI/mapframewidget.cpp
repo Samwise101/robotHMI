@@ -83,23 +83,20 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                std::cout << "Hello" << std::endl;
                 painter.drawText(rectMiddleX-250, 100, "Robot predišiel zrážke a núdzovo zastal!");
             }
 
-            if(!showRobotStopped && showDisconnectWarning){
+            else if(showDisconnectWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                std::cout << "Hello" << std::endl;
                 painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
             }
 
-            if(!showRobotStopped && showReplayWarning){
+            else if(showReplayWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                std::cout << "Hello" << std::endl;
                 painter.drawText(rectMiddleX-350, 100, "Pre zapnutie prehrávania najprv prepnite robot do režimu STOP!");
             }
 

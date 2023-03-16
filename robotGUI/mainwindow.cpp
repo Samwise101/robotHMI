@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     baseWidth = 574.0f;
     baseHeight = 471.0f;
 
-    cameraFrameWidth = 480;
-    cameraFrameHeight = 393;
+    cameraFrameWidth = 548;
+    cameraFrameHeight = 461;
 
     mapFrameWidth = 1148;
     mapFrameHeight = 942;
@@ -124,9 +124,6 @@ int MainWindow::processRobot(TKobukiData robotData){
 
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
-
-    ui->speedLabel->setText(QString::number(v) + " mm/s");
-    ui->batteryLabel->setText(QString::number(cameraFrame->getBatteryPercantage()) + " %");
 
     if(!robot->getAtGoal()){
 
@@ -327,8 +324,6 @@ void MainWindow::setupConnectionToRobot(){
         robotConnected = true;
         robot->robotStart();
         cameraFrame->setTempSpeed(robot->getTempSpeed());
-        cameraFrame->speedFrame = ui->speedWidget;
-        cameraFrame->batteryFrame = ui->batteryWidget;
     }
 }
 
@@ -477,10 +472,10 @@ void MainWindow::robotStateUiSignal()
                 }
             }
             else if(mapFrame->getGoalType() == 2){
-                ui->robotState->setText("Robot dosiahol\nzadaný cieľ\nRobot sa otáča\no 360 stupňou");
+                ui->robotState->setText("Robot dosiahol zadaný cieľ\na otáča sa o 360 stupňou");
             }
             else if(mapFrame->getGoalType() == 3){
-                ui->robotState->setText("Robot dosiahol\nzadaný cieľ\nRobot čaká\n2 sekundy");
+                ui->robotState->setText("Robot dosiahol zadaný cieľ\na čaká 2 sekundy");
             }
        }
        else{
@@ -679,8 +674,11 @@ void MainWindow::on_switchButton_clicked()
 
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
-        ui->cameraWidget->addWidget(mapFrame);
-        ui->mapWidgetFrame->addWidget(cameraFrame);
+        //ui->cameraWidget->addWidget(mapFrame);
+        //ui->mapWidgetFrame->addWidget(cameraFrame);
+
+        ui->cameraWidget->addWidget(mapFrame, 0, 1);
+        ui->mapWidgetFrame->addWidget(cameraFrame, 0, 2);
 
         ui->switchButton->setText("Použi mapu");
         mapFrame->setPlaceGoals(false);
@@ -698,8 +696,9 @@ void MainWindow::on_switchButton_clicked()
 
         ui->cameraWidget->removeWidget(mapFrame);
         ui->mapWidgetFrame->removeWidget(cameraFrame);
-        ui->cameraWidget->addWidget(cameraFrame);
-        ui->mapWidgetFrame->addWidget(mapFrame);
+
+        ui->cameraWidget->addWidget(cameraFrame, 0, 1);
+        ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 
         ui->switchButton->setText("Použi kameru");
         mapFrame->setPlaceGoals(true);
@@ -801,8 +800,6 @@ void MainWindow::on_actionOdpoj_sa_triggered()
             cameraFrame->setBatteryLevel(0);
             cameraFrame->setBatteryPercantage(200);
             cameraFrame->setV(0.0);
-            cameraFrame->setSpeedWidget();
-            cameraFrame->setBatteryWidget();
             cameraFrame->setRobotOnline(false);
             cameraFrame->updateCameraPicture = 0;
             cameraFrame->update();

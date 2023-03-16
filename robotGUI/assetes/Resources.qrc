@@ -6,12 +6,6 @@
         <file>Alarmy/Alarm2.png</file>
         <file>Alarmy/Alarm3.png</file>
         <file>Alarmy/Alarm4.png</file>
-        <file>Baterka/battery0.png</file>
-        <file>Baterka/battery1.png</file>
-        <file>Baterka/battery2.png</file>
-        <file>Baterka/battery3.png</file>
-        <file>Baterka/battery4.png</file>
-        <file>Baterka/battery5.png</file>
         <file>speed_indicator/speed0.png</file>
         <file>speed_indicator/speed1.png</file>
         <file>speed_indicator/speed2.png</file>
@@ -47,5 +41,11 @@
         <file>page12.png</file>
         <file>page13.png</file>
         <file>page14.png</file>
+        <file>battery0NEW.png</file>
+        <file>battery1NEW.png</file>
+        <file>battery2NEW.png</file>
+        <file>battery3NEW.png</file>
+        <file>battery4NEW.png</file>
+        <file>battery5NEW.png</file>
     </qresource>
 </RCC>

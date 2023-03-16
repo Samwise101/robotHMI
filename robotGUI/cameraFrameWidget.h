@@ -26,15 +26,12 @@ public:
     CameraFrameWidget(QWidget *parent = 0);
     ~CameraFrameWidget();
     void draw(QPainter* painter, QPaintEvent event);
-    void setSpeedWidget();
-    void setBatteryWidget();
+    void setSpeedWidget(QPainter* aPainter, int frameWidth);
+    void setBatteryWidget(QPainter* aPainter, int frameWidth);
     cv::Mat getCameraFrame();
     int updateCameraPicture;
     int actIndex=-1;
     QImage image;
-
-    QFrame* speedFrame;
-    QFrame* batteryFrame;
 
     cv::Mat frame[3];
     cv::Mat replayFrame;
@@ -47,6 +44,8 @@ private:
     double offset;
     QImage imageDistanceWarn;
     QImage imageOnline;
+    QImage batteryImage;
+    QImage speedImage;
     cv::VideoCapture cap;
     double v = 0.0;
     bool robotOnline = false;
