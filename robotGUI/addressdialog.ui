@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>240</height>
+    <width>585</width>
+    <height>260</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,10 +22,10 @@
      <x>19</x>
      <y>9</y>
      <width>541</width>
-     <height>181</height>
+     <height>227</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,5,0">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,5,0,0">
     <item>
      <spacer name="verticalSpacer_3">
       <property name="orientation">
@@ -133,14 +133,38 @@ font: 12pt &quot;Segoe UI&quot;;</string>
       <item>
        <widget class="QPushButton" name="pushButton">
         <property name="styleSheet">
-         <string notr="true">	background-color: silver;
+         <string notr="true">#pushButton{
+	background-color: silver;
 	border-style:outset;
     border-radius: 10px;
 	border-color:black;
 	border-width:4px;
     padding: 5px;
 	font: 700 12pt &quot;Segoe UI&quot;;
-	color:black</string>
+	color:black
+}
+
+#zmazGoal{
+	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+
+#pushButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
         </property>
         <property name="text">
          <string>Pripoj sa</string>
@@ -159,11 +183,57 @@ font: 12pt &quot;Segoe UI&quot;;</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>10</height>
+        <width>40</width>
+        <height>40</height>
        </size>
       </property>
      </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="simulatorButton">
+        <property name="styleSheet">
+         <string notr="true">#simulatorButton{
+ 	background-color: silver;
+	border-style:outset;
+    border-radius: 10px;
+	border-color:black;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:black
+}
+#simulatorButton::pressed{
+	background-color: rgb(91, 91, 91);
+	border-style:outset;
+    border-radius: 10px;
+	border-color:#ffffff;
+	border-width:4px;
+    padding: 5px;
+	font: 700 12pt &quot;Segoe UI&quot;;
+	color:#ffffff
+}</string>
+        </property>
+        <property name="text">
+         <string>Adresa simulátora</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

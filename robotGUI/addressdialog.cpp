@@ -44,3 +44,13 @@ void AddressDialog::on_pushButton_clicked()
     this->close();
 }
 
+
+
+
+
+void AddressDialog::on_simulatorButton_clicked()
+{
+    ui->robotAddressField->setText("127.0.0.1");
+    //ui->robotAddressField->update();
+}
+

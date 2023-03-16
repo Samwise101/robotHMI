@@ -278,11 +278,8 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
     nlOld = nlCurr;
     nrOld = nrCurr;
 
-    std::cout << "[nlOld, nrOld]=[" <<  nlOld << "," << nrOld << "]" << std::endl;
-
     nlCurr = output.EncoderLeft;
     nrCurr = output.EncoderRight;
-    std::cout << "[nlCurr, nrCurr]=[" <<  nlOld << "," << nrOld << "]" << std::endl;
 
     if((nlOld - nlCurr) < -(UINT16_MAX/2)){
         nlDiff = (nlCurr - nlOld) - UINT16_MAX;
@@ -342,14 +339,11 @@ void Robot::robotOdometry(TKobukiData &output, bool useGyro)
 
 void Robot::overWriteOldEncValues(TKobukiData &output)
 {
-    nlOld = output.EncoderLeft;
-    nrOld = output.EncoderRight;
+    nlOld = sens.EncoderLeft;
+    nrOld = sens.EncoderRight;
 
-    nlCurr = output.EncoderLeft;
-    nrCurr = output.EncoderRight;
-
-    std::cout << "Old vals = [" << nlOld << ", " << nrOld << "]" << std::endl;
-    std::cout << "New vals = [" << nlCurr << ", " << nrCurr << "]" << std::endl;
+    nlCurr = sens.EncoderLeft;
+    nrCurr = sens.EncoderRight;
 }
 
 double Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)

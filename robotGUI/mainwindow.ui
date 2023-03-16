@@ -706,7 +706,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1820</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
@@ -790,6 +790,8 @@ QMenu:selected{
     <addaction name="separator"/>
     <addaction name="actionM_d_riadenia"/>
     <addaction name="actionM_d_prehr_vania"/>
+    <addaction name="separator"/>
+    <addaction name="actionResetuj_enk_dery"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -860,6 +862,11 @@ QMenu:selected{
   <action name="actionM_d_prehr_vania">
    <property name="text">
     <string>Mód prehrávania</string>
+   </property>
+  </action>
+  <action name="actionResetuj_enk_dery">
+   <property name="text">
+    <string>Resetuj enkódery</string>
    </property>
   </action>
  </widget>

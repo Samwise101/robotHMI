@@ -89,13 +89,12 @@ private slots:
 
     void on_actionM_d_riadenia_triggered();
 
+    void on_actionResetuj_enk_dery_triggered();
+
 private:
-    //std::string ipAddress = "127.0.0.1";    // pre simulaciu
     std::string cameraPort = "";        // pre simulaciu
 
-    //std::string ipAddress = "192.168.1.12";   // pre realneho robota 8000
-
-    std::string ipAddress = "127.0.0.1";
+    std::string ipAddress = "";
 
     QDate date;
     QTime timeOfDay;

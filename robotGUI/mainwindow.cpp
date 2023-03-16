@@ -597,6 +597,11 @@ void MainWindow::on_zmazGoal_clicked()
             }
             else{
                 ui->zmazGoal->setText("Otvor nahratú\nmisiu");
+                ui->zmenTypBoduButton->setStyleSheet("background-color: "
+                                                       "silver;border-style:outset;border-radius: "
+                                                       "10px;border-color:black;border-width:4px;padding: "
+                                                        "5px;min-height: 60px;image:url(:/resource/stop_start/play.png);"
+                                                       );
 
                 destroyReplayMission();
 
@@ -845,5 +850,13 @@ void MainWindow::on_actionM_d_riadenia_triggered()
     ui->zmazGoal->setText("Zmaž body\n misie");
     ui->zmenTypBoduButton->setText("Prejazdový\n bod");
     ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
+}
+
+
+void MainWindow::on_actionResetuj_enk_dery_triggered()
+{
+    if(robotConnected && !missionLoaded && !robotRunning){
+        //robot->overWriteOldEncValues()
+    }
 }
 
