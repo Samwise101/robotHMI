@@ -87,6 +87,8 @@ public:
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
 
+    bool robotTrajectorySim(int xGoal, int yGoal);
+
     double getDeltaSl();
     double getDeltaSr();
     double getDeltaS();
@@ -111,6 +113,10 @@ public:
     void setAtGoal(bool newAtGoal);
 
     double getTempSpeed() const;
+
+    double getEXDist2() const;
+
+    double getEYDist2() const;
 
 private:
 
@@ -143,13 +149,16 @@ private:
     double y;
     double xdt;
     double ydt;
+    double trajecX;
+    double trajecY;
+    double trajecTheta;
 
     // Orientation regulator
     double eXDist;
     double eYDist;
     double thetaToGoal;
     double eThetaToGoal;
-    double w;
+    double w = 0;
 
     // Forward speed regulator
     double eXDist2;
@@ -166,6 +175,7 @@ private:
     double thetaToObst;
 
     double eToGoalAngle;
+
 
     bool initilize = false;
     unsigned short lastCheckTicks = 0;

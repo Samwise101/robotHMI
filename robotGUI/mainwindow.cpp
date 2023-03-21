@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     baseWidth = 574.0f;
     baseHeight = 471.0f;
 
-    cameraFrameWidth = 548;
-    cameraFrameHeight = 461;
+    cameraFrameWidth = 558;
+    cameraFrameHeight = 471;
 
     mapFrameWidth = 1148;
     mapFrameHeight = 942;

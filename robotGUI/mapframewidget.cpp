@@ -238,6 +238,11 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
+const std::vector<QPoint> &MapFrameWidget::getTrajcPoints() const
+{
+    return trajcPoints;
+}
+
 void MapFrameWidget::setRobotControlOn(bool newRobotControlOn)
 {
     robotControlOn = newRobotControlOn;
@@ -431,7 +436,6 @@ void MapFrameWidget::parseMapFile()
 
 void MapFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canTriggerEvents && placeGoals){
-        std::cout << "Event triggered: x=" << event->x() << "; y=" << event->y() << std::endl;
         if(points.size() < 10 && robotOnline && robotControlOn){
            points.insert(points.begin(), RobotGoal(event->x()/scale, event->y()/scale, this->pointType, this->pointColor));
         }
@@ -705,6 +709,11 @@ void MapFrameWidget::clearVectors()
 bool MapFrameWidget::getShowDisconnectWarning() const
 {
     return showDisconnectWarning;
+}
+
+void MapFrameWidget::pushBackTajcPoint(double x, double y)
+{
+    trajcPoints.push_back(QPoint(x,y));
 }
 
 void MapFrameWidget::setShowDisconnectWarning(bool newShowDisconnectWarning)

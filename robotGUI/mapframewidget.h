@@ -108,17 +108,22 @@ public:
 
     bool getShowDisconnectWarning() const;
 
+    void pushBackTajcPoint(double x, double y);
+
     void setShowRobotStopped(bool newShowRobotStopped);
 
     bool getShowRobotStopped() const;
 
     void setRobotControlOn(bool newRobotControlOn);
 
+    const std::vector<QPoint> &getTrajcPoints() const;
+
 protected:
     void paintEvent(QPaintEvent* event);
 
 private:
     QPoint robotImagePos;
+    std::vector<QPoint> trajcPoints;
     double imageTheta = 0.0;
 
     bool robotInitialized = false;

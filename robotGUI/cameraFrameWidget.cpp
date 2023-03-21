@@ -120,7 +120,7 @@ void CameraFrameWidget::setSpeedWidget(QPainter* aPainter, int frameWidth)
     }
 
     aPainter->setFont(QFont("Segoe UI",10,450));
-    aPainter->drawText(QPoint(frameWidth-130,75),QString::number(v) + "mm/s");
+    aPainter->drawText(QPoint(frameWidth-145,75),QString::number(v, 'f', 2) + " mm/s");
 }
 
 void CameraFrameWidget::setBatteryWidget(QPainter* aPainter,int frameWidth)

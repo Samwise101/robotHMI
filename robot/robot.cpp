@@ -32,6 +32,15 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
+    x = 0;
+    y = 0;
+    theta = 0;
+    w = 0;
+    v = 0;
+    nlOld = 0;
+    nrOld = 0;
+    nlCurr = 0;
+    nrCurr = 0;
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -390,8 +399,6 @@ double Robot::orientationRegulator(int xGoal, int yGoal, bool robotRunning)
         w = 0.0;
     }
 
-    //std::cout << "xDistToGoal=" << eXDist << ", yDistToGoal=" << eYDist << ", thetaToGoal=" << thetaToGoal << ", theta=" << theta;
-    //std::cout << ", eThetaToGoal=" << eThetaToGoal << ", w=" << w << std::endl;
     return w;
 }
 
@@ -510,6 +517,9 @@ void Robot::setRobotPose(int xPos, int yPos, float orientation)
     x = xPos;
     y = yPos;
     theta = orientation;
+    trajecX = xPos;
+    trajecY = yPos;
+    trajecTheta = orientation;
     std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
 
@@ -520,10 +530,15 @@ void Robot::resetRobotPose()
     theta = 0.0;
 }
 
+bool Robot::robotTrajectorySim(int xGoal, int yGoal)
+{
+
+    return true;
+}
+
 bool Robot::emergencyStop(int dist)
 {
     if(dist >= 0 && dist < 35){  // [m]
-        std::cout << "Robot emergency stop called" << std::endl;
         return true;
     }
     return false;
@@ -610,4 +625,14 @@ void Robot::setAtGoal(bool newAtGoal)
 double Robot::getTempSpeed() const
 {
     return tempSpeed;
+}
+
+double Robot::getEXDist2() const
+{
+    return eXDist2;
+}
+
+double Robot::getEYDist2() const
+{
+    return eYDist2;
 }
