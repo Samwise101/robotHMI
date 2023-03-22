@@ -591,7 +591,7 @@ void MainWindow::on_zmazGoal_clicked()
                 }
             }
             else{
-                ui->zmazGoal->setText("Otvor nahratú\nmisiu");
+                ui->zmazGoal->setText("Otvor nahranú\nmisiu");
                 ui->zmenTypBoduButton->setStyleSheet("background-color: "
                                                        "silver;border-style:outset;border-radius: "
                                                        "10px;border-color:black;border-width:4px;padding: "
@@ -818,7 +818,7 @@ void MainWindow::on_actionM_d_prehr_vania_triggered()
         mapFrame->setRobotControlOn(false);
 
         ui->modeLabel->setText("Mód prehrávania\naktívny");
-        ui->zmazGoal->setText("Otvor nahratú\n misiu");
+        ui->zmazGoal->setText("Otvor nahranú\n misiu");
         ui->switchingLabel->setText("Prehraj\n misiu");
         ui->zmenTypBoduButton->setText("");
         ui->zmenTypBoduButton->setStyleSheet("background-color: silver;"
