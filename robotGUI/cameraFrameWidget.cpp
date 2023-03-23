@@ -132,9 +132,6 @@ void CameraFrameWidget::setBatteryWidget(QPainter* aPainter,int frameWidth)
 
     batteryPercantage = (batteryLevel*100)/255;
 
-    aPainter->setFont(QFont("Segoe UI",10,450));
-    aPainter->drawText(QPoint(frameWidth-40,35),QString::number(batteryPercantage) + "%");
-
     if((batteryLevel >= ((255.0/100.0)*80.0))){
         batteryImage = QImage(":/pages/battery5NEW.png");
         aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
@@ -164,6 +161,9 @@ void CameraFrameWidget::setBatteryWidget(QPainter* aPainter,int frameWidth)
         batteryImage = QImage(":/pages/battery0NEW.png");
         aPainter->drawImage(QPoint(frameWidth-60,15), batteryImage.scaled(60,60, Qt::KeepAspectRatio));
     }
+
+    aPainter->setFont(QFont("Segoe UI",10,450));
+    aPainter->drawText(QPoint(frameWidth-40,35),QString::number(batteryPercantage) + "%");
 }
 
 

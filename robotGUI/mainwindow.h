@@ -182,7 +182,6 @@ private:
     DocumentDialog* docReader;
     AddressDialog* addressField;
 
-
     CameraFrameWidget* cameraFrame;
     MapFrameWidget* mapFrame;
 
