@@ -3,6 +3,11 @@
 #include <QWidget>
 #include <QtGui>
 #include <QFrame>
+#include <QGraphicsItemGroup>
+
+
+
+#define PI 3.14159
 
 
 CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
@@ -13,6 +18,14 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
     dispOrangeWarning = false;
     dispYellowWarning = false;
     dispRobotStopped = false;
+
+    rectangleWidthPx = 0;
+    rectangleHeightPx = 0;
+    alfa1 = 24.0;
+    alfa2 = 32.0;
+
+    pointColor = Qt::yellow;
+    pointType = 1;
 
     updateCameraPicture = 0;
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -27,8 +40,11 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
     QPainter painter(this);
     painter.setBrush(Qt::black);
     QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
-    painter.drawRect(rectangle);
 
+    rectangleHeightPx = rectangle.height();
+    rectangleWidthPx = rectangle.width();
+
+    painter.drawRect(rectangle);
 
     if(updateCameraPicture == 1){
 
@@ -72,19 +88,56 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
     }
 }
 
-void CameraFrameWidget::setCanReplay(bool newCanReplay)
-{
-    canReplay = newCanReplay;
+void CameraFrameWidget::mousePressEvent(QMouseEvent *event){
+    if(canPlacePoints){
+
+        if(event->y() >= rectangleHeightPx/2)
+            alfa1 = 24*(event->y() - rectangleHeightPx/2)/(rectangleHeightPx/2.0);
+        else
+            alfa1 = -24*(rectangleHeightPx/2 - event->y())/(rectangleHeightPx/2.0);
+
+        if(event->x() >= rectangleWidthPx/2)
+            alfa2 = -32*(event->x() - rectangleWidthPx/2)/(rectangleWidthPx/2.0);
+        else
+            alfa2 = 32*(rectangleWidthPx/2 - event->x())/(rectangleWidthPx/2.0);
+
+        if(alfa1 < 0 || alfa1 > 24 || alfa2 > 32 || alfa2 < -32){
+            std::cout << "Not a valid point!" << std::endl;
+        }
+        else{
+            d1 = cameraV/std::tan(alfa1*PI/180)*0.8*scale;
+            d2 = d1/std::cos(alfa2*PI/180);
+
+            points->insert(points->begin(), RobotGoal(robotX + d2*cos(robotTheta+alfa2*PI/180), robotY - d2*sin(robotTheta+alfa2*PI/180) , pointType, pointColor));
+        }
+    }
 }
 
-void CameraFrameWidget::setBatteryPercantage(unsigned short newBatteryPercantage)
+void CameraFrameWidget::setPointType(int newPointType)
 {
-    batteryPercantage = newBatteryPercantage;
+    pointType = newPointType;
 }
 
-bool CameraFrameWidget::getRobotOnline() const
+void CameraFrameWidget::setPointColor(const QColor &newPointColor)
 {
-    return robotOnline;
+    pointColor = newPointColor;
+}
+
+bool CameraFrameWidget::getCanPlacePoints() const
+{
+    return canPlacePoints;
+}
+
+void CameraFrameWidget::setCanPlacePoints(bool newCanPlacePoints)
+{
+    canPlacePoints = newCanPlacePoints;
+}
+
+void CameraFrameWidget::setRobotParams(double &x, double &y, double &theta)
+{
+    robotX = x;
+    robotY = y;
+    robotTheta = theta;
 }
 
 void CameraFrameWidget::setSpeedWidget(QPainter* aPainter, int frameWidth)
@@ -164,6 +217,27 @@ void CameraFrameWidget::setBatteryWidget(QPainter* aPainter,int frameWidth)
 
     aPainter->setFont(QFont("Segoe UI",10,450));
     aPainter->drawText(QPoint(frameWidth-40,35),QString::number(batteryPercantage) + "%");
+}
+
+
+void CameraFrameWidget::setPointVector(std::vector<RobotGoal>* goals)
+{
+    points = goals;
+}
+
+void CameraFrameWidget::setCanReplay(bool newCanReplay)
+{
+    canReplay = newCanReplay;
+}
+
+void CameraFrameWidget::setBatteryPercantage(unsigned short newBatteryPercantage)
+{
+    batteryPercantage = newBatteryPercantage;
+}
+
+bool CameraFrameWidget::getRobotOnline() const
+{
+    return robotOnline;
 }
 
 

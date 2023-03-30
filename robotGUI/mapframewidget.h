@@ -89,6 +89,8 @@ public:
 
     void setNumber2(int newNumber2);
 
+    std::vector<RobotGoal>* getRobotGoals();
+
     void setShowReplayWarning(bool newShowReplayWarning);
 
     bool getShowReplayWarning() const;
@@ -115,6 +117,8 @@ public:
     bool getShowRobotStopped() const;
 
     void setRobotControlOn(bool newRobotControlOn);
+
+    void insertToGoals(int x, int y, int type, QColor color);
 
     const std::vector<QPoint> &getTrajcPoints() const;
 

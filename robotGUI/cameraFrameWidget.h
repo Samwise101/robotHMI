@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QFrame>
 #include <QTimer>
+#include <cmath>
 
+#include "robotgoal.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -29,6 +31,9 @@ public:
     void setSpeedWidget(QPainter* aPainter, int frameWidth);
     void setBatteryWidget(QPainter* aPainter, int frameWidth);
     cv::Mat getCameraFrame();
+
+    void mousePressEvent(QMouseEvent *event);
+
     int updateCameraPicture;
     int actIndex=-1;
     QImage image;
@@ -41,6 +46,7 @@ protected:
     void paintEvent(QPaintEvent* event);
 
 private:
+    std::vector<RobotGoal>* points;
     double offset;
     QImage imageDistanceWarn;
     QImage imageOnline;
@@ -58,9 +64,28 @@ private:
     float scale = 1.0f;
     bool missionLoaded = false;
     bool canReplay = false;
+    double robotX = 0.0;
+    double robotY = 0.0;
+    double robotTheta = 0.0;
+    int frameHeight = 0;
+    int frameWidth = 0;
+    double yT = 0.0;
+    double xT = 0.0;
+    bool canPlacePoints = false;
+    QColor pointColor;
+    int pointType = 1;
+
+    int rectangleWidthPx = 0;
+    int rectangleHeightPx = 0;
+    double alfa1 = 24.0;
+    double alfa2 = 32.0;
+    double d1 = 0.0;
+    double d2 = 0.0;
+    double cameraV = 17.5; //[cm]
 
 public:
-
+    void setRobotParams(double& x, double& y, double& theta);
+    void setPointVector(std::vector<RobotGoal>* goals);
     void setTempSpeed(double newTempSpeed);
     void setV(double newV);
     void setBatteryLevel(const unsigned char newBatteryLevel);
@@ -75,6 +100,10 @@ public:
     bool getRobotOnline() const;
     void setBatteryPercantage(unsigned short newBatteryPercantage);
     void setCanReplay(bool newCanReplay);
+    bool getCanPlacePoints() const;
+    void setCanPlacePoints(bool newCanPlacePoints);
+    void setPointColor(const QColor &newPointColor);
+    void setPointType(int newPointType);
 };
 
 #endif // CAMERAFRAMEWIDGET_H

@@ -53,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     mapFrame->setFixedHeight(mapFrameHeight);
     mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
+    cameraFrame->setPointVector(mapFrame->getRobotGoals());
+
     ui->mapWidgetFrame->addWidget(mapFrame, 0, 2);
 }
 
@@ -206,6 +208,7 @@ int MainWindow::processRobot(TKobukiData robotData){
     }
 
     mapFrame->updateRobotValuesForGUI(robot->getX(), robot->getY(), robot->getTheta());
+    cameraFrame->setRobotParams(robot->getX(), robot->getY(),robot->getTheta());
 
     if(robotForwardSpeed >= 0.1){
         radius = robotForwardSpeed/robotRotationalSpeed;
@@ -243,6 +246,7 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_startButton_clicked()
 {
+    std::cout  << mapFrame->getGoalVectorSize() << std::endl;
     if(robotControlMode && robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
@@ -317,6 +321,7 @@ void MainWindow::setupConnectionToRobot(){
         mapFrame->initializeRobot();
         robot = new Robot(ipAddress);
 
+
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
@@ -324,6 +329,7 @@ void MainWindow::setupConnectionToRobot(){
         robotConnected = true;
         robot->robotStart();
         cameraFrame->setTempSpeed(robot->getTempSpeed());
+
     }
 }
 
@@ -641,21 +647,29 @@ void MainWindow::on_zmenTypBoduButton_clicked()
             ui->zmenTypBoduButton->setText("Prejazdový\n bod");
             mapFrame->setPointColor(QColor(20,255,20));
             mapFrame->setPointType(1);
+            cameraFrame->setPointColor(QColor(20,255,20));
+            cameraFrame->setPointType(1);
         }
         else if(goalIndex%4 == 2){
             ui->zmenTypBoduButton->setText("Otočenie\n o 360°");
             mapFrame->setPointColor(Qt::darkMagenta);
             mapFrame->setPointType(2);
+            cameraFrame->setPointColor(Qt::darkMagenta);
+            cameraFrame->setPointType(2);
         }
         else if(goalIndex%4 == 3){
             ui->zmenTypBoduButton->setText("Čakaj\n 2 sekundy");
             mapFrame->setPointColor(Qt::cyan);
             mapFrame->setPointType(3);
+            cameraFrame->setPointColor(Qt::cyan);
+            cameraFrame->setPointType(3);
         }
         else{
             ui->zmenTypBoduButton->setText("Cieľový\n bod");
             mapFrame->setPointColor(QColor(192,192,192));
             mapFrame->setPointType(4);
+            cameraFrame->setPointColor(QColor(192,192,192));
+            cameraFrame->setPointType(4);
         }
     }
 }
@@ -674,14 +688,13 @@ void MainWindow::on_switchButton_clicked()
 
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
-        //ui->cameraWidget->addWidget(mapFrame);
-        //ui->mapWidgetFrame->addWidget(cameraFrame);
 
         ui->cameraWidget->addWidget(mapFrame, 0, 1);
         ui->mapWidgetFrame->addWidget(cameraFrame, 0, 2);
 
         ui->switchButton->setText("Použi mapu");
         mapFrame->setPlaceGoals(false);
+        cameraFrame->setCanPlacePoints(true);
         ++switchIndex;
     }
     else if(switchIndex == 1){
@@ -702,6 +715,7 @@ void MainWindow::on_switchButton_clicked()
 
         ui->switchButton->setText("Použi kameru");
         mapFrame->setPlaceGoals(true);
+        cameraFrame->setCanPlacePoints(false);
         --switchIndex;
     }
 }

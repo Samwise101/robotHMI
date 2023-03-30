@@ -136,6 +136,7 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 }
               }
 
+
               if(!points.empty()){
                     for(int i = 0; i < points.size(); i++){
                         pen.setColor(points[i].getColor());
@@ -246,6 +247,13 @@ const std::vector<QPoint> &MapFrameWidget::getTrajcPoints() const
 void MapFrameWidget::setRobotControlOn(bool newRobotControlOn)
 {
     robotControlOn = newRobotControlOn;
+}
+
+void MapFrameWidget::insertToGoals(int x, int y, int type, QColor color)
+{
+    if(points.size() < 10 && robotOnline && robotControlOn){
+        points.insert(points.begin(), RobotGoal(x, y, type, color));
+    }
 }
 
 bool MapFrameWidget::getShowRobotStopped() const
@@ -774,6 +782,11 @@ void MapFrameWidget::setScale(float newScale)
 void MapFrameWidget::setNumber2(int newNumber2)
 {
     number2 = newNumber2;
+}
+
+std::vector<RobotGoal>* MapFrameWidget::getRobotGoals()
+{
+    return &points;
 }
 
 void MapFrameWidget::setStr(const std::string &newStr)
