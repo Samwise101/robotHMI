@@ -24,7 +24,7 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
     alfa1 = 24.0;
     alfa2 = 32.0;
 
-    pointColor = Qt::yellow;
+    pointColor = QColor(20,255,20);
     pointType = 1;
 
     updateCameraPicture = 0;
