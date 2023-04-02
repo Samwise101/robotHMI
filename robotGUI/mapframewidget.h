@@ -144,6 +144,8 @@ private:
     std::vector<int> missionPoints;
     int replayIndex;
 
+    std::vector<std::vector<QPoint>> trajectories;
+
     bool replayFinished = false;
 
     int robotXPos;

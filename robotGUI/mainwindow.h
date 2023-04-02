@@ -83,17 +83,15 @@ private slots:
 
     void on_actionIP_adresa_triggered();
 
-    void on_actionOdpoj_sa_triggered();
-
     void on_actionM_d_prehr_vania_triggered();
 
     void on_actionM_d_riadenia_triggered();
 
-    void on_actionResetuj_enk_dery_triggered();
-
     void on_actionOto_enie_o_90_triggered();
 
     void on_actionOto_enie_o_91_triggered();
+
+    void on_actionOdpoj_sa_triggered();
 
 private:
     std::string cameraPort = "";        // pre simulaciu

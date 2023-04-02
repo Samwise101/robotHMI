@@ -19,9 +19,7 @@
         <file>Alarmy/online.png</file>
         <file>stop_start/play.png</file>
         <file>stop_start/stop_play.png</file>
-        <file>Documentation.txt</file>
         <file>Alarmy/warning_orange.png</file>
-        <file>icon2.ico</file>
         <file>guide.png</file>
         <file>internet.png</file>
         <file>page.png</file>
@@ -29,6 +27,9 @@
         <file>robot.png</file>
         <file>open-exit-door.png</file>
         <file>play.png</file>
+        <file>robotIcon.ico</file>
+        <file>minus90.png</file>
+        <file>plus90.png</file>
     </qresource>
     <qresource prefix="/pages">
         <file>pageDOWN2.png</file>
@@ -55,6 +56,5 @@
         <file>battery3NEW.png</file>
         <file>battery4NEW.png</file>
         <file>battery5NEW.png</file>
-        <file>icon.ico</file>
     </qresource>
 </RCC>

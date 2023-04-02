@@ -88,4 +88,4 @@ RESOURCES += \
 
 DISTFILES +=
 
-RC_ICONS = assetes/icon2.ico
+RC_ICONS = assetes/robotIcon.ico

@@ -83,21 +83,21 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                painter.drawText(rectMiddleX-250, 100, "Robot predišiel zrážke a núdzovo zastal!");
+                painter.drawText(rectMiddleX-100*scale, 80*scale, "Robot predišiel zrážke a núdzovo zastal!");
             }
 
             else if(showDisconnectWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                painter.drawText(rectMiddleX-250, 100, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
+                painter.drawText(rectMiddleX-150*scale, 80*scale, "Pre odpojenie robota stlačte najprv tlačidlo STOP!");
             }
 
             else if(showReplayWarning){
                 painter.setFont(QFont("Segoe UI",8*scale));
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
-                painter.drawText(rectMiddleX-350, 100, "Pre zapnutie prehrávania najprv prepnite robot do režimu STOP!");
+                painter.drawText(rectMiddleX-190*scale, 80*scale, "Pre zapnutie prehrávania najprv prepnite robot do režimu STOP!");
             }
 
             pen.setWidth(2);

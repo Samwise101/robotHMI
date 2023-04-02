@@ -23,11 +23,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>KobukiHMI</string>
   </property>
   <property name="styleSheet">
    <string notr="true">	background-color:grey;
-	
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -616,11 +615,15 @@ pozície</string>
    </property>
    <property name="styleSheet">
     <string notr="true">QMenuBar{
-	background-color:DimGrey;
+	background-color:grey;
     border-width: 2px;
     border-bottom-style: outset;
     border-color: rgb(100, 100, 100);
 	color:black
+}
+
+QMenuBar:selected{
+	background-color:rgb(179, 179, 179);
 }
 </string>
    </property>
@@ -657,7 +660,7 @@ pozície</string>
 }
 
 QMenu:selected{
-	background-color:grey;
+	background-color:rgb(179, 179, 179);
 }
 
 QMenu:pressed{
@@ -682,7 +685,7 @@ QMenu:pressed{
 }
 
 QMenu:selected{
-	background-color:grey;
+	background-color:rgb(179, 179, 179);
 }</string>
     </property>
     <property name="title">
@@ -699,7 +702,7 @@ QMenu:selected{
 }
 
 QMenu:selected{
-	background-color:grey;
+	background-color:rgb(179, 179, 179);
 }</string>
     </property>
     <property name="title">
@@ -709,6 +712,7 @@ QMenu:selected{
     <addaction name="actionIP_adresa"/>
     <addaction name="separator"/>
     <addaction name="actionPripoj_sa"/>
+    <addaction name="actionOdpoj_sa"/>
     <addaction name="separator"/>
     <addaction name="actionM_d_riadenia"/>
     <addaction name="actionM_d_prehr_vania"/>
@@ -819,13 +823,30 @@ QMenu:selected{
    </property>
   </action>
   <action name="actionOto_enie_o_90">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/plus90.png</normaloff>:/resource/plus90.png</iconset>
+   </property>
    <property name="text">
     <string>Otočenie o 90°</string>
    </property>
   </action>
   <action name="actionOto_enie_o_91">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/minus90.png</normaloff>:/resource/minus90.png</iconset>
+   </property>
    <property name="text">
     <string>Otočenie o -90°</string>
+   </property>
+  </action>
+  <action name="actionOdpoj_sa">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/internet.png</normaloff>:/resource/internet.png</iconset>
+   </property>
+   <property name="text">
+    <string>Odpoj sa</string>
    </property>
   </action>
  </widget>

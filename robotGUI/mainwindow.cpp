@@ -88,6 +88,7 @@ int MainWindow::processRobot(TKobukiData robotData){
     if(!robot->getInitilize()){
 
         robot->overWriteOldEncValues(robotData);
+        robot->robotOdometry(robotData, true);
 
         cameraFrame->setRobotOnline(true);
         cameraFrame->updateCameraPicture = 1;
@@ -95,7 +96,7 @@ int MainWindow::processRobot(TKobukiData robotData){
         mapFrame->setRobotOnline(true);
         mapFrame->updateLaserPicture = 1;
 
-        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), mapFrame->getRealTheta());
+        robot->setRobotPose(mapFrame->robotPosition.x(), mapFrame->robotPosition.y(), robot->getTheta());
         robot->setInitilize(true);
     }
 
@@ -347,7 +348,6 @@ void MainWindow::setupConnectionToRobot(){
 
         mapFrame->initializeRobot();
         robot = new Robot(ipAddress);
-
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
         robot->setRobotParameters(ipAddress,53000,5300,std::bind(&MainWindow::processRobot,this,std::placeholders::_1));
@@ -803,6 +803,40 @@ void MainWindow::on_actionPripoj_sa_triggered()
 }
 
 
+void MainWindow::on_actionM_d_riadenia_triggered()
+{
+    missionReplayMode = false;
+    robotControlMode = true;
+    mapFrame->setRobotControlOn(true);
+
+    ui->modeLabel->setText("Mód plánovania\nmisie aktívny ");
+    ui->switchingLabel->setText("Výber cieľového\n bodu misie");
+    ui->zmazGoal->setText("Zmaž body\n misie");
+    ui->zmenTypBoduButton->setText("Prejazdový\n bod");
+    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
+}
+
+
+void MainWindow::on_actionOto_enie_o_90_triggered()
+{
+    if(robotRunning && !robot->getAtGoal() && !turnRobot){
+        goalAngle = robot->getTheta() + PI/2;
+        turnRobot = true;
+        robot->setAtGoal(true);
+    }
+}
+
+
+void MainWindow::on_actionOto_enie_o_91_triggered()
+{
+    if(robotRunning && !robot->getAtGoal() && !turnRobot){
+        goalAngle = robot->getTheta() - PI/2;
+        turnRobot = true;
+        robot->setAtGoal(true);
+    }
+}
+
+
 void MainWindow::on_actionOdpoj_sa_triggered()
 {
     if(robotConnected){
@@ -823,7 +857,6 @@ void MainWindow::on_actionOdpoj_sa_triggered()
                 ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
             }
 
-            //ipAddress.clear();
             destroyRecordMission();
             destroyReplayMission();
 
@@ -873,48 +906,6 @@ void MainWindow::on_actionM_d_prehr_vania_triggered()
     }
     else{
         mapFrame->setShowReplayWarning(true);
-    }
-}
-
-
-void MainWindow::on_actionM_d_riadenia_triggered()
-{
-    missionReplayMode = false;
-    robotControlMode = true;
-    mapFrame->setRobotControlOn(true);
-
-    ui->modeLabel->setText("Mód plánovania\nmisie aktívny ");
-    ui->switchingLabel->setText("Výber cieľového\n bodu misie");
-    ui->zmazGoal->setText("Zmaž body\n misie");
-    ui->zmenTypBoduButton->setText("Prejazdový\n bod");
-    ui->zmenTypBoduButton->setStyleSheet("background-color: silver;border-style:outset;border-radius: 10px;min-height: 24px;border-color:black;min-height: 60px;border-width:4px;padding: 5px;font: 700 12pt Segoe UI;color:black");
-}
-
-
-void MainWindow::on_actionResetuj_enk_dery_triggered()
-{
-    if(robotConnected && !missionLoaded && !robotRunning){
-        //robot->overWriteOldEncValues()
-    }
-}
-
-
-void MainWindow::on_actionOto_enie_o_90_triggered()
-{
-    if(robotRunning && !robot->getAtGoal() && !turnRobot){
-        goalAngle = robot->getTheta() + PI/2;
-        turnRobot = true;
-        robot->setAtGoal(true);
-    }
-}
-
-
-void MainWindow::on_actionOto_enie_o_91_triggered()
-{
-    if(robotRunning && !robot->getAtGoal() && !turnRobot){
-        goalAngle = robot->getTheta() - PI/2;
-        turnRobot = true;
-        robot->setAtGoal(true);
     }
 }
 
