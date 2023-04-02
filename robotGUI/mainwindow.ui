@@ -616,15 +616,35 @@ pozície</string>
    </property>
    <property name="styleSheet">
     <string notr="true">QMenuBar{
-	background-color:rgb(95, 95, 95);
+	background-color:DimGrey;
     border-width: 2px;
     border-bottom-style: outset;
-    border-color: rgb(75, 75, 75);
-	color:#ffffff
+    border-color: rgb(100, 100, 100);
+	color:black
 }
 </string>
    </property>
    <widget class="QMenu" name="menuFile">
+    <property name="geometry">
+     <rect>
+      <x>343</x>
+      <y>118</y>
+      <width>178</width>
+      <height>92</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
     <property name="font">
      <font>
       <pointsize>10</pointsize>
@@ -632,8 +652,8 @@ pozície</string>
     </property>
     <property name="styleSheet">
      <string notr="true">QMenu{
-	background-color:DimGrey;
-	color:#ffffff
+	background-color:rgb(124, 124, 124);
+	color:black;
 }
 
 QMenu:selected{
@@ -645,6 +665,9 @@ QMenu:pressed{
 	color:black;
 }</string>
     </property>
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
@@ -654,8 +677,8 @@ QMenu:pressed{
    <widget class="QMenu" name="menuHelp">
     <property name="styleSheet">
      <string notr="true">QMenu{
-	background-color:DimGrey;
-	color:#ffffff
+	background-color:rgb(124, 124, 124);
+	color:black
 }
 
 QMenu:selected{
@@ -671,8 +694,8 @@ QMenu:selected{
    <widget class="QMenu" name="menuRobot">
     <property name="styleSheet">
      <string notr="true">QMenu{
-	background-color:DimGrey;
-	color:#ffffff
+	background-color:rgb(124, 124, 124);
+	color:black;
 }
 
 QMenu:selected{
@@ -686,7 +709,6 @@ QMenu:selected{
     <addaction name="actionIP_adresa"/>
     <addaction name="separator"/>
     <addaction name="actionPripoj_sa"/>
-    <addaction name="actionOdpoj_sa"/>
     <addaction name="separator"/>
     <addaction name="actionM_d_riadenia"/>
     <addaction name="actionM_d_prehr_vania"/>
@@ -715,6 +737,10 @@ QMenu:selected{
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/open-exit-door.png</normaloff>:/resource/open-exit-door.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -722,7 +748,7 @@ QMenu:selected{
   <action name="actionAlarms">
    <property name="icon">
     <iconset resource="assetes/Resources.qrc">
-     <normaloff>:/resource/Alarmy/warning_yellow.png</normaloff>:/resource/Alarmy/warning_yellow.png</iconset>
+     <normaloff>:/resource/question.png</normaloff>:/resource/question.png</iconset>
    </property>
    <property name="text">
     <string>Alarmy</string>
@@ -732,6 +758,10 @@ QMenu:selected{
    </property>
   </action>
   <action name="actionDocumentation">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/guide.png</normaloff>:/resource/guide.png</iconset>
+   </property>
    <property name="text">
     <string>Manuál</string>
    </property>
@@ -759,15 +789,11 @@ QMenu:selected{
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="actionOdpoj_sa">
-   <property name="text">
-    <string>Odpoj sa</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
-  </action>
   <action name="actionM_d_riadenia">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/robot.png</normaloff>:/resource/robot.png</iconset>
+   </property>
    <property name="text">
     <string>Mód riadenia</string>
    </property>
@@ -776,6 +802,10 @@ QMenu:selected{
    </property>
   </action>
   <action name="actionM_d_prehr_vania">
+   <property name="icon">
+    <iconset resource="assetes/Resources.qrc">
+     <normaloff>:/resource/play.png</normaloff>:/resource/play.png</iconset>
+   </property>
    <property name="text">
     <string>Mód prehrávania</string>
    </property>

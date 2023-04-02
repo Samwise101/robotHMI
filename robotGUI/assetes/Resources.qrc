@@ -22,6 +22,13 @@
         <file>Documentation.txt</file>
         <file>Alarmy/warning_orange.png</file>
         <file>icon2.ico</file>
+        <file>guide.png</file>
+        <file>internet.png</file>
+        <file>page.png</file>
+        <file>question.png</file>
+        <file>robot.png</file>
+        <file>open-exit-door.png</file>
+        <file>play.png</file>
     </qresource>
     <qresource prefix="/pages">
         <file>pageDOWN2.png</file>

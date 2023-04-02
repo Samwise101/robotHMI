@@ -2,6 +2,8 @@ QT       += core gui widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
+
+
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -85,3 +87,5 @@ RESOURCES += \
     assetes/Resources.qrc
 
 DISTFILES +=
+
+RC_ICONS = assetes/icon2.ico

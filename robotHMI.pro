@@ -4,3 +4,5 @@ SUBDIRS += robot \
            robotGUI
 
 CONFIG += ordered
+
+
