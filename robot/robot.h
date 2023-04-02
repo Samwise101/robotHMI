@@ -136,6 +136,12 @@ private:
 
     double tempSpeed = 400.0;  //[mm/s]
 
+    double simX;
+    double simY;
+    double simV;
+    double simW;
+    int steps;
+
     // [rad]
     double theta = 0;
     double deltaTheta = 0;

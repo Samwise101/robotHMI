@@ -32,6 +32,7 @@ WSACleanup();
 
 Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserportRobot, int laserportMe,std::function<int(LaserMeasurement)> &lascallback,int robotportRobot, int robotportMe,std::function<int(TKobukiData)> &robcallback): wasLaserSet(0),wasRobotSet(0),wasCameraSet(0)
 {
+    steps = 20;
     x = 0;
     y = 0;
     theta = 0;
@@ -41,6 +42,10 @@ Robot::Robot(std::string ipaddressRobot, std::string ipaddressLaser,int laserpor
     nrOld = 0;
     nlCurr = 0;
     nrCurr = 0;
+    simX = 0;
+    simY = 0;
+    simV = 0;
+    simW = 0;
     setLaserParameters(ipaddressLaser,laserportRobot,laserportMe,lascallback);
     setRobotParameters(ipaddressRobot,robotportRobot,robotportMe,robcallback);
     readyFuture=ready_promise.get_future();
@@ -514,6 +519,8 @@ void Robot::robotAtGoal()
 
 void Robot::setRobotPose(int xPos, int yPos, float orientation)
 {
+    simX = xPos;
+    simY = yPos;
     x = xPos;
     y = yPos;
     theta = orientation;
@@ -533,7 +540,12 @@ void Robot::resetRobotPose()
 bool Robot::robotTrajectorySim(int xGoal, int yGoal)
 {
 
-    return true;
+    if(simV == 0 && (simW >= -0.15 && simW <= 0.15)){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 bool Robot::emergencyStop(int dist)

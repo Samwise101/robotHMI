@@ -571,8 +571,9 @@ color:black</string>
 }</string>
               </property>
               <property name="text">
-               <string>Skri ukazovateľ
- pozície v mape</string>
+               <string>Skri
+ukazovateľ
+pozície</string>
               </property>
              </widget>
             </item>
@@ -605,7 +606,7 @@ color:black</string>
      <x>0</x>
      <y>0</y>
      <width>1820</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
@@ -690,6 +691,8 @@ QMenu:selected{
     <addaction name="actionM_d_riadenia"/>
     <addaction name="actionM_d_prehr_vania"/>
     <addaction name="separator"/>
+    <addaction name="actionOto_enie_o_90"/>
+    <addaction name="actionOto_enie_o_91"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -732,10 +735,16 @@ QMenu:selected{
    <property name="text">
     <string>Manuál</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+M</string>
+   </property>
   </action>
   <action name="actionIP_adresa">
    <property name="text">
     <string>Zadaj IP adresu</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+I</string>
    </property>
   </action>
   <action name="actionPripoj_sa">
@@ -746,25 +755,47 @@ QMenu:selected{
    <property name="text">
     <string>Pripoj sa</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="actionOdpoj_sa">
    <property name="text">
     <string>Odpoj sa</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionM_d_riadenia">
    <property name="text">
     <string>Mód riadenia</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
   </action>
   <action name="actionM_d_prehr_vania">
    <property name="text">
     <string>Mód prehrávania</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionResetuj_enk_dery">
    <property name="text">
     <string>Resetuj enkódery</string>
+   </property>
+  </action>
+  <action name="actionOto_enie_o_90">
+   <property name="text">
+    <string>Otočenie o 90°</string>
+   </property>
+  </action>
+  <action name="actionOto_enie_o_91">
+   <property name="text">
+    <string>Otočenie o -90°</string>
    </property>
   </action>
  </widget>

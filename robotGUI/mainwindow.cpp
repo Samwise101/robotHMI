@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     missionReplayMode = false;
 
     recordMission = false;
+    turnRobot = false;
 
     buttonPressedCount = 0;
     buttonPressedCount2 = 0;
@@ -127,19 +128,21 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
-    if(!robot->getAtGoal()){
 
+    if(!robot->getAtGoal()){
         if(robotRunning){
            robot->robotOdometry(robotData, true);
         }
-
         if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0)){
 
             if(mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0){
-                cameraFrame->setDispOrangeWarning(false);
-                cameraFrame->setDispYellowWarning(false);
-                cameraFrame->setRobotStoppedWarning(true);
-                mapFrame->setShowRobotStopped(true);
+                if((mapFrame->getLidarAngle() >= 3*PI/2 && mapFrame->getLidarAngle() <= 2*PI) ||
+                 (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= PI/2)){
+                    cameraFrame->setDispOrangeWarning(false);
+                    cameraFrame->setDispYellowWarning(false);
+                    cameraFrame->setRobotStoppedWarning(true);
+                    mapFrame->setShowRobotStopped(true);
+                }
             }
 
             omega = robot->orientationRegulator(0, 0, false);
@@ -182,14 +185,13 @@ int MainWindow::processRobot(TKobukiData robotData){
         }
     }
     else{
-
-        if(!mapFrame->isGoalVectorEmpty()){
+        if(!mapFrame->isGoalVectorEmpty() && !turnRobot){
             if(mapFrame->getGoalType() == 2){
                 if(robotRunning){
                    robot->robotOdometry(robotData, false);
                 }
                 omega = robot->robotFullTurn(goalAngle);
-                if(omega > -0.15 && omega < 0.15){
+                if(omega > -0.5 && omega < 0.15){
                     mapFrame->removeLastPoint();
                     robot->setAtGoal(false);
                 }
@@ -203,6 +205,27 @@ int MainWindow::processRobot(TKobukiData robotData){
             else{
                 mapFrame->removeLastPoint();
                 robot->setAtGoal(false);
+            }
+        }
+        else if(mapFrame->isGoalVectorEmpty() && turnRobot){
+            if(robotRunning){
+               robot->robotOdometry(robotData, false);
+            }
+            omega = robot->robotFullTurn(goalAngle);
+            if(omega > -0.15 && omega < 0.15){
+                turnRobot = false;
+                robot->setAtGoal(false);
+            }
+            robotRotationalSpeed = omega;
+            if(robotRunning){
+               robot->robotOdometry(robotData, true);
+            }
+        }
+        else{
+            turnRobot = false;
+            robot->setAtGoal(false);
+            if(robotRunning){
+               robot->robotOdometry(robotData, true);
             }
         }
     }
@@ -270,6 +293,10 @@ void MainWindow::on_startButton_clicked()
                                         "image: url(:/resource/stop_start/start.png);}"
                                         );
         robotRunning = false;
+        if(turnRobot && robot->getAtGoal()){
+            turnRobot = false;
+            robot->setAtGoal(false);
+        }
     }
 }
 
@@ -724,10 +751,10 @@ void MainWindow::on_switchButton_clicked()
 void MainWindow::on_mouseTracking_clicked()
 {
     if(mapFrame->toggleMouse()){
-        ui->mouseTracking->setText("Zapni ukazovateľ\npozície v mape");
+        ui->mouseTracking->setText("Skri\nukazovateľ\npozície");
     }
     else{
-        ui->mouseTracking->setText("Vypni ukazovateľ\npozície v mape");
+        ui->mouseTracking->setText("Zobraz\nukazovateľ\npozície");
     }
 }
 
@@ -868,6 +895,26 @@ void MainWindow::on_actionResetuj_enk_dery_triggered()
 {
     if(robotConnected && !missionLoaded && !robotRunning){
         //robot->overWriteOldEncValues()
+    }
+}
+
+
+void MainWindow::on_actionOto_enie_o_90_triggered()
+{
+    if(robotRunning && !robot->getAtGoal() && !turnRobot){
+        goalAngle = robot->getTheta() + PI/2;
+        turnRobot = true;
+        robot->setAtGoal(true);
+    }
+}
+
+
+void MainWindow::on_actionOto_enie_o_91_triggered()
+{
+    if(robotRunning && !robot->getAtGoal() && !turnRobot){
+        goalAngle = robot->getTheta() - PI/2;
+        turnRobot = true;
+        robot->setAtGoal(true);
     }
 }
 

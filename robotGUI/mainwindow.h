@@ -91,6 +91,10 @@ private slots:
 
     void on_actionResetuj_enk_dery_triggered();
 
+    void on_actionOto_enie_o_90_triggered();
+
+    void on_actionOto_enie_o_91_triggered();
+
 private:
     std::string cameraPort = "";        // pre simulaciu
 
@@ -98,6 +102,8 @@ private:
 
     QDate date;
     QTime timeOfDay;
+
+    bool turnRobot = false;
 
     bool robotControlMode = true;
     bool missionReplayMode = false;

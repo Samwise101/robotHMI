@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>467</height>
+    <height>358</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -122,7 +122,7 @@ color:#ffffff;</string>
 color:#ffffff;</string>
       </property>
       <property name="text">
-       <string>- Robot offline</string>
+       <string>- Robot offline / Prehrávanie misie</string>
       </property>
      </widget>
     </item>
@@ -152,7 +152,7 @@ color:#ffffff;</string>
 color:#ffffff;</string>
       </property>
       <property name="text">
-       <string>- Robot stojí / predišiel narazeniu</string>
+       <string>- Robot stojí - predišiel narazeniu</string>
       </property>
      </widget>
     </item>
