@@ -331,7 +331,7 @@ void MainWindow::on_startButton_pressed()
 
 void MainWindow::setupConnectionToRobot(){
 
-    if(!ipAddress.empty()){
+    if(!ipAddress.empty() && validateIPAdress(ipAddress)){
         v = 0.0;
         omega = 0.0;
         robotForwardSpeed = 0;
@@ -357,6 +357,9 @@ void MainWindow::setupConnectionToRobot(){
         robot->robotStart();
         cameraFrame->setTempSpeed(robot->getTempSpeed());
 
+    }
+    else{
+        std::cout << "Not a valid address!" << std::endl;
     }
 }
 
@@ -518,6 +521,23 @@ void MainWindow::robotStateUiSignal()
     else{
         ui->robotState->setText("Robot je neaktívny");
     }
+}
+
+bool MainWindow::validateIPAdress(std::string ipAdress)
+{
+    std::regex ipPattern(R"(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$)");
+    std::smatch matches;
+
+    if (std::regex_match(ipAdress, matches, ipPattern)) {
+        for (size_t i = 1; i <= 4; ++i) {
+            int octet = std::stoi(matches[i]);
+            if (octet < 0 || octet > 255) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 

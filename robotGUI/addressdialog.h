@@ -2,6 +2,7 @@
 #define ADDRESSDIALOG_H
 
 #include <QDialog>
+#include <regex>
 
 namespace Ui {
 class AddressDialog;

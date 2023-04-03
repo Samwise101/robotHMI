@@ -848,6 +848,9 @@ QMenu:selected{
    <property name="text">
     <string>Odpoj sa</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
  </widget>
  <resources>

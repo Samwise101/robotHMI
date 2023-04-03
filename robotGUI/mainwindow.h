@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <regex>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -55,6 +56,8 @@ public:
     void destroyReplayMission();
     void destroyRecordMission();
     void robotStateUiSignal();
+
+    static bool validateIPAdress(std::string ipAdress);
 
 private slots:
     void on_actionExit_triggered();

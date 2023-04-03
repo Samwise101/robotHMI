@@ -87,16 +87,16 @@ void CameraFrameWidget::paintEvent(QPaintEvent*){
 void CameraFrameWidget::mousePressEvent(QMouseEvent *event){
     if(canPlacePoints && points->size() < 10 && robotOnline){
         if(event->y() >= rectangleHeightPx/2)
-            alfa1 = 24*(event->y() - rectangleHeightPx/2)/(rectangleHeightPx/2.0);
+            alfa1 = 25*(event->y() - rectangleHeightPx/2)/(rectangleHeightPx/2.0);
         else
-            alfa1 = -24*(rectangleHeightPx/2 - event->y())/(rectangleHeightPx/2.0);
+            alfa1 = -25*(rectangleHeightPx/2 - event->y())/(rectangleHeightPx/2.0);
 
         if(event->x() >= rectangleWidthPx/2)
             alfa2 = -32*(event->x() - rectangleWidthPx/2)/(rectangleWidthPx/2.0);
         else
             alfa2 = 32*(rectangleWidthPx/2 - event->x())/(rectangleWidthPx/2.0);
 
-        if((alfa1 > 0 && alfa1 < 24) && (alfa2 < 32 && alfa2 > -32)){
+        if((alfa1 > 0 && alfa1 < 25) && (alfa2 < 32 && alfa2 > -32)){
             d1 = cameraV/std::tan(alfa1*PI/180)*0.8*scale;
             d2 = d1/std::cos(alfa2*PI/180);
             points->insert(points->begin(), RobotGoal(robotX + d2*cos(robotTheta+alfa2*PI/180), robotY - d2*sin(robotTheta+alfa2*PI/180) , pointType, pointColor));
