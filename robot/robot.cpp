@@ -458,7 +458,6 @@ double Robot::regulateForwardSpeed(int xGoal, int yGoal, bool robotRunning, int 
 
 double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
 {
-
     xDistObst = (x + distToObst/10*sin((2*PI-(angleToObst)+PI/2)+theta));
     yDistObst = (y + distToObst/10*cos((2*PI-(angleToObst)+PI/2)+theta));
 
@@ -470,10 +469,10 @@ double Robot::avoidObstacleRegulator(double distToObst, double angleToObst)
     eThetaToObst = std::atan2(std::sin(eThetaToObst), std::cos(eThetaToObst));
 
     if(eThetaToObst >= 0.0 && eThetaToObst <= PI/2){
-           w = eThetaToObst + PI/2;
+        w = eThetaToObst + PI/2;
     }
     else if(eThetaToObst >= -PI/2 && eThetaToObst < 0.0){
-           w = eThetaToObst - PI/2;
+        w = eThetaToObst - PI/2;
     }
     else{
         w = 0.0;
@@ -537,15 +536,82 @@ void Robot::resetRobotPose()
     theta = 0.0;
 }
 
-bool Robot::robotTrajectorySim(int xGoal, int yGoal)
+double Robot::orientationSim(int xPos, int yPos, int xGoal, int yGoal)
 {
 
-    if(simV == 0 && (simW >= -0.15 && simW <= 0.15)){
-        return true;
+    //vzdialenost na osi x medzi robotom a cielom v m
+    eDistSimX2 = (xGoal - xPos)/100;
+
+    //vzdialenost na osi y medzi robotom a cielom v m
+    eDistSimY2 = -1*(yGoal - yPos)/100;
+
+    if(std::abs(eDistSimY2) <= 0.05 && std::abs(eDistSimX2) <= 0.05){
+        w = 0.0;
+        return w;
+    }
+
+    //uhol medzi stredom robota a cielom
+    thetaToGoalSim = std::atan2(eDistSimY2, eDistSimX2);
+
+    //rozdiel medzi uhlom robota a uhlom stredu robota a cielu
+    eThetaSim = thetaToGoalSim;// - theta;
+
+    // rozdiel v rozmedzi od -pi/2 do pi/2
+    //eThetaSim = std::atan2(std::sin(eThetaToGoal), std::cos(eThetaToGoal));
+
+    simW = Kp*eThetaSim;
+
+    if(simW >= 2.0){
+        simW = 2.0;
+    }
+    else if(simW <= -2.0){
+        simW = -2.0;
+    }
+    else if((simW > 0.0 && simW <= 0.1) || (simW < 0.0 && simW >= -0.1)){
+        simW = 0.0;
+    }
+
+    return simW;
+}
+
+double Robot::forwardSpeedSim(int xPos, int yPos, int xGoal, int yGoal, int goalType)
+{
+    //vzdialenost na osi x medzi robotom a cielom v mm
+    eDistSimX1 = (xGoal - xPos)*10;
+
+    //vzdialenost na osi y medzi robotom a cielom v mm
+    eDistSimY1 = -1*(yGoal - yPos)*10;
+
+    eDistSim1 = std::sqrt(std::pow(eDistSimX1,2)+std::pow(eDistSimY1,2));
+
+    if(eDistSim1 >= 0.0 && eDistSim1 <= 30.0 && goalType != 1){
+        if(simV > 5.0){
+           simV = Kp2*simV;
+        }
+        else{
+            simV = 0.0;
+        }
+    }
+    else if(simV <= 20 && eDistSim1 >= 20 && eDistSim1 <= 50){
+        if(simV == 0){
+            simV = 5;
+        }
+        else{
+            simV += Kp2*simV;
+        }
+    }
+    else if(eDistSim1 > tempSpeed){
+        simV = rampPosFunction(simV);
+    }
+    else if(goalType == 1){
+        if(simV >= 260)
+            simV = simV - 10;
     }
     else{
-        return false;
+        simV = Kp2*eDistSim1;
     }
+
+    return simV;
 }
 
 bool Robot::emergencyStop(int dist)

@@ -5,6 +5,7 @@ AddressDialog::AddressDialog(std::string* str, QWidget *parent) :QDialog(parent)
     ipAddress = str;
     ui->setupUi(this);
     ui->robotAddressField->setMaxLength(20);
+    ui->robotAddressField->setText("192.168.");
     this->setFixedSize(this->width(),this->height());
     this->setAttribute(Qt::WA_DeleteOnClose);
 }
@@ -45,12 +46,14 @@ void AddressDialog::on_pushButton_clicked()
 }
 
 
-
-
-
 void AddressDialog::on_simulatorButton_clicked()
 {
     ui->robotAddressField->setText("127.0.0.1");
-    //ui->robotAddressField->update();
+}
+
+
+void AddressDialog::on_clearButton_clicked()
+{
+    ui->robotAddressField->clear();
 }
 

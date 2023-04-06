@@ -5,6 +5,7 @@
 #include <QFrame>
 #include <QTimer>
 #include <cmath>
+#include <QScreen>
 
 #include "robotgoal.h"
 
@@ -83,6 +84,11 @@ private:
     double d2 = 0.0;
     double cameraV = 17.5; //[cm]
 
+    QScreen *screen;
+
+    int scaleFactorWidth = 558;
+    int scaleFactorHeight = 471;
+
 public:
     void setRobotParams(double& x, double& y, double& theta);
     void setPointVector(std::vector<RobotGoal>* goals);
@@ -104,6 +110,8 @@ public:
     void setCanPlacePoints(bool newCanPlacePoints);
     void setPointColor(const QColor &newPointColor);
     void setPointType(int newPointType);
+    void setScaleFactorWidth(int newScaleFactorWidth);
+    void setScaleFactorHeight(int newScaleFactorHeight);
 };
 
 #endif // CAMERAFRAMEWIDGET_H

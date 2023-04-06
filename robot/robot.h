@@ -87,7 +87,8 @@ public:
     void setRobotPose(int xPos, int yPos, float orientation);
     void resetRobotPose();
 
-    bool robotTrajectorySim(int xGoal, int yGoal);
+    double orientationSim(int xPos, int yPos, int xGoal, int yGoal);
+    double forwardSpeedSim(int xPos, int yPos, int xGoal, int yGoal, int goalType);
 
     double getDeltaSl();
     double getDeltaSr();
@@ -136,11 +137,22 @@ private:
 
     double tempSpeed = 400.0;  //[mm/s]
 
-    double simX;
-    double simY;
-    double simV;
-    double simW;
-    int steps;
+    double simX = 0.0;
+    double simY = 0.0;
+    double simV = 0.0;
+    double simW = 0.0;
+    double thetaToGoalSim = 0.0;
+    int steps = 0;
+    double eDistSimX1 = 0.0;
+    double eDistSimY1 = 0.0;
+    double eDistSimX2 = 0.0;
+    double eDistSimY2 = 0.0;
+    double eDistSim1 = 0.0;
+    double eDistSim2 = 0.0;
+    double eDistSimXObst = 0.0;
+    double eDistSimYObst = 0.0;
+    double eDistSimObst = 0.0;
+    double eThetaSim = 0.0;
 
     // [rad]
     double theta = 0;

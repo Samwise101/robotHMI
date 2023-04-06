@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     baseWidth = 574.0f;
     baseHeight = 471.0f;
 
-    cameraFrameWidth = 558;
+    cameraFrameWidth = 574;
     cameraFrameHeight = 471;
 
     mapFrameWidth = 1148;
@@ -45,14 +45,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     cameraFrame = new CameraFrameWidget();
     cameraFrame->setFixedWidth(cameraFrameWidth);
     cameraFrame->setFixedHeight(cameraFrameHeight);
-    cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
     ui->cameraWidget->addWidget(cameraFrame, 0, 1);
 
     mapFrame = new MapFrameWidget();
     mapFrame->setFixedWidth(mapFrameWidth);
     mapFrame->setFixedHeight(mapFrameHeight);
-    mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
     cameraFrame->setPointVector(mapFrame->getRobotGoals());
 
@@ -129,13 +127,24 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
+    if(!mapFrame->isGoalVectorEmpty()){
+        double simV = robot->forwardSpeedSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), mapFrame->getGoalType());
+        double simW = robot->orientationSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
+        if(!((simV >= 0.0 && simV < 1) && (simW >= -0.5 && simW <= 0.5))){
+            double radius = simV/simW;
+            double step = 0.1;
+            double s = simV*step;
+            std::cout << "radius: " << radius << ", s: " << s << std::endl;
+            std::cout << "pomer: " << s/(2*PI*radius) << std::endl;
+            mapFrame->getTrajectories()->insert(mapFrame->getTrajectories()->begin(),QPoint(robot->getX(), robot->getY()));
+        }
+    }
 
     if(!robot->getAtGoal()){
         if(robotRunning){
            robot->robotOdometry(robotData, true);
         }
         if(!robotRunning || mapFrame->isGoalVectorEmpty() || (mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0)){
-
             if(mapFrame->getShortestDistanceLidar() >= 180.0 && mapFrame->getShortestDistanceLidar() <= 240.0){
                 if((mapFrame->getLidarAngle() >= 3*PI/2 && mapFrame->getLidarAngle() <= 2*PI) ||
                  (mapFrame->getLidarAngle() >= 0.0 && mapFrame->getLidarAngle() <= PI/2)){
@@ -356,10 +365,6 @@ void MainWindow::setupConnectionToRobot(){
         robotConnected = true;
         robot->robotStart();
         cameraFrame->setTempSpeed(robot->getTempSpeed());
-
-    }
-    else{
-        std::cout << "Not a valid address!" << std::endl;
     }
 }
 
@@ -725,13 +730,18 @@ void MainWindow::on_zmenTypBoduButton_clicked()
 void MainWindow::on_switchButton_clicked()
 {
     if(switchIndex == 0){
+
         cameraFrame->setFixedWidth(mapFrameWidth);
         cameraFrame->setFixedHeight(mapFrameHeight);
-        cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
+        cameraFrame->setScaleFactorHeight(942);
+        cameraFrame->setScaleFactorWidth(1148);
+        //cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
         mapFrame->setFixedWidth(cameraFrameWidth);
         mapFrame->setFixedHeight(cameraFrameHeight);
-        mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
+        mapFrame->setScaleFactorHeight(471);
+        mapFrame->setScaleFactorWidth(574);
+        //mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
         ui->cameraWidget->removeWidget(cameraFrame);
         ui->mapWidgetFrame->removeWidget(mapFrame);
@@ -748,11 +758,15 @@ void MainWindow::on_switchButton_clicked()
 
         cameraFrame->setFixedWidth(cameraFrameWidth);
         cameraFrame->setFixedHeight(cameraFrameHeight);
-        cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
+        cameraFrame->setScaleFactorHeight(471);
+        cameraFrame->setScaleFactorWidth(574);
+        //cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
         mapFrame->setFixedWidth(mapFrameWidth);
         mapFrame->setFixedHeight(mapFrameHeight);
-        mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
+        mapFrame->setScaleFactorHeight(942);
+        mapFrame->setScaleFactorWidth(1148);
+        //mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
         ui->cameraWidget->removeWidget(mapFrame);
         ui->mapWidgetFrame->removeWidget(cameraFrame);

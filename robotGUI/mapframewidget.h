@@ -122,6 +122,12 @@ public:
 
     const std::vector<QPoint> &getTrajcPoints() const;
 
+    std::vector<QPoint>* getTrajectories();
+
+    void setScaleFactorWidth(int newScaleFactorWidth);
+
+    void setScaleFactorHeight(int newScaleFactorHeight);
+
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -144,7 +150,7 @@ private:
     std::vector<int> missionPoints;
     int replayIndex;
 
-    std::vector<std::vector<QPoint>> trajectories;
+    std::vector<QPoint> trajectories;
 
     bool replayFinished = false;
 
@@ -214,6 +220,11 @@ private:
     double shortestLidarAngle = 0.0;
     double offset = 0.0;
     bool canTriggerEvents = false;
+
+    QScreen *screen;
+
+    int scaleFactorWidth = 1148;
+    int scaleFactorHeight = 942;
 };
 
 #endif // MAPFRAMEWIDGET_H

@@ -4,6 +4,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = KobukiHMI
 
+
+
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -89,3 +91,5 @@ RESOURCES += \
 DISTFILES +=
 
 RC_ICONS = assetes/robotIcon.ico
+
+QT_AUTO_SCREEN_SCALE_FACTOR=0

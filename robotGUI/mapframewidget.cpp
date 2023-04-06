@@ -51,7 +51,17 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
     QPen pen;
     pen.setStyle(Qt::SolidLine);
 
-    QRect rectangle(offset/2, offset/2, this->size().width() - offset, this->size().height() - offset);
+    screen = this->window()->windowHandle()->screen();
+
+    this->setFixedWidth(screen->geometry().width()*scaleFactorWidth/1920);
+    this->setFixedHeight(screen->geometry().height()*scaleFactorHeight/1080);
+
+    QRect rectangle(offset/2, offset/2, this->width() - offset, this->height() - offset);
+
+    scale = ((this->width()-15)/574.0f)- ((this->width()-15)/574.0f)/20;
+
+    std::cout << "scale=" << this->scale << std::endl;
+
     rectMiddleX = rectangle.width()/2;
     rectMiddleY = rectangle.height()/2;
 
@@ -65,11 +75,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
         if(showMap){
             paintMap(&painter);
-            painter.drawEllipse(startLocation.x(), startLocation.y(), 100, 100);
-            painter.drawLine(startLocation.x(), startLocation.y()+50 , startLocation.x()+20, startLocation.y()+50);
-            painter.drawLine(startLocation.x()+80, startLocation.y()+50 , startLocation.x()+100, startLocation.y()+50);
-            painter.drawLine(startLocation.x()+50, startLocation.y()+80 , startLocation.x()+50, startLocation.y()+100);
-            painter.drawLine(startLocation.x()+50, startLocation.y(), startLocation.x()+50, startLocation.y()+20);
         }
 
         if(robotOnline && robotInitialized){
@@ -98,6 +103,17 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
                 pen.setColor(QColor(255,165,0,255));
                 painter.setPen(pen);
                 painter.drawText(rectMiddleX-190*scale, 80*scale, "Pre zapnutie prehrávania najprv prepnite robot do režimu STOP!");
+            }
+
+            pen.setWidth(3);
+            pen.setColor(QColor(30,144,255));
+            painter.setPen(pen);
+
+            if(!trajectories.empty()){
+                for(int i = 0; i < trajectories.size(); i++)
+                {
+                    painter.drawEllipse(trajectories[i].x()*scale, trajectories[i].y()*scale, 2*scale, 2*scale);
+                }
             }
 
             pen.setWidth(2);
@@ -237,6 +253,21 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
         }
         }
     }
+}
+
+void MapFrameWidget::setScaleFactorHeight(int newScaleFactorHeight)
+{
+    scaleFactorHeight = newScaleFactorHeight;
+}
+
+void MapFrameWidget::setScaleFactorWidth(int newScaleFactorWidth)
+{
+    scaleFactorWidth = newScaleFactorWidth;
+}
+
+std::vector<QPoint>* MapFrameWidget::getTrajectories()
+{
+    return &trajectories;
 }
 
 const std::vector<QPoint> &MapFrameWidget::getTrajcPoints() const

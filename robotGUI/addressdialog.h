@@ -27,6 +27,8 @@ private slots:
 
     void on_simulatorButton_clicked();
 
+    void on_clearButton_clicked();
+
 private:
     Ui::AddressDialog *ui;
     std::string* ipAddress;

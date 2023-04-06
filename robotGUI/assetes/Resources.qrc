@@ -30,6 +30,7 @@
         <file>robotIcon.ico</file>
         <file>minus90.png</file>
         <file>plus90.png</file>
+        <file>wi-fi.png</file>
     </qresource>
     <qresource prefix="/pages">
         <file>pageDOWN2.png</file>
