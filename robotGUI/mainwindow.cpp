@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     baseWidth = 574.0f;
     baseHeight = 471.0f;
 
-    cameraFrameWidth = 574;
+    cameraFrameWidth = 558;
     cameraFrameHeight = 471;
 
     mapFrameWidth = 1148;
@@ -740,7 +740,7 @@ void MainWindow::on_switchButton_clicked()
         mapFrame->setFixedWidth(cameraFrameWidth);
         mapFrame->setFixedHeight(cameraFrameHeight);
         mapFrame->setScaleFactorHeight(471);
-        mapFrame->setScaleFactorWidth(574);
+        mapFrame->setScaleFactorWidth(558);
         //mapFrame->setScale(((mapFrame->width()-15)/baseWidth)- ((mapFrame->width()-15)/baseWidth)/20);
 
         ui->cameraWidget->removeWidget(cameraFrame);
@@ -759,7 +759,7 @@ void MainWindow::on_switchButton_clicked()
         cameraFrame->setFixedWidth(cameraFrameWidth);
         cameraFrame->setFixedHeight(cameraFrameHeight);
         cameraFrame->setScaleFactorHeight(471);
-        cameraFrame->setScaleFactorWidth(574);
+        cameraFrame->setScaleFactorWidth(558);
         //cameraFrame->setScale(((cameraFrame->width()-15)/baseWidth));
 
         mapFrame->setFixedWidth(mapFrameWidth);
