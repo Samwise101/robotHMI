@@ -3,7 +3,7 @@
 
 DocumentDialog::DocumentDialog(QWidget *parent) :QDialog(parent),ui(new Ui::DocumentDialog)
 {
-    docLength = 14;
+    docLength = 15;
     currentPage = 1;
 
     ui->setupUi(this);

@@ -127,6 +127,7 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
+    /*
     if(!mapFrame->isGoalVectorEmpty()){
         double simV = robot->forwardSpeedSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), mapFrame->getGoalType());
         double simW = robot->orientationSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
@@ -139,7 +140,7 @@ int MainWindow::processRobot(TKobukiData robotData){
             mapFrame->getTrajectories()->insert(mapFrame->getTrajectories()->begin(),QPoint(robot->getX(), robot->getY()));
         }
     }
-
+    */
     if(!robot->getAtGoal()){
         if(robotRunning){
            robot->robotOdometry(robotData, true);
