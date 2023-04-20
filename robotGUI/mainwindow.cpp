@@ -127,20 +127,6 @@ int MainWindow::processRobot(TKobukiData robotData){
     cameraFrame->setBatteryLevel(robotData.Battery);
     cameraFrame->setV(v);
 
-    /*
-    if(!mapFrame->isGoalVectorEmpty()){
-        double simV = robot->forwardSpeedSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition(), mapFrame->getGoalType());
-        double simW = robot->orientationSim(robot->getX(), robot->getY(), mapFrame->getGoalXPosition(), mapFrame->getGoalYPosition());
-        if(!((simV >= 0.0 && simV < 1) && (simW >= -0.5 && simW <= 0.5))){
-            double radius = simV/simW;
-            double step = 0.1;
-            double s = simV*step;
-            std::cout << "radius: " << radius << ", s: " << s << std::endl;
-            std::cout << "pomer: " << s/(2*PI*radius) << std::endl;
-            mapFrame->getTrajectories()->insert(mapFrame->getTrajectories()->begin(),QPoint(robot->getX(), robot->getY()));
-        }
-    }
-    */
     if(!robot->getAtGoal()){
         if(robotRunning){
            robot->robotOdometry(robotData, true);
@@ -341,7 +327,7 @@ void MainWindow::on_startButton_pressed()
 
 void MainWindow::setupConnectionToRobot(){
 
-    if(!ipAddress.empty() && validateIPAdress(ipAddress)){
+    if(!ipAddress.empty() && validateIPAdress(ipAddress) && !robotConnected){
         v = 0.0;
         omega = 0.0;
         robotForwardSpeed = 0;
@@ -830,10 +816,17 @@ void MainWindow::on_actionIP_adresa_triggered()
 
 void MainWindow::on_actionPripoj_sa_triggered()
 {
-    if(!robotConnected && !missionLoaded){
+    if(!robotConnected && !missionLoaded && !ipAddress.empty()){
         destroyRecordMission();
         destroyReplayMission();
         setupConnectionToRobot();
+    }
+    else if(!robotConnected && !missionLoaded && ipAddress.empty()){
+        addressField = new AddressDialog(&ipAddress,this);
+        std::function<void(void)> test = std::bind(&MainWindow::setupConnectionToRobot, this);
+        addressField->setFunction(test);
+        addressField->setWindowTitle("Target IP");
+        addressField->show();
     }
 }
 
