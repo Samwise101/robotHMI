@@ -415,10 +415,9 @@ void MainWindow::recordMap()
             if(missionRunning){
                 mapFrame->updateLaserPicture = 1;
                 mapFrame->update();
-                std::this_thread::sleep_for(33ms);
+                std::this_thread::sleep_for(29.5ms);
             }
         }
-
         mapFrame->updateLaserPicture = 0;
         mapFrame->update();
     }
@@ -590,7 +589,7 @@ void MainWindow::on_zmazGoal_clicked()
 
                 missionLoaded = true;
                 s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
-                s2 = dialog.getOpenFileName(this, "Select a text file to open...", QDir::homePath(), "txt(*.txt)");
+                s2 = dialog.getOpenFileName(this, "Select a text file to open...", s1, "txt(*.txt)");
 
                 std::cout << s1.toStdString() << std::endl;
                 if(!s1.isEmpty() && !s2.isEmpty()){
@@ -772,7 +771,7 @@ void MainWindow::on_switchButton_clicked()
 void MainWindow::on_mouseTracking_clicked()
 {
     if(mapFrame->toggleMouse()){
-        ui->mouseTracking->setText("Skri\nukazovateľ\npozície");
+        ui->mouseTracking->setText("Skry\nukazovateľ\npozície");
     }
     else{
         ui->mouseTracking->setText("Zobraz\nukazovateľ\npozície");
@@ -783,7 +782,7 @@ void MainWindow::on_mouseTracking_clicked()
 void MainWindow::on_useMapButton_clicked()
 {
     if(mapFrame->toggleMap()){
-        ui->useMapButton->setText("Skri mapu");
+        ui->useMapButton->setText("Skry mapu");
     }
     else{
         ui->useMapButton->setText("Zobraz mapu");

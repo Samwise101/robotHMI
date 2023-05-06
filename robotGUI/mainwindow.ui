@@ -524,7 +524,7 @@ color:black</string>
 }</string>
               </property>
               <property name="text">
-               <string>Skri mapu</string>
+               <string>Skry mapu</string>
               </property>
              </widget>
             </item>
@@ -554,7 +554,7 @@ color:black</string>
 }</string>
               </property>
               <property name="text">
-               <string>Skri
+               <string>Skry
 ukazovateľ
 pozície</string>
               </property>
@@ -576,7 +576,7 @@ pozície</string>
      <x>0</x>
      <y>0</y>
      <width>1820</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
@@ -603,8 +603,8 @@ QMenuBar:selected{
      <rect>
       <x>343</x>
       <y>118</y>
-      <width>145</width>
-      <height>77</height>
+      <width>178</width>
+      <height>92</height>
      </rect>
     </property>
     <property name="sizePolicy">

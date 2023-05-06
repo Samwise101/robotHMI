@@ -135,7 +135,7 @@ private:
     int nlCurr = 0;
     int nrCurr = 0;
 
-    double tempSpeed = 400.0;  //[mm/s]
+    double tempSpeed = 300.0;  //[mm/s]
 
     double simX = 0.0;
     double simY = 0.0;
