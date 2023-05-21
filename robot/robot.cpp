@@ -161,8 +161,6 @@ void Robot::setRotationSpeed(double radpersec) //left
 
 void Robot::setArcSpeed(int mmpersec,int radius)
 {
-     // std::cout << "Arc radius: " << radius << std::endl;
-     // std::cout << "Arc speed: " << mmpersec << std::endl;
      std::vector<unsigned char> mess=robot.setArcSpeed(mmpersec,radius);
      if (::sendto(rob_s, (char*)mess.data(), sizeof(char)*mess.size(), 0, (struct sockaddr*) &rob_si_posli, rob_slen) == -1)
      {
@@ -234,7 +232,6 @@ void Robot::laserprocess()
 
 void Robot::robotStart()
 {
-    std::cout << "Robot ip adress: " << robot_ipaddress << std::endl;
     if(wasRobotSet==1)
     {
         std::function<void(void)> f =std::bind(&Robot::robotprocess,this);
@@ -526,7 +523,6 @@ void Robot::setRobotPose(int xPos, int yPos, float orientation)
     trajecX = xPos;
     trajecY = yPos;
     trajecTheta = orientation;
-    std::cout << "Setting pose: x=" << x << ", y=" << y << ", theta=" << theta <<std::endl;
 }
 
 void Robot::resetRobotPose()

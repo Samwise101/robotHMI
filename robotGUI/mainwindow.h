@@ -30,6 +30,7 @@
 #include "mapframewidget.h"
 #include "robot.h"
 
+/// statické boolovské premenné na odsledovanie ukončenia prehrávania .avi a parsovania .txt súborov misie
 static bool isFinished = false;
 static bool isFinished2 = false;
 static bool isFinishedReplay = false;
@@ -39,17 +40,33 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/// Trieda hlavného okna HMI
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
+    /// Konštruktor triedy hlavného okna HMI
     MainWindow(QWidget *parent = nullptr);
+    /// Deštruktor triedy hlavného okna HMI
+    ///
+    /// Zničí všetky použité pointre a ukončí všetky thready (ak sú spustené).
     ~MainWindow();
 
     void setupConnectionToRobot();
+    /// metóda slúžiaca na spracovanie dát z laserového diaľkomeru
+    ///
     int processLidar(LaserMeasurement laserData);
+    /// metóda slúžiaca na spracovanie dát z kamery robota Kobuki
+    ///
+    /// @param cameraData parameter je opencv maticou
     int processCamera(cv::Mat cameraData);
+    /// metóda slúžiaca na riadenie robota
+    ///
+    /// metóda slúži na riadenie rýchlosti a orientácie robota, volanie metód na vykresľovanie v GUI
+    ///, zisťovanie alarmových stavov, riešenie úloh robota v bodoch misie.
+    /// @param robotData parameter je štruktúrou TKobukiData, ktorá obsahuje dáta, ktoré posiela robot Kobuki
+    /// (napr. počet tickov enkóoderov kolies, uhol natočenia gyroskopu atď.)
     int processRobot(TKobukiData robotData);
     void recordCamera();
     void recordMap();
@@ -140,9 +157,6 @@ private:
 
     bool alarmSet = false;
     bool videoCreated = false;
-
-    bool finReplay1 = false;
-    bool finReplay2 = false;
 
     cv::VideoWriter* video;
 

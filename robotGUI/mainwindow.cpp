@@ -259,14 +259,18 @@ int MainWindow::processCamera(cv::Mat cameraData){
     return 0;
 }
 
+/// Metóda na zavretie aplikácie pomocou menuItem Exit v HMI mainwindow menuBar.
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
 }
 
+/// Metóda pre zastavenie a opätovné spustenie robota Kobuki stlačením tlačidla "STOP" a "ŠTART".
+///
+/// Po stlačení tlačidla, ak robot stál, tak potom premenná robotRunning = true, ak bol robot v pohybe, tak robotRunning = false.
+/// @note Stlačením tlačidla sa mení vizualizácia tlačidla v HMI.
 void MainWindow::on_startButton_clicked()
 {
-    std::cout  << mapFrame->getGoalVectorSize() << std::endl;
     if(robotControlMode && robotConnected && !robotRunning){
         ui->startButton->setStyleSheet("#startButton{"
                                         "background-color: silver;"
@@ -298,6 +302,9 @@ void MainWindow::on_startButton_clicked()
 }
 
 
+/// Metóda je len na zmenu vizualizácie tlačidla ŠTART a STOP pri držaní stlačeného tlačidla.
+///
+/// Nemá veľký význam.
 void MainWindow::on_startButton_pressed()
 {
     if(robotControlMode && robotConnected && !robotRunning){
@@ -325,7 +332,13 @@ void MainWindow::on_startButton_pressed()
     }
 }
 
+/// Metóda na začatie komunikácie HMI s robotom Kobuki.
+///
+/// Spustenie komunikácie medzi HMI a robotom Kobuki, ak bola zadaná správna IP adresa robota.
+/// @note Zistí port na ktorom komunikuje kamera, podľa IP adresy - simulátor komunikuje na 8889.
+/// @see validateIpAdress
 void MainWindow::setupConnectionToRobot(){
+
 
     if(!ipAddress.empty() && validateIPAdress(ipAddress) && !robotConnected){
         v = 0.0;
@@ -343,6 +356,7 @@ void MainWindow::setupConnectionToRobot(){
         }
 
         mapFrame->initializeRobot();
+
         robot = new Robot(ipAddress);
 
         robot->setLaserParameters(ipAddress,52999,5299,std::bind(&MainWindow::processLidar,this,std::placeholders::_1));
@@ -350,6 +364,7 @@ void MainWindow::setupConnectionToRobot(){
         robot->setCameraParameters("http://" + ipAddress + ":" + cameraPort + "/stream.mjpg",std::bind(&MainWindow::processCamera,this,std::placeholders::_1));
 
         robotConnected = true;
+
         robot->robotStart();
         cameraFrame->setTempSpeed(robot->getTempSpeed());
     }
@@ -423,6 +438,8 @@ void MainWindow::recordMap()
     }
 }
 
+
+/// Metóda na ukončenie spustených threadov pre prehrávanie nahratej misie robota, ak bola otvorená a načítaná misia.
 void MainWindow::destroyReplayMission()
 {
     if(missionLoaded){
@@ -433,14 +450,12 @@ void MainWindow::destroyReplayMission()
         if(workerStarted && !isFinishedReplay){
             isFinishedReplay = true;
             workerStarted = false;
-            std::cout << "camera recording thread finished\n";
             worker.join();
         }
 
         if(worker2Started && !isFinishedReplay2){
             isFinishedReplay2 = true;
             worker2Started = false;
-            std::cout << "map recording thread finished\n";
             worker2.join();
         }
 
@@ -454,6 +469,7 @@ void MainWindow::destroyReplayMission()
     }
 }
 
+/// Metóda na ukončenie spustených threadov pre nahrávanie priebehu misie robota.
 void MainWindow::destroyRecordMission()
 {
     if(!missionLoaded){
@@ -463,7 +479,6 @@ void MainWindow::destroyRecordMission()
             if(videoCreated){
                  videoCreated = false;
             }
-            std::cout << "camera recording thread finished\n";
             worker.join();
             delete video;
         }
@@ -471,13 +486,17 @@ void MainWindow::destroyRecordMission()
         if(worker2Started && !isFinished2){
             isFinished2 = true;
             worker2Started = false;
-            std::cout << "map recording thread finished\n";
             worker2.join();
         }
     }
 }
 
-
+/// Metóda na úpravu vizualizácie stavu robota a stavu vykonávania misie v HMI
+///
+/// Zisťuje stav robota na základe flagov robotRunning, robotConnected a veľkosti vektora bodov misie.
+/// @note
+/// Stav robota = "robot online/offline".
+/// Stav misie napr. "robot sa presúva do cieľového bodu", "robot čaká na zadanie misie".
 void MainWindow::robotStateUiSignal()
 {
     if(!robotConnected){
@@ -514,6 +533,11 @@ void MainWindow::robotStateUiSignal()
     }
 }
 
+/// Metóda používajúca regex na validáciu IP adresy zadanej používateľom.
+///
+/// Používa regex pattern. Ak sa zhoduje dĺžka stringu a počet a typ znakov v jednotlivých čatiach, tak je IP adresa vyhodnotená ako správna.
+/// @warning Metóda zabezpečí, ža je možné do IP adresy zadať len celé čísla, a že nie je možné zadať menší alebo väčší počet znakov.
+/// Avšak nie je schopná zistiť, či IP adresa patrí reálnemu zariadeniu.
 bool MainWindow::validateIPAdress(std::string ipAdress)
 {
     std::regex ipPattern(R"(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$)");
@@ -531,14 +555,15 @@ bool MainWindow::validateIPAdress(std::string ipAdress)
     return false;
 }
 
-
+/// Metóda na spustenie nahrávania priebehu misie robota zvolením možnosti "Nahraj misiu" v HMI.
+///
+///
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     if(robotControlMode && robotConnected){
         if(arg1 == 2 && !workerStarted && !worker2Started){
             path = dialog.getExistingDirectory(this, "Vyberte priečinok:", QDir::homePath(), QFileDialog::ShowDirsOnly);
             if(!path.isEmpty()){
-                std::cout << path.toStdString() << std::endl;
                 recordMission = true;
                 if(robotConnected && !workerStarted && !missionLoaded){
                    if(isFinished)
@@ -591,9 +616,7 @@ void MainWindow::on_zmazGoal_clicked()
                 s1 = dialog.getOpenFileName(this, "Select a video file to open...", QDir::homePath(), "avi(*.avi);;mp4(*.mp4)");
                 s2 = dialog.getOpenFileName(this, "Select a text file to open...", s1, "txt(*.txt)");
 
-                std::cout << s1.toStdString() << std::endl;
                 if(!s1.isEmpty() && !s2.isEmpty()){
-
                     if(!replayFile.is_open()){
                         replayFile.open(s2.toStdString(), ios::in);
 
@@ -627,7 +650,6 @@ void MainWindow::on_zmazGoal_clicked()
                     }
                 }
                 else{
-                    std::cout << "HELLO" << std::endl;
                     destroyReplayMission();
                     missionLoaded = false;
                     mapFrame->setRobotOnline(true);

@@ -60,8 +60,6 @@ void MapFrameWidget::paintEvent(QPaintEvent*){
 
     scale = ((this->width()-15)/574.0f)- ((this->width()-15)/574.0f)/20;
 
-    std::cout << "scale=" << this->scale << std::endl;
-
     rectMiddleX = rectangle.width()/2;
     rectMiddleY = rectangle.height()/2;
 
