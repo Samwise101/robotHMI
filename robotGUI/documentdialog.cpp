@@ -1,6 +1,10 @@
 #include "documentdialog.h"
 #include "ui_documentdialog.h"
 
+/**
+ * @brief DocumentDialog::DocumentDialog
+ * @param parent
+ */
 DocumentDialog::DocumentDialog(QWidget *parent) :QDialog(parent),ui(new Ui::DocumentDialog)
 {
     docLength = 15;
