@@ -1,6 +1,10 @@
 #include "alarmdialog.h"
 #include "ui_alarmdialog.h"
 
+/**
+ * @brief AlarmDialog::AlarmDialog
+ * @param parent
+ */
 AlarmDialog::AlarmDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AlarmDialog)
