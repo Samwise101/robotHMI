@@ -33,6 +33,9 @@ CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
     imageOnline = QImage(":/resource/Alarmy/online.png");
 }
 
+/**
+ * @brief CameraFrameWidget::~CameraFrameWidget
+ */
 CameraFrameWidget::~CameraFrameWidget(){
 
 }
