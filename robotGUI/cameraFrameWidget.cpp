@@ -7,6 +7,10 @@
 
 #define PI 3.14159
 
+/**
+ * @brief CameraFrameWidget::CameraFrameWidget
+ * @param parent
+ */
 CameraFrameWidget::CameraFrameWidget(QWidget *parent): QWidget(parent)
 {
     actIndex=-1;
